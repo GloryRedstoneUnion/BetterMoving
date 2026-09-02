@@ -54,6 +54,9 @@ if (project.hasProperty('fluidairCompatTest')) {
     tasks.named('runClient').configure {
         dependsOn tasks.named('compatTestClasses')
         classpath sourceSets.compatTest.output
+        if (project.hasProperty('fluidairMovementCompatTest')) {
+            jvmArgs '-Dfluidair.movementCompatTest=true'
+        }
     }
 }
 

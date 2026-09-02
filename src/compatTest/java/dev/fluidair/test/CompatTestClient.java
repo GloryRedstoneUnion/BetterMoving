@@ -9,10 +9,17 @@ public final class CompatTestClient implements ClientModInitializer {
 
     private int ticks;
     private boolean modMenuVerified;
+    private final MovementCompatProbe movementProbe = Boolean.getBoolean("fluidair.movementCompatTest")
+            ? new MovementCompatProbe()
+            : null;
 
     @Override
     public void onInitializeClient() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (this.movementProbe != null) {
+                this.movementProbe.tick(client);
+                return;
+            }
             if (!this.modMenuVerified && FabricLoader.getInstance().isModLoaded("modmenu")) {
                 ModMenuCompatProbe.openConfigScreen(client);
                 this.modMenuVerified = true;
