@@ -9,7 +9,9 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.WorldCreator;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
@@ -20,6 +22,8 @@ public final class MovementCompatProbe {
     private static final double EXPECTED_WATER_HORIZONTAL_VELOCITY = 0.20;
     private static final double EXPECTED_SPRINTING_WATER_HORIZONTAL_VELOCITY = 0.225;
     private static final double EXPECTED_WATER_VERTICAL_VELOCITY = 0.195;
+    private static final double EXPECTED_SWIMMING_INPUT_DISTANCE = 0.0196;
+    private static final double SWIMMING_TOLERANCE = 1.0E-5;
     private static final double TOLERANCE = 1.0E-6;
     private static final int TIMEOUT_TICKS = 1200;
 
@@ -48,14 +52,23 @@ public final class MovementCompatProbe {
             return;
         }
 
-        if (this.state == State.RUN_TEST && client.player != null && client.world != null) {
-            verifyLavaUsesWaterMovement(client.player);
+        if (client.player == null || client.world == null) {
+            return;
+        }
+
+        if (this.state == State.RUN_TEST) {
+            if (client.player.age < 5) {
+                return;
+            }
+            verifyDirectLavaMovement(client);
+            verifySwimmingInputMatchesWater(client);
             this.state = State.COMPLETE;
             client.scheduleStop();
         }
     }
 
-    private static void verifyLavaUsesWaterMovement(ClientPlayerEntity player) {
+    private static void verifyDirectLavaMovement(MinecraftClient client) {
+        ClientPlayerEntity player = client.player;
         FluidAirConfigs.IGNORE_FLUID_PHYSICS.setBooleanValue(true);
         FluidAirConfigs.MODEL.setOptionListValue(FluidMovementModel.WATER);
 
@@ -67,8 +80,14 @@ public final class MovementCompatProbe {
         player.setPosition(Vec3d.ofCenter(center));
         player.setSwimming(false);
         player.setVelocity(Vec3d.ZERO);
-        if (!player.updateMovementInFluid(FluidTags.LAVA, 0.0) || !player.isInLava()) {
-            throw new AssertionError("The movement compatibility probe did not place the player in lava");
+        boolean movementInLava = player.updateMovementInFluid(FluidTags.LAVA, 0.0);
+        if (!movementInLava || !player.isInLava()) {
+            throw new AssertionError(
+                    "The movement compatibility probe did not place the player in lava: "
+                            + "centerFluid=" + player.getWorld().getFluidState(center)
+                            + ", movementInLava=" + movementInLava
+                            + ", isInLava=" + player.isInLava()
+                            + ", playerPos=" + player.getPos());
         }
 
         player.setSprinting(false);
@@ -98,12 +117,81 @@ public final class MovementCompatProbe {
                 player.getVelocity().y);
     }
 
+    private static void verifySwimmingInputMatchesWater(MinecraftClient client) {
+        ClientPlayerEntity player = client.player;
+        BlockPos waterCenter = player.getBlockPos().add(16, 4, 0);
+        double waterDistance = measureSwimmingInputDistance(
+                client,
+                waterCenter,
+                Blocks.WATER,
+                FluidTags.WATER);
+        double lavaDistance = measureSwimmingInputDistance(
+                client,
+                waterCenter.add(16, 0, 0),
+                Blocks.LAVA,
+                FluidTags.LAVA);
+        assertClose(
+                "Water swimming input used the wrong horizontal distance",
+                EXPECTED_SWIMMING_INPUT_DISTANCE,
+                waterDistance,
+                SWIMMING_TOLERANCE);
+        assertClose(
+                "Lava swimming input did not match water",
+                waterDistance,
+                lavaDistance,
+                SWIMMING_TOLERANCE);
+    }
+
+    private static double measureSwimmingInputDistance(
+            MinecraftClient client,
+            BlockPos center,
+            Block fluidBlock,
+            TagKey<Fluid> fluidTag) {
+        ClientPlayerEntity player = client.player;
+        for (BlockPos pos : BlockPos.iterate(center.add(-4, -2, -4), center.add(4, 2, 4))) {
+            client.world.setBlockState(pos, fluidBlock.getDefaultState(), Block.NOTIFY_ALL);
+        }
+
+        player.setPosition(Vec3d.ofCenter(center));
+        player.setYaw(-90.0F);
+        player.setPitch(0.0F);
+        player.setVelocity(Vec3d.ZERO);
+        player.setOnGround(false);
+        player.setNoGravity(true);
+        player.setSwimming(false);
+        player.setSprinting(true);
+        player.baseTick();
+        if (!player.isSubmergedIn(fluidTag)) {
+            throw new AssertionError("The swimming movement probe did not place the player in " + fluidTag.id());
+        }
+
+        Vec3d movementStart = player.getPos();
+        client.options.forwardKey.setPressed(true);
+        client.options.sprintKey.setPressed(true);
+        try {
+            player.setSprinting(true);
+            player.baseTick();
+            player.tickMovement();
+        } finally {
+            stopMovementInput(client);
+        }
+        return player.getPos().subtract(movementStart).horizontalLength();
+    }
+
+    private static void stopMovementInput(MinecraftClient client) {
+        client.options.forwardKey.setPressed(false);
+        client.options.sprintKey.setPressed(false);
+    }
+
     private static void assertVelocity(String behavior, double expected, double actual) {
-        if (Math.abs(actual - expected) <= TOLERANCE) {
+        assertClose("Lava used the wrong " + behavior, expected, actual, TOLERANCE);
+    }
+
+    private static void assertClose(String message, double expected, double actual, double tolerance) {
+        if (Math.abs(actual - expected) <= tolerance) {
             return;
         }
-        throw new AssertionError(
-                "Lava used the wrong " + behavior + ": expected " + expected + " but got " + actual);
+        throw new AssertionError(message + ": expected " + expected + " but got " + actual);
     }
 
     private enum State {

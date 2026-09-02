@@ -14,8 +14,8 @@ The available movement models are:
 - `Air rules` treats water, lava, and bubble columns as air. Rain still enables
   Riptide exactly as it does in vanilla.
 - `Water rules` treats all three as ordinary water. Lava supports the complete
-  water movement path, including sprint-swimming and the swimming pose, while
-  bubble-column lift and drag are suppressed.
+  water movement path, including sprint-swimming and the swimming pose without
+  the crawling input slowdown, while bubble-column lift and drag are suppressed.
 
 ## Requirements
 

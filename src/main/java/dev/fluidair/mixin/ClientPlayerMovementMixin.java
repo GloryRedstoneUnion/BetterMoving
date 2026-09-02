@@ -38,6 +38,15 @@ public abstract class ClientPlayerMovementMixin {
         return fluidair$resolveSubmergedInWater(submergedInWater);
     }
 
+    @ModifyExpressionValue(
+            method = "shouldSlowDown",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/network/ClientPlayerEntity;isCrawling()Z"))
+    private boolean fluidair$resolveCrawlingSlowdown(boolean crawling) {
+        return crawling && !fluidair$resolveTouchingWater(false);
+    }
+
     @Unique
     private boolean fluidair$resolveTouchingWater(boolean detectedWaterState) {
         ClientPlayerEntity player = (ClientPlayerEntity) (Object) this;
