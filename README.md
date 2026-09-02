@@ -24,6 +24,10 @@ Press `L`, then `C` to open the malilib configuration screen. The
 `Ignore fluid physics` option is disabled by default. Its toggle hotkey is
 unbound by default and can be assigned directly in the configuration screen.
 
+When the optional Mod Menu mod is installed, its configuration button opens
+the same MaLiLib configuration screen. Fluid Air works normally when Mod Menu
+is not installed.
+
 This mod only changes client-side movement prediction. Servers still evaluate
 movement and Elytra state using their own fluid state, so a server or
 anti-cheat may reject or correct movement that it considers invalid.

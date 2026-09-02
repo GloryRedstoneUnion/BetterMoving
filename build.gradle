@@ -16,6 +16,11 @@ repositories {
         url = 'https://api.modrinth.com/maven'
         content { includeGroup 'maven.modrinth' }
     }
+    maven {
+        name = 'TerraformersMC'
+        url = 'https://maven.terraformersmc.com/releases'
+        content { includeGroup 'com.terraformersmc' }
+    }
     mavenCentral()
 }
 
@@ -58,6 +63,11 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
     modImplementation "maven.modrinth:malilib:${project.malilib_version}"
+    modCompileOnly "com.terraformersmc:modmenu:${project.mod_menu_version}"
+
+    if (project.hasProperty('fluidairModMenuTest')) {
+        modRuntimeOnly "com.terraformersmc:modmenu:${project.mod_menu_version}"
+    }
 
     testImplementation platform('org.junit:junit-bom:5.10.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
