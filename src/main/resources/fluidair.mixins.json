@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "dev.fluidair.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "fluidair-refmap.json",
+  "client": [
+    "ClientPlayerMovementMixin",
+    "EntityFluidPhysicsMixin",
+    "LivingEntityFluidPhysicsMixin",
+    "PlayerEntityPoseMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

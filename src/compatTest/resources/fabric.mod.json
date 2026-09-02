@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "viafabricplus_conflict_fixture",
+  "version": "2.8.7-test-fixture",
+  "name": "ViaFabricPlus Conflict Fixture",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.fluidair.test.CompatTestClient"
+    ]
+  },
+  "mixins": [
+    "viafabricplus-conflict-fixture.mixins.json"
+  ]
+}

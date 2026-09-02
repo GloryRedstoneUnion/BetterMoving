@@ -1,0 +1,8 @@
+{
+  "fluidair.gui.title": "Fluid Air Configuration",
+  "fluidair.hotkeys.category": "Fluid Air",
+  "fluidair.config.name.ignoreFluidPhysics": "Ignore fluid physics",
+  "fluidair.config.comment.ignoreFluidPhysics": "Treat water and lava entirely as air for local player movement: prevent the swimming pose and ignore fluid drag, currents, and bubble-column forces. Normal jumping requires solid ground. This changes client-side movement prediction only.",
+  "fluidair.config.name.openConfigGui": "Open configuration screen",
+  "fluidair.config.comment.openConfigGui": "Opens the Fluid Air configuration screen."
+}

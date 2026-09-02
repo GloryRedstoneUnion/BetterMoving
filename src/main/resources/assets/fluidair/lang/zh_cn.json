@@ -1,0 +1,8 @@
+{
+  "fluidair.gui.title": "Fluid Air 配置",
+  "fluidair.hotkeys.category": "Fluid Air",
+  "fluidair.config.name.ignoreFluidPhysics": "忽略流体物理",
+  "fluidair.config.comment.ignoreFluidPhysics": "让本地玩家移动时将水和熔岩完全当作空气：不进入游泳姿态，并忽略流体阻力、流向和气泡柱推力。只有落地后才能正常跳跃。此选项只修改客户端移动预测。",
+  "fluidair.config.name.openConfigGui": "打开配置界面",
+  "fluidair.config.comment.openConfigGui": "打开 Fluid Air 的 malilib 配置界面。"
+}

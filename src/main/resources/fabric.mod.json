@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "fluidair",
+  "version": "${version}",
+  "name": "Fluid Air",
+  "description": "Optionally ignores water, lava, and bubble-column movement physics for the local player.",
+  "authors": [
+    "Fluid Air contributors"
+  ],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.fluidair.FluidAirClient"
+    ]
+  },
+  "mixins": [
+    "fluidair.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "fabric-api": ">=0.92.2",
+    "minecraft": "1.20.1",
+    "java": ">=17",
+    "malilib": ">=0.16.0 <0.17.0"
+  }
+}
