@@ -7,7 +7,8 @@
     "ClientPlayerMovementMixin",
     "EntityFluidPhysicsMixin",
     "LivingEntityFluidPhysicsMixin",
-    "PlayerEntityPoseMixin"
+    "PlayerEntityMovementMixin",
+    "TridentItemMovementMixin"
   ],
   "injectors": {
     "defaultRequire": 1

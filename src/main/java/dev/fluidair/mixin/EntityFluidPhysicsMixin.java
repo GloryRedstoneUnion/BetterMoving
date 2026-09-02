@@ -1,53 +1,87 @@
 package dev.fluidair.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.fluidair.config.FluidAirConfigs;
+import dev.fluidair.physics.FluidAirMovementPolicy;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(Entity.class)
+@Mixin(value = Entity.class, priority = 2100)
 public abstract class EntityFluidPhysicsMixin {
-    @Unique
-    private Vec3d fluidair$velocityBeforeFluidUpdate;
-
     @Shadow
     public abstract Vec3d getVelocity();
 
-    @Shadow
-    public abstract void setVelocity(Vec3d velocity);
+    @ModifyArg(
+            method = "updateMovementInFluid",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/Entity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V"),
+            index = 0)
+    private Vec3d fluidair$ignoreFluidCurrent(Vec3d velocity) {
+        return fluidair$shouldApplyFluidMovement() ? velocity : this.getVelocity();
+    }
 
-    @Inject(method = "updateMovementInFluid", at = @At("HEAD"))
-    private void fluidair$captureVelocityBeforeFluidUpdate(
-            TagKey<Fluid> tag,
-            double speed,
-            CallbackInfoReturnable<Boolean> cir) {
-        if (fluidair$shouldIgnorePhysics()
-                && (tag == FluidTags.WATER || tag == FluidTags.LAVA)) {
-            this.fluidair$velocityBeforeFluidUpdate = this.getVelocity();
-        } else {
-            this.fluidair$velocityBeforeFluidUpdate = null;
+    @ModifyExpressionValue(
+            method = "getVelocityMultiplier",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z"))
+    private boolean fluidair$useAirVelocityMultiplier(boolean fluidBlock) {
+        return FluidAirMovementPolicy.resolveFluidMovementState(
+                FluidAirConfigs.ignoreFluidPhysics(),
+                (Object) this instanceof ClientPlayerEntity,
+                fluidBlock);
+    }
+
+    @ModifyExpressionValue(
+            method = "updateSwimming",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/Entity;isTouchingWater()Z"))
+    private boolean fluidair$preventSwimmingInWater(boolean touchingWater) {
+        return fluidair$resolveFluidMovementState(touchingWater);
+    }
+
+    @ModifyExpressionValue(
+            method = "updateSwimming",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/Entity;isSubmergedInWater()Z"))
+    private boolean fluidair$preventSwimmingWhenSubmerged(boolean submergedInWater) {
+        return fluidair$resolveFluidMovementState(submergedInWater);
+    }
+
+    @WrapOperation(
+            method = "checkWaterState",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/Entity;onLanding()V"))
+    private void fluidair$preserveFallDistanceInWater(
+            Entity entity,
+            Operation<Void> original) {
+        if (fluidair$shouldApplyFluidMovement()) {
+            original.call(entity);
         }
     }
 
-    @Inject(method = "updateMovementInFluid", at = @At("RETURN"))
-    private void fluidair$restoreVelocityAfterFluidUpdate(
-            TagKey<Fluid> tag,
-            double speed,
-            CallbackInfoReturnable<Boolean> cir) {
-        if (this.fluidair$velocityBeforeFluidUpdate != null) {
-            this.setVelocity(this.fluidair$velocityBeforeFluidUpdate);
-            this.fluidair$velocityBeforeFluidUpdate = null;
-        }
+    @ModifyExpressionValue(
+            method = "baseTick",
+            at = @At(value = "CONSTANT", args = "floatValue=0.5"))
+    private float fluidair$preserveFallDistanceInLava(float vanillaMultiplier) {
+        return FluidAirMovementPolicy.resolveLavaFallDistanceMultiplier(
+                FluidAirConfigs.ignoreFluidPhysics(),
+                (Object) this instanceof ClientPlayerEntity,
+                vanillaMultiplier);
     }
 
     @Inject(
@@ -55,14 +89,23 @@ public abstract class EntityFluidPhysicsMixin {
             at = @At("HEAD"),
             cancellable = true)
     private void fluidair$ignoreBubbleColumnMovement(boolean drag, CallbackInfo ci) {
-        if (fluidair$shouldIgnorePhysics()) {
+        if (!fluidair$shouldApplyFluidMovement()) {
             ci.cancel();
         }
     }
 
     @Unique
-    private boolean fluidair$shouldIgnorePhysics() {
-        return FluidAirConfigs.ignoreFluidPhysics()
-                && (Object) this instanceof ClientPlayerEntity;
+    private boolean fluidair$shouldApplyFluidMovement() {
+        return FluidAirMovementPolicy.shouldApplyFluidMovement(
+                FluidAirConfigs.ignoreFluidPhysics(),
+                (Object) this instanceof ClientPlayerEntity);
+    }
+
+    @Unique
+    private boolean fluidair$resolveFluidMovementState(boolean detectedFluidState) {
+        return FluidAirMovementPolicy.resolveFluidMovementState(
+                FluidAirConfigs.ignoreFluidPhysics(),
+                (Object) this instanceof ClientPlayerEntity,
+                detectedFluidState);
     }
 }

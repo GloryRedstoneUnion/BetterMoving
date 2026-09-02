@@ -3,7 +3,7 @@
   "id": "fluidair",
   "version": "${version}",
   "name": "Fluid Air",
-  "description": "Optionally ignores water, lava, and bubble-column movement physics for the local player.",
+  "description": "Makes every local-player movement branch treat fluids as air while preserving non-movement fluid effects.",
   "authors": [
     "Fluid Air contributors"
   ],
