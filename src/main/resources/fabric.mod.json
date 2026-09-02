@@ -3,7 +3,7 @@
   "id": "fluidair",
   "version": "${version}",
   "name": "Fluid Air",
-  "description": "Makes every local-player movement branch treat fluids as air while preserving non-movement fluid effects.",
+  "description": "Applies configurable air or water rules to all local-player fluid movement while preserving non-movement fluid effects.",
   "authors": [
     "Fluid Air contributors"
   ],

@@ -7,6 +7,7 @@ import dev.fluidair.config.FluidAirConfigs;
 import dev.fluidair.physics.FluidAirMovementPolicy;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,7 +29,21 @@ public abstract class EntityFluidPhysicsMixin {
                     target = "Lnet/minecraft/entity/Entity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V"),
             index = 0)
     private Vec3d fluidair$ignoreFluidCurrent(Vec3d velocity) {
-        return fluidair$shouldApplyFluidMovement() ? velocity : this.getVelocity();
+        return fluidair$shouldApplyWaterMovement() ? velocity : this.getVelocity();
+    }
+
+    @ModifyArg(
+            method = "updateWaterState",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/Entity;updateMovementInFluid(Lnet/minecraft/registry/tag/TagKey;D)Z"),
+            index = 1)
+    private double fluidair$useWaterCurrentSpeedInLava(double vanillaSpeed) {
+        return FluidAirMovementPolicy.resolveLavaCurrentSpeed(
+                FluidAirConfigs.ignoreFluidPhysics(),
+                FluidAirConfigs.movementModel(),
+                fluidair$isLocalPlayer(),
+                vanillaSpeed);
     }
 
     @ModifyExpressionValue(
@@ -36,11 +51,8 @@ public abstract class EntityFluidPhysicsMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z"))
-    private boolean fluidair$useAirVelocityMultiplier(boolean fluidBlock) {
-        return FluidAirMovementPolicy.resolveFluidMovementState(
-                FluidAirConfigs.ignoreFluidPhysics(),
-                (Object) this instanceof ClientPlayerEntity,
-                fluidBlock);
+    private boolean fluidair$resolveFluidVelocityMultiplier(boolean fluidBlock) {
+        return fluidair$resolveTouchingWater(fluidBlock);
     }
 
     @ModifyExpressionValue(
@@ -48,8 +60,8 @@ public abstract class EntityFluidPhysicsMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/Entity;isTouchingWater()Z"))
-    private boolean fluidair$preventSwimmingInWater(boolean touchingWater) {
-        return fluidair$resolveFluidMovementState(touchingWater);
+    private boolean fluidair$resolveSwimmingInWater(boolean touchingWater) {
+        return fluidair$resolveTouchingWater(touchingWater);
     }
 
     @ModifyExpressionValue(
@@ -57,8 +69,17 @@ public abstract class EntityFluidPhysicsMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/Entity;isSubmergedInWater()Z"))
-    private boolean fluidair$preventSwimmingWhenSubmerged(boolean submergedInWater) {
-        return fluidair$resolveFluidMovementState(submergedInWater);
+    private boolean fluidair$resolveSwimmingWhenSubmerged(boolean submergedInWater) {
+        return fluidair$resolveSubmergedInWater(submergedInWater);
+    }
+
+    @ModifyExpressionValue(
+            method = "updateSwimming",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/registry/tag/TagKey;)Z"))
+    private boolean fluidair$treatLavaBlockAsWaterForSwimming(boolean waterAtFeet) {
+        return fluidair$resolveTouchingWater(waterAtFeet);
     }
 
     @WrapOperation(
@@ -69,7 +90,7 @@ public abstract class EntityFluidPhysicsMixin {
     private void fluidair$preserveFallDistanceInWater(
             Entity entity,
             Operation<Void> original) {
-        if (fluidair$shouldApplyFluidMovement()) {
+        if (fluidair$shouldApplyWaterMovement()) {
             original.call(entity);
         }
     }
@@ -77,10 +98,17 @@ public abstract class EntityFluidPhysicsMixin {
     @ModifyExpressionValue(
             method = "baseTick",
             at = @At(value = "CONSTANT", args = "floatValue=0.5"))
-    private float fluidair$preserveFallDistanceInLava(float vanillaMultiplier) {
+    private float fluidair$resolveFallDistanceInLava(float vanillaMultiplier) {
+        if (FluidAirMovementPolicy.shouldResetLavaFallDistanceAsWater(
+                FluidAirConfigs.ignoreFluidPhysics(),
+                FluidAirConfigs.movementModel(),
+                fluidair$isLocalPlayer())) {
+            ((Entity) (Object) this).onLanding();
+        }
         return FluidAirMovementPolicy.resolveLavaFallDistanceMultiplier(
                 FluidAirConfigs.ignoreFluidPhysics(),
-                (Object) this instanceof ClientPlayerEntity,
+                FluidAirConfigs.movementModel(),
+                fluidair$isLocalPlayer(),
                 vanillaMultiplier);
     }
 
@@ -88,24 +116,44 @@ public abstract class EntityFluidPhysicsMixin {
             method = {"onBubbleColumnSurfaceCollision", "onBubbleColumnCollision"},
             at = @At("HEAD"),
             cancellable = true)
-    private void fluidair$ignoreBubbleColumnMovement(boolean drag, CallbackInfo ci) {
-        if (!fluidair$shouldApplyFluidMovement()) {
+    private void fluidair$resolveBubbleColumnMovement(boolean drag, CallbackInfo ci) {
+        if (!FluidAirMovementPolicy.shouldApplyBubbleColumnMovement(
+                FluidAirConfigs.ignoreFluidPhysics(),
+                fluidair$isLocalPlayer())) {
             ci.cancel();
         }
     }
 
     @Unique
-    private boolean fluidair$shouldApplyFluidMovement() {
-        return FluidAirMovementPolicy.shouldApplyFluidMovement(
+    private boolean fluidair$shouldApplyWaterMovement() {
+        return FluidAirMovementPolicy.shouldApplyWaterMovement(
                 FluidAirConfigs.ignoreFluidPhysics(),
-                (Object) this instanceof ClientPlayerEntity);
+                FluidAirConfigs.movementModel(),
+                fluidair$isLocalPlayer());
     }
 
     @Unique
-    private boolean fluidair$resolveFluidMovementState(boolean detectedFluidState) {
-        return FluidAirMovementPolicy.resolveFluidMovementState(
+    private boolean fluidair$resolveTouchingWater(boolean detectedWaterState) {
+        return FluidAirMovementPolicy.resolveWaterMovementState(
                 FluidAirConfigs.ignoreFluidPhysics(),
-                (Object) this instanceof ClientPlayerEntity,
-                detectedFluidState);
+                FluidAirConfigs.movementModel(),
+                fluidair$isLocalPlayer(),
+                detectedWaterState,
+                ((Entity) (Object) this).isInLava());
+    }
+
+    @Unique
+    private boolean fluidair$resolveSubmergedInWater(boolean detectedWaterState) {
+        return FluidAirMovementPolicy.resolveWaterMovementState(
+                FluidAirConfigs.ignoreFluidPhysics(),
+                FluidAirConfigs.movementModel(),
+                fluidair$isLocalPlayer(),
+                detectedWaterState,
+                ((Entity) (Object) this).isSubmergedIn(FluidTags.LAVA));
+    }
+
+    @Unique
+    private boolean fluidair$isLocalPlayer() {
+        return (Object) this instanceof ClientPlayerEntity;
     }
 }

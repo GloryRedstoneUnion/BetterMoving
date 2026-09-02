@@ -5,6 +5,7 @@ import dev.fluidair.config.FluidAirConfigs;
 import dev.fluidair.physics.FluidAirMovementPolicy;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.tag.FluidTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,8 +17,8 @@ public abstract class PlayerEntityMovementMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/player/PlayerEntity;isSwimming()Z"))
-    private boolean fluidair$useAirMovementInsteadOfSwimming(boolean swimming) {
-        return fluidair$resolveFluidMovementState(swimming);
+    private boolean fluidair$resolveSwimmingMovement(boolean swimming) {
+        return fluidair$resolveWaterMovementState(swimming, false);
     }
 
     @ModifyExpressionValue(
@@ -25,8 +26,10 @@ public abstract class PlayerEntityMovementMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/player/PlayerEntity;isSubmergedIn(Lnet/minecraft/registry/tag/TagKey;)Z"))
-    private boolean fluidair$recordMovementAsAirWhenSubmerged(boolean submerged) {
-        return fluidair$resolveFluidMovementState(submerged);
+    private boolean fluidair$resolveSubmergedMovementStats(boolean submerged) {
+        return fluidair$resolveWaterMovementState(
+                submerged,
+                ((PlayerEntity) (Object) this).isSubmergedIn(FluidTags.LAVA));
     }
 
     @ModifyExpressionValue(
@@ -34,8 +37,8 @@ public abstract class PlayerEntityMovementMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/player/PlayerEntity;isTouchingWater()Z"))
-    private boolean fluidair$recordMovementAsAirWhenTouchingWater(boolean touchingWater) {
-        return fluidair$resolveFluidMovementState(touchingWater);
+    private boolean fluidair$resolveTouchingWaterMovementStats(boolean touchingWater) {
+        return fluidair$resolveTouchingWater(touchingWater);
     }
 
     @ModifyExpressionValue(
@@ -43,15 +46,26 @@ public abstract class PlayerEntityMovementMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/player/PlayerEntity;isTouchingWater()Z"))
-    private boolean fluidair$allowFallFlyingInWater(boolean touchingWater) {
-        return fluidair$resolveFluidMovementState(touchingWater);
+    private boolean fluidair$resolveFallFlyingInWater(boolean touchingWater) {
+        return fluidair$resolveTouchingWater(touchingWater);
     }
 
     @Unique
-    private boolean fluidair$resolveFluidMovementState(boolean detectedFluidState) {
-        return FluidAirMovementPolicy.resolveFluidMovementState(
+    private boolean fluidair$resolveTouchingWater(boolean touchingWater) {
+        return fluidair$resolveWaterMovementState(
+                touchingWater,
+                ((PlayerEntity) (Object) this).isInLava());
+    }
+
+    @Unique
+    private boolean fluidair$resolveWaterMovementState(
+            boolean detectedWaterState,
+            boolean detectedOtherFluidState) {
+        return FluidAirMovementPolicy.resolveWaterMovementState(
                 FluidAirConfigs.ignoreFluidPhysics(),
+                FluidAirConfigs.movementModel(),
                 (Object) this instanceof ClientPlayerEntity,
-                detectedFluidState);
+                detectedWaterState,
+                detectedOtherFluidState);
     }
 }

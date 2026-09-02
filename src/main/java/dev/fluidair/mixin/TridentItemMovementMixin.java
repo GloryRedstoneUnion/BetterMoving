@@ -18,7 +18,7 @@ public abstract class TridentItemMovementMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/player/PlayerEntity;isTouchingWaterOrRain()Z"))
-    private boolean fluidair$useRainOnlyForRiptide(
+    private boolean fluidair$resolveRiptideEnvironment(
             PlayerEntity player,
             Operation<Boolean> original) {
         BlockPos pos = player.getBlockPos();
@@ -29,8 +29,10 @@ public abstract class TridentItemMovementMixin {
                         pos.getZ()));
         return FluidAirMovementPolicy.resolveRiptideEnvironment(
                 FluidAirConfigs.ignoreFluidPhysics(),
+                FluidAirConfigs.movementModel(),
                 player instanceof ClientPlayerEntity,
                 original.call(player),
-                rainingAtPlayer);
+                rainingAtPlayer,
+                player.isInLava());
     }
 }

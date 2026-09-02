@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigHandler;
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
+import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -24,6 +25,13 @@ public final class FluidAirConfigs implements IConfigHandler {
                     comment("ignoreFluidPhysics"),
                     prettyName("ignoreFluidPhysics"));
 
+    public static final ConfigOptionList MODEL =
+            new ConfigOptionList(
+                    "model",
+                    FluidMovementModel.AIR,
+                    comment("model"),
+                    prettyName("model"));
+
     public static final ConfigHotkey OPEN_CONFIG_GUI =
             new ConfigHotkey(
                     "openConfigGui",
@@ -31,13 +39,16 @@ public final class FluidAirConfigs implements IConfigHandler {
                     comment("openConfigGui"),
                     prettyName("openConfigGui"));
 
-    public static final List<IConfigBase> OPTIONS = List.of(IGNORE_FLUID_PHYSICS);
+    public static final List<IConfigBase> OPTIONS = List.of(
+            IGNORE_FLUID_PHYSICS,
+            MODEL);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
             OPEN_CONFIG_GUI);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
+            MODEL,
             OPEN_CONFIG_GUI);
 
     public static final FluidAirConfigs INSTANCE = new FluidAirConfigs();
@@ -54,6 +65,10 @@ public final class FluidAirConfigs implements IConfigHandler {
 
     public static boolean ignoreFluidPhysics() {
         return IGNORE_FLUID_PHYSICS.getBooleanValue();
+    }
+
+    public static FluidMovementModel movementModel() {
+        return (FluidMovementModel) MODEL.getOptionListValue();
     }
 
     @Override

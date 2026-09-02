@@ -16,21 +16,52 @@ public abstract class LivingEntityFluidPhysicsMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
-    private boolean fluidair$useAirTravelInWater(boolean touchingWater) {
-        return FluidAirMovementPolicy.resolveFluidMovementState(
+    private boolean fluidair$resolveWaterTravel(boolean touchingWater) {
+        return FluidAirMovementPolicy.resolveWaterMovementState(
                 FluidAirConfigs.ignoreFluidPhysics(),
+                FluidAirConfigs.movementModel(),
                 fluidair$isLocalPlayer(),
-                touchingWater);
+                touchingWater,
+                ((LivingEntity) (Object) this).isInLava());
     }
 
     @ModifyExpressionValue(
-            method = {"tickMovement", "travel"},
+            method = "travel",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/LivingEntity;isInLava()Z"))
-    private boolean fluidair$useAirTravelInLava(boolean inLava) {
-        return FluidAirMovementPolicy.resolveFluidMovementState(
+    private boolean fluidair$resolveLavaTravel(boolean inLava) {
+        return FluidAirMovementPolicy.resolveLavaMovementState(
                 FluidAirConfigs.ignoreFluidPhysics(),
+                FluidAirConfigs.movementModel(),
+                fluidair$isLocalPlayer(),
+                inLava);
+    }
+
+    @ModifyExpressionValue(
+            method = "tickMovement",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/LivingEntity;isInLava()Z",
+                    ordinal = 0))
+    private boolean fluidair$selectEffectiveFluidHeight(boolean inLava) {
+        return FluidAirMovementPolicy.resolveLavaFluidHeightState(
+                FluidAirConfigs.ignoreFluidPhysics(),
+                FluidAirConfigs.movementModel(),
+                fluidair$isLocalPlayer(),
+                inLava);
+    }
+
+    @ModifyExpressionValue(
+            method = "tickMovement",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/LivingEntity;isInLava()Z",
+                    ordinal = 1))
+    private boolean fluidair$disableLavaJumpBranch(boolean inLava) {
+        return FluidAirMovementPolicy.resolveLavaMovementState(
+                FluidAirConfigs.ignoreFluidPhysics(),
+                FluidAirConfigs.movementModel(),
                 fluidair$isLocalPlayer(),
                 inLava);
     }

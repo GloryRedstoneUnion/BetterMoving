@@ -2,7 +2,11 @@
   "fluidair.gui.title": "Fluid Air 配置",
   "fluidair.hotkeys.category": "Fluid Air",
   "fluidair.config.name.ignoreFluidPhysics": "忽略流体物理",
-  "fluidair.config.comment.ignoreFluidPhysics": "本地玩家的所有移动行为都将流体视为空气，包括疾跑、跳跃、坠落距离、鞘翅飞行、激流触发、流向、阻力和气泡柱。非移动类流体效果保持不变。此选项只修改客户端移动预测。",
+  "fluidair.config.comment.ignoreFluidPhysics": "使用所选移动模型覆盖本地玩家的所有流体移动行为。非移动类流体效果保持不变。此选项只修改客户端移动预测。",
+  "fluidair.config.name.model": "移动模型",
+  "fluidair.config.comment.model": "空气规则将水、熔岩和气泡柱视为空气。水规则将它们视为普通水，包括在熔岩中游泳，同时消除气泡柱的升降作用。此选项仅在“忽略流体物理”开启时生效。",
+  "fluidair.config.value.model.air": "空气规则",
+  "fluidair.config.value.model.water": "水规则",
   "fluidair.config.name.openConfigGui": "打开配置界面",
   "fluidair.config.comment.openConfigGui": "打开 Fluid Air 的 malilib 配置界面。"
 }
