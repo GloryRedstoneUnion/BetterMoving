@@ -25,7 +25,17 @@ public final class MovementCompatProbe {
     private static final double EXPECTED_SWIMMING_INPUT_DISTANCE = 0.0196;
     private static final double SWIMMING_TOLERANCE = 1.0E-5;
     private static final double TOLERANCE = 1.0E-6;
+    private static final int SUSTAINED_SWIMMING_TICKS = 20;
     private static final int TIMEOUT_TICKS = 1200;
+
+    private static boolean captureMovementWaterState;
+    private static boolean movementWaterStateObserved;
+    private static boolean movementTouchingWater;
+    private static boolean movementSubmergedInWater;
+    private static boolean movementInLava;
+    private static boolean movementSwimming;
+    private static double movementWaterHeight;
+    private static double movementLavaHeight;
 
     private State state = State.OPEN_WORLD_CREATION;
     private int ticks;
@@ -62,6 +72,7 @@ public final class MovementCompatProbe {
             }
             verifyDirectLavaMovement(client);
             verifySwimmingInputMatchesWater(client);
+            verifyScopedAirState(client);
             this.state = State.COMPLETE;
             client.scheduleStop();
         }
@@ -140,6 +151,24 @@ public final class MovementCompatProbe {
                 waterDistance,
                 lavaDistance,
                 SWIMMING_TOLERANCE);
+
+        double sustainedWaterDistance = measureSwimmingInputDistance(
+                client,
+                waterCenter.add(32, 0, 0),
+                Blocks.WATER,
+                FluidTags.WATER,
+                SUSTAINED_SWIMMING_TICKS);
+        double sustainedLavaDistance = measureSwimmingInputDistance(
+                client,
+                waterCenter.add(48, 0, 0),
+                Blocks.LAVA,
+                FluidTags.LAVA,
+                SUSTAINED_SWIMMING_TICKS);
+        assertClose(
+                "Sustained lava swimming did not match water",
+                sustainedWaterDistance,
+                sustainedLavaDistance,
+                SWIMMING_TOLERANCE);
     }
 
     private static double measureSwimmingInputDistance(
@@ -147,6 +176,15 @@ public final class MovementCompatProbe {
             BlockPos center,
             Block fluidBlock,
             TagKey<Fluid> fluidTag) {
+        return measureSwimmingInputDistance(client, center, fluidBlock, fluidTag, 1);
+    }
+
+    private static double measureSwimmingInputDistance(
+            MinecraftClient client,
+            BlockPos center,
+            Block fluidBlock,
+            TagKey<Fluid> fluidTag,
+            int movementTicks) {
         ClientPlayerEntity player = client.player;
         for (BlockPos pos : BlockPos.iterate(center.add(-4, -2, -4), center.add(4, 2, 4))) {
             client.world.setBlockState(pos, fluidBlock.getDefaultState(), Block.NOTIFY_ALL);
@@ -165,17 +203,135 @@ public final class MovementCompatProbe {
             throw new AssertionError("The swimming movement probe did not place the player in " + fluidTag.id());
         }
 
+        boolean lavaProbe = fluidTag == FluidTags.LAVA;
+        if (lavaProbe) {
+            assertRealLavaStateOutsideMovement(player);
+        }
+        resetMovementStateCapture();
+        captureMovementWaterState = true;
+
         Vec3d movementStart = player.getPos();
         client.options.forwardKey.setPressed(true);
         client.options.sprintKey.setPressed(true);
         try {
             player.setSprinting(true);
-            player.baseTick();
-            player.tickMovement();
+            for (int i = 0; i < movementTicks; ++i) {
+                player.baseTick();
+                player.tickMovement();
+            }
         } finally {
+            captureMovementWaterState = false;
             stopMovementInput(client);
         }
+        if (lavaProbe) {
+            if (!movementWaterStateObserved) {
+                throw new AssertionError("The movement water-state probe did not run");
+            }
+            if (!movementTouchingWater
+                    || !movementSubmergedInWater
+                    || movementInLava
+                    || !movementSwimming
+                    || movementWaterHeight <= 0.0
+                    || movementLavaHeight != 0.0) {
+                throw new AssertionError(
+                        "Lava was not exposed as a complete water state inside local movement: touchingWater="
+                                + movementTouchingWater
+                                + ", submergedInWater="
+                                + movementSubmergedInWater
+                                + ", isInLava="
+                                + movementInLava
+                                + ", swimming="
+                                + movementSwimming
+                                + ", waterHeight="
+                                + movementWaterHeight
+                                + ", lavaHeight="
+                                + movementLavaHeight);
+            }
+            assertRealLavaStateOutsideMovement(player);
+        }
         return player.getPos().subtract(movementStart).horizontalLength();
+    }
+
+    public static void observeMovementWaterState(ClientPlayerEntity player) {
+        if (!captureMovementWaterState) {
+            return;
+        }
+        movementWaterStateObserved = true;
+        movementTouchingWater = player.isTouchingWater();
+        movementSubmergedInWater = player.isSubmergedInWater();
+        movementInLava = player.isInLava();
+        movementSwimming = player.isSwimming();
+        movementWaterHeight = player.getFluidHeight(FluidTags.WATER);
+        movementLavaHeight = player.getFluidHeight(FluidTags.LAVA);
+    }
+
+    private static void assertRealLavaStateOutsideMovement(ClientPlayerEntity player) {
+        if (!player.isInLava() || player.isTouchingWater() || player.isSubmergedInWater()) {
+            throw new AssertionError(
+                    "Lava state was not preserved outside local movement: isInLava="
+                            + player.isInLava()
+                            + ", touchingWater="
+                            + player.isTouchingWater()
+                            + ", submergedInWater="
+                            + player.isSubmergedInWater());
+        }
+    }
+
+    private static void verifyScopedAirState(MinecraftClient client) {
+        ClientPlayerEntity player = client.player;
+        FluidAirConfigs.MODEL.setOptionListValue(FluidMovementModel.AIR);
+        BlockPos center = player.getBlockPos().add(64, 4, 0);
+        for (BlockPos pos : BlockPos.iterate(center.add(-4, -2, -4), center.add(4, 2, 4))) {
+            client.world.setBlockState(pos, Blocks.LAVA.getDefaultState(), Block.NOTIFY_ALL);
+        }
+        player.setPosition(Vec3d.ofCenter(center));
+        player.setVelocity(Vec3d.ZERO);
+        player.setNoGravity(true);
+        player.baseTick();
+        assertRealLavaStateOutsideMovement(player);
+
+        resetMovementStateCapture();
+        captureMovementWaterState = true;
+        try {
+            player.tickMovement();
+        } finally {
+            captureMovementWaterState = false;
+            stopMovementInput(client);
+        }
+        if (!movementWaterStateObserved) {
+            throw new AssertionError("The Air rules movement water-state probe did not run");
+        }
+        if (movementTouchingWater
+                || movementSubmergedInWater
+                || movementInLava
+                || movementSwimming
+                || movementWaterHeight != 0.0
+                || movementLavaHeight != 0.0) {
+            throw new AssertionError(
+                    "Air rules exposed a fluid movement state inside local movement: touchingWater="
+                            + movementTouchingWater
+                            + ", submergedInWater="
+                            + movementSubmergedInWater
+                            + ", isInLava="
+                            + movementInLava
+                            + ", swimming="
+                            + movementSwimming
+                            + ", waterHeight="
+                            + movementWaterHeight
+                            + ", lavaHeight="
+                            + movementLavaHeight);
+        }
+        assertRealLavaStateOutsideMovement(player);
+    }
+
+    private static void resetMovementStateCapture() {
+        movementWaterStateObserved = false;
+        movementTouchingWater = false;
+        movementSubmergedInWater = false;
+        movementInLava = false;
+        movementSwimming = false;
+        movementWaterHeight = 0.0;
+        movementLavaHeight = 0.0;
     }
 
     private static void stopMovementInput(MinecraftClient client) {

@@ -9,6 +9,13 @@ This includes walking, sprinting, jumping, fall-distance tracking, fluid
 currents and drag, swimming pose transitions, Elytra activation and flight,
 and Riptide eligibility.
 
+Water rules expose a scoped virtual fluid state to the vanilla movement code:
+while the local player is evaluating movement, lava contact, submersion, and
+fluid height are resolved through the same state queries used for water. The
+scope ends when the movement call returns, so lava damage, fire, breathing,
+underwater vision, and other non-movement behavior continue to use the real
+world state.
+
 The available movement models are:
 
 - `Air rules` treats water, lava, and bubble columns as air. Rain still enables

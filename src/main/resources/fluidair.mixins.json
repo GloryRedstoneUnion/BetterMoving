@@ -6,7 +6,6 @@
   "client": [
     "ClientPlayerMovementMixin",
     "EntityFluidPhysicsMixin",
-    "LivingEntityFluidPhysicsMixin",
     "PlayerEntityMovementMixin",
     "TridentItemMovementMixin"
   ],

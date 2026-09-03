@@ -21,25 +21,6 @@ public final class FluidAirMovementPolicy {
                 && (detectedWaterState || detectedOtherFluidState);
     }
 
-    public static boolean resolveLavaMovementState(
-            boolean enabled,
-            FluidMovementModel model,
-            boolean localPlayer,
-            boolean detectedLavaState) {
-        return isActive(enabled, localPlayer) ? false : detectedLavaState;
-    }
-
-    public static boolean resolveLavaFluidHeightState(
-            boolean enabled,
-            FluidMovementModel model,
-            boolean localPlayer,
-            boolean detectedLavaState) {
-        if (!isActive(enabled, localPlayer)) {
-            return detectedLavaState;
-        }
-        return model == FluidMovementModel.WATER && detectedLavaState;
-    }
-
     public static boolean shouldApplyWaterMovement(
             boolean enabled,
             FluidMovementModel model,

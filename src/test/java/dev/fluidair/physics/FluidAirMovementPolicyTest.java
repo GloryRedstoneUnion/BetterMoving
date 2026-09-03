@@ -13,31 +13,24 @@ final class FluidAirMovementPolicyTest {
     void airModelTreatsEveryDetectedFluidAsAirForTheLocalPlayer() {
         assertFalse(FluidAirMovementPolicy.resolveWaterMovementState(true, AIR, true, true, false));
         assertFalse(FluidAirMovementPolicy.resolveWaterMovementState(true, AIR, true, false, true));
-        assertFalse(FluidAirMovementPolicy.resolveLavaMovementState(true, AIR, true, true));
-        assertFalse(FluidAirMovementPolicy.resolveLavaFluidHeightState(true, AIR, true, true));
     }
 
     @Test
     void waterModelRoutesWaterAndOtherFluidsThroughWaterMovement() {
         assertTrue(FluidAirMovementPolicy.resolveWaterMovementState(true, WATER, true, true, false));
         assertTrue(FluidAirMovementPolicy.resolveWaterMovementState(true, WATER, true, false, true));
-        assertFalse(FluidAirMovementPolicy.resolveLavaMovementState(true, WATER, true, true));
-        assertTrue(FluidAirMovementPolicy.resolveLavaFluidHeightState(true, WATER, true, true));
     }
 
     @Test
     void disabledFeaturePreservesVanillaDetectionForEitherModel() {
         assertTrue(FluidAirMovementPolicy.resolveWaterMovementState(false, AIR, true, true, false));
         assertFalse(FluidAirMovementPolicy.resolveWaterMovementState(false, WATER, true, false, true));
-        assertTrue(FluidAirMovementPolicy.resolveLavaMovementState(false, WATER, true, true));
-        assertTrue(FluidAirMovementPolicy.resolveLavaFluidHeightState(false, AIR, true, true));
     }
 
     @Test
     void enabledFeaturePreservesOtherEntitiesVanillaDetection() {
         assertTrue(FluidAirMovementPolicy.resolveWaterMovementState(true, AIR, false, true, false));
         assertFalse(FluidAirMovementPolicy.resolveWaterMovementState(true, WATER, false, false, true));
-        assertTrue(FluidAirMovementPolicy.resolveLavaMovementState(true, WATER, false, true));
     }
 
     @Test

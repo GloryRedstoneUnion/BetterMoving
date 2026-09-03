@@ -1,13 +1,19 @@
 package dev.fluidair.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.fluidair.config.FluidAirConfigs;
 import dev.fluidair.physics.FluidAirMovementPolicy;
+import dev.fluidair.physics.FluidMovementContext;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,7 +26,47 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = Entity.class, priority = 2100)
 public abstract class EntityFluidPhysicsMixin {
     @Shadow
+    protected boolean firstUpdate;
+
+    @Shadow
+    protected Object2DoubleMap<TagKey<Fluid>> fluidHeight;
+
+    @Shadow
     public abstract Vec3d getVelocity();
+
+    @ModifyReturnValue(method = "isTouchingWater", at = @At("RETURN"))
+    private boolean fluidair$resolveTouchingWaterState(boolean detectedWaterState) {
+        Entity entity = (Entity) (Object) this;
+        return FluidMovementContext.resolveWaterState(
+                entity,
+                detectedWaterState,
+                fluidair$isTouchingLavaRaw());
+    }
+
+    @ModifyReturnValue(method = "isSubmergedInWater", at = @At("RETURN"))
+    private boolean fluidair$resolveSubmergedInWaterState(boolean detectedWaterState) {
+        Entity entity = (Entity) (Object) this;
+        return FluidMovementContext.resolveSubmergedWaterState(
+                entity,
+                detectedWaterState);
+    }
+
+    @ModifyReturnValue(method = "isInLava", at = @At("RETURN"))
+    private boolean fluidair$resolveLavaState(boolean detectedLavaState) {
+        return FluidMovementContext.resolveLavaState(
+                (Entity) (Object) this,
+                detectedLavaState);
+    }
+
+    @ModifyReturnValue(method = "getFluidHeight", at = @At("RETURN"))
+    private double fluidair$resolveFluidHeight(double detectedHeight, TagKey<Fluid> fluid) {
+        return FluidMovementContext.resolveFluidHeight(
+                (Entity) (Object) this,
+                fluid,
+                detectedHeight,
+                this.fluidHeight.getDouble(FluidTags.WATER),
+                this.fluidHeight.getDouble(FluidTags.LAVA));
+    }
 
     @ModifyArg(
             method = "updateMovementInFluid",
@@ -55,31 +101,19 @@ public abstract class EntityFluidPhysicsMixin {
         return fluidair$resolveTouchingWater(fluidBlock);
     }
 
-    @ModifyExpressionValue(
-            method = "updateSwimming",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/entity/Entity;isTouchingWater()Z"))
-    private boolean fluidair$resolveSwimmingInWater(boolean touchingWater) {
-        return fluidair$resolveTouchingWater(touchingWater);
-    }
-
-    @ModifyExpressionValue(
-            method = "updateSwimming",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/entity/Entity;isSubmergedInWater()Z"))
-    private boolean fluidair$resolveSwimmingWhenSubmerged(boolean submergedInWater) {
-        return fluidair$resolveSubmergedInWater(submergedInWater);
-    }
-
-    @ModifyExpressionValue(
+    @WrapOperation(
             method = "updateSwimming",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/registry/tag/TagKey;)Z"))
-    private boolean fluidair$treatLavaBlockAsWaterForSwimming(boolean waterAtFeet) {
-        return fluidair$resolveTouchingWater(waterAtFeet);
+    private boolean fluidair$resolveSwimmingFluidState(
+            FluidState fluidState,
+            TagKey<Fluid> fluid,
+            Operation<Boolean> original) {
+        return FluidMovementContext.resolveWaterState(
+                (Entity) (Object) this,
+                original.call(fluidState, fluid),
+                fluidState.isIn(FluidTags.LAVA));
     }
 
     @WrapOperation(
@@ -134,22 +168,15 @@ public abstract class EntityFluidPhysicsMixin {
 
     @Unique
     private boolean fluidair$resolveTouchingWater(boolean detectedWaterState) {
-        return FluidAirMovementPolicy.resolveWaterMovementState(
-                FluidAirConfigs.ignoreFluidPhysics(),
-                FluidAirConfigs.movementModel(),
-                fluidair$isLocalPlayer(),
+        return FluidMovementContext.resolveWaterState(
+                (Entity) (Object) this,
                 detectedWaterState,
-                ((Entity) (Object) this).isInLava());
+                fluidair$isTouchingLavaRaw());
     }
 
     @Unique
-    private boolean fluidair$resolveSubmergedInWater(boolean detectedWaterState) {
-        return FluidAirMovementPolicy.resolveWaterMovementState(
-                FluidAirConfigs.ignoreFluidPhysics(),
-                FluidAirConfigs.movementModel(),
-                fluidair$isLocalPlayer(),
-                detectedWaterState,
-                ((Entity) (Object) this).isSubmergedIn(FluidTags.LAVA));
+    private boolean fluidair$isTouchingLavaRaw() {
+        return !this.firstUpdate && this.fluidHeight.getDouble(FluidTags.LAVA) > 0.0;
     }
 
     @Unique
