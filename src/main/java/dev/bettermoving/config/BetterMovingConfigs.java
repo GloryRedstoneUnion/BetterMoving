@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigHandler;
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed;
+import fi.dy.masa.malilib.config.options.ConfigDouble;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
@@ -57,6 +58,15 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("ignoreSlipperyBlocks"),
                     prettyName("ignoreSlipperyBlocks"));
 
+    public static final ConfigDouble MOVEMENT_SPEED_BOOST =
+            new ConfigDouble(
+                    "movementSpeedBoost",
+                    0.0,
+                    0.0,
+                    Double.MAX_VALUE,
+                    false,
+                    comment("movementSpeedBoost"));
+
     public static final ConfigHotkey OPEN_CONFIG_GUI =
             new ConfigHotkey(
                     "openConfigGui",
@@ -69,7 +79,8 @@ public final class BetterMovingConfigs implements IConfigHandler {
             MODEL,
             VIRTUAL_PLATFORM,
             IGNORE_SPRINT_HUNGER,
-            IGNORE_SLIPPERY_BLOCKS);
+            IGNORE_SLIPPERY_BLOCKS,
+            MOVEMENT_SPEED_BOOST);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
@@ -83,6 +94,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             VIRTUAL_PLATFORM,
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
+            MOVEMENT_SPEED_BOOST,
             OPEN_CONFIG_GUI);
 
     public static final BetterMovingConfigs INSTANCE = new BetterMovingConfigs();

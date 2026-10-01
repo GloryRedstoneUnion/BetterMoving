@@ -13,6 +13,8 @@
   "bettermoving.config.comment.ignoreSprintHunger": "Allow normal client-side sprinting at food level 6 or below by treating the food check inside canSprint as full hunger. Actual food, saturation, movement speed, and other sprint requirements stay unchanged. Only affects the local client player.",
   "bettermoving.config.name.ignoreSlipperyBlocks": "Ignore slippery blocks",
   "bettermoving.config.comment.ignoreSlipperyBlocks": "Treat ice and other blocks with above-normal slipperiness as ordinary blocks during local-player movement. Block states, rendering, interactions, and other entities remain unchanged.",
+  "bettermoving.config.name.movementSpeedBoost": "Movement speed boost",
+  "bettermoving.config.comment.movementSpeedBoost": "Multiply the local player's final movement velocity by 1 + this value after vanilla and other movement calculations. 0 disables the boost; 0.1 adds 10% and 1 adds 100%. The value can be greater than 1.",
   "bettermoving.config.name.openConfigGui": "Open configuration screen",
   "bettermoving.config.comment.openConfigGui": "Opens the BetterMoving configuration screen."
 }

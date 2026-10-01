@@ -5,6 +5,7 @@
   "refmap": "bettermoving-refmap.json",
   "client": [
     "ClientPlayerMovementMixin",
+    "ClientPlayerMovementSpeedMixin",
     "ClientPlayerSprintMixin",
     "EntityFluidPhysicsMixin",
     "EntityVirtualPlatformMixin",

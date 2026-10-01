@@ -71,6 +71,9 @@ public final class MovementCompatProbe {
             if (client.player.age < 5) {
                 return;
             }
+            if (Boolean.getBoolean("bettermoving.movementSpeedCompatTest")) {
+                MovementSpeedCompatProbe.verify(client);
+            }
             if (Boolean.getBoolean("bettermoving.sprintCompatTest")) {
                 SprintHungerCompatProbe.verify(client);
             }
