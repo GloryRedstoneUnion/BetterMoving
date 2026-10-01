@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "bettermoving-refmap.json",
   "client": [
+    "ClientPlayerInteractionManagerMixin",
+    "FireworkRocketEntityMixin",
     "ClientPlayerMovementMixin",
     "ClientPlayerSprintMixin",
     "EntityFluidPhysicsMixin",

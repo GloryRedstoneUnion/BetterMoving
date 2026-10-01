@@ -2,12 +2,11 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
-current release is **1.9.1**.
+current release is **1.10.0**.
 
-Version 1.9.1 adds a configurable Dolphin's Grace level to `Simulate potion
-effects`. Positive levels apply the vanilla water-movement behavior to the
-local player without creating a real status effect or changing the server's
-state.
+Version 1.10.0 adds `Infinite Elytra fireworks`. While the local player is
+Elytra gliding, it applies the vanilla firework boost locally without sending
+the item-use packet or consuming rockets on the server.
 
 BetterMoving does not need to be installed on a server. Server-side movement
 validation still applies, so a server can correct movement that it considers
@@ -86,6 +85,18 @@ When enabled for the local player:
 The actual status effects remain active for rendering, particles, icons, and
 other non-movement behavior.
 
+### Elytra fireworks
+
+`Infinite Elytra fireworks` is a shared, hotkey-capable movement toggle. When
+enabled while the local player is Elytra gliding, using a firework rocket
+creates a client-side rocket and applies the same acceleration as vanilla.
+The client does not send the firework item-use packet, so the server does not
+consume a rocket. No rocket is created when the player is not fall-flying.
+
+The local rocket is temporary and is removed after its normal lifetime. This
+feature changes client-side movement prediction only; the server may still
+correct movement according to its own state.
+
 ## Requirements
 
 - Minecraft 1.20.1
@@ -101,7 +112,7 @@ MaLiLib configuration screen. BetterMoving does not require Mod Menu.
 
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
-3. Download `bettermoving-1.9.1.jar` from the
+3. Download `bettermoving-1.10.0.jar` from the
    [GitHub Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases)
    page and place it in the `mods` folder.
 4. Optionally install Mod Menu for an in-game configuration button.
@@ -119,6 +130,7 @@ unbound by default:
 - `Simulate potion effects`
 - `Override existing potion effects`
 - `Ignore levitation and slowness`
+- `Infinite Elytra fireworks`
 
 `Movement model` defaults to `Air rules` and is used only while `Ignore fluid
 physics` is enabled. The simulated Speed, Jump Boost, and Dolphin's Grace
@@ -145,13 +157,15 @@ On Windows, use `gradlew.bat`. Run the complete disposable client suite with:
   -PbettermovingPlatformCompatTest \
   -PbettermovingSprintCompatTest \
   -PbettermovingSlipperinessCompatTest \
-  -PbettermovingPotionEffectsCompatTest
+  -PbettermovingPotionEffectsCompatTest \
+  -PbettermovingElytraFireworksCompatTest
 ```
 
 Add `-PbettermovingModMenuTest` to include the optional Mod Menu integration.
 The suite checks fluid modes, virtual-platform collision behavior, sprint
 movement and restrictions, slippery-block friction, potion formulas,
-configuration persistence, and the Levitation and Slowness movement override.
+configuration persistence, the Levitation and Slowness movement override, and
+non-consuming Elytra firework boosts.
 
 ## License
 

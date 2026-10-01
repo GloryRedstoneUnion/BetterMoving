@@ -3,7 +3,7 @@
   "id": "bettermoving",
   "version": "${version}",
   "name": "BetterMoving",
-  "description": "Configurable client-side fluid movement, a fixed-height virtual platform, sprinting without the food-level restriction, normal friction on slippery blocks, simulated Speed, Jump Boost, and Dolphin's Grace effects, and optional Levitation and Slowness movement overrides.",
+  "description": "Configurable client-side fluid movement, a fixed-height virtual platform, sprinting without the food-level restriction, normal friction on slippery blocks, simulated potion effects, optional Levitation and Slowness movement overrides, and non-consuming Elytra firework boosts.",
   "authors": [
     "BetterMoving contributors"
   ],

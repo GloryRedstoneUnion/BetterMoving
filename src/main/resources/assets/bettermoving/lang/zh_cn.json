@@ -19,6 +19,8 @@
   "bettermoving.config.comment.overridePotionEffects": "与“模拟药水效果”同时开启时，用配置的模拟等级替换本地玩家原有的速度、跳跃提升和海豚的恩惠效果；关闭时保留原有更高等级的速度、跳跃提升，以及原有的海豚的恩惠效果。仅修改客户端移动计算。",
   "bettermoving.config.name.ignoreLevitationAndSlowness": "忽略漂浮和缓慢",
   "bettermoving.config.comment.ignoreLevitationAndSlowness": "在本地玩家移动计算中忽略漂浮的竖直移动和对鞘翅的限制，并移除缓慢对移速的影响。真实药水效果、粒子、图标和其他非移动行为保持不变。此开关默认关闭且未绑定快捷键。",
+  "bettermoving.config.name.infiniteElytraFireworks": "无限鞘翅烟花加速",
+  "bettermoving.config.comment.infiniteElytraFireworks": "本地玩家使用鞘翅滑翔时，模拟烟花火箭加速，不向服务器发送使用包，也不会消耗服务器中的烟花火箭。此开关默认关闭且未绑定快捷键。",
   "bettermoving.config.name.simulatedSpeedPotionLevel": "模拟速度药水等级",
   "bettermoving.config.comment.simulatedSpeedPotionLevel": "开启“模拟药水效果”后，将此速度药水等级用于水平移动。等级 0 不添加效果，等级 1 等同于速度 I；玩家已有的更高速度效果会保留。可填 0 至 255。",
   "bettermoving.config.name.simulatedJumpBoostLevel": "模拟跳跃提升等级",

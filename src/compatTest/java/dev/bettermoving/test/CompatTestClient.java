@@ -14,6 +14,7 @@ public final class CompatTestClient implements ClientModInitializer {
                     || Boolean.getBoolean("bettermoving.sprintCompatTest")
                     || Boolean.getBoolean("bettermoving.slipperinessCompatTest")
                     || Boolean.getBoolean("bettermoving.potionEffectsCompatTest")
+                    || Boolean.getBoolean("bettermoving.elytraFireworksCompatTest")
             ? new MovementCompatProbe()
             : null;
 

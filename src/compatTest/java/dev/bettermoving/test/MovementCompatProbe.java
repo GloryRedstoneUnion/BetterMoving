@@ -74,6 +74,9 @@ public final class MovementCompatProbe {
             if (Boolean.getBoolean("bettermoving.potionEffectsCompatTest")) {
                 PotionEffectsCompatProbe.verify(client);
             }
+            if (Boolean.getBoolean("bettermoving.elytraFireworksCompatTest")) {
+                ElytraFireworkCompatProbe.verify(client);
+            }
             if (Boolean.getBoolean("bettermoving.sprintCompatTest")) {
                 SprintHungerCompatProbe.verify(client);
             }

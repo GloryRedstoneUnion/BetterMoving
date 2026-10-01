@@ -19,6 +19,8 @@
   "bettermoving.config.comment.overridePotionEffects": "When enabled with Simulate potion effects, replace the local player's existing Speed, Jump Boost, and Dolphin's Grace effects with the configured simulated levels. When disabled, stronger existing Speed and Jump Boost levels and any existing Dolphin's Grace effect are preserved. This changes client-side movement only.",
   "bettermoving.config.name.ignoreLevitationAndSlowness": "Ignore levitation and slowness",
   "bettermoving.config.comment.ignoreLevitationAndSlowness": "Ignore Levitation's vertical movement and Elytra restrictions and remove Slowness from the local player's movement speed. The real effects, particles, icons, and other non-movement behavior remain unchanged. Disabled and unbound by default.",
+  "bettermoving.config.name.infiniteElytraFireworks": "Infinite Elytra fireworks",
+  "bettermoving.config.comment.infiniteElytraFireworks": "While the local player is Elytra gliding, simulate firework-rocket boosts without sending the item-use packet or consuming rockets on the server. Disabled and unbound by default.",
   "bettermoving.config.name.simulatedSpeedPotionLevel": "Simulated speed potion level",
   "bettermoving.config.comment.simulatedSpeedPotionLevel": "Use this Speed potion level for horizontal movement when Simulate potion effects is enabled. Level 0 adds no effect; level 1 matches Speed I. Existing stronger Speed effects are preserved. Values range from 0 to 255.",
   "bettermoving.config.name.simulatedJumpBoostLevel": "Simulated jump boost level",
