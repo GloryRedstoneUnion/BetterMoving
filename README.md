@@ -1,7 +1,7 @@
 # BetterMoving
 
 BetterMoving is a client-side Fabric 1.20.1 mod built on malilib, with configurable
-fluid movement and an invisible virtual platform.
+fluid movement, an invisible virtual platform, and a sprint hunger override.
 
 When `Ignore fluid physics` is enabled, it
 applies the selected movement model to water, lava, and bubble columns for the
@@ -59,12 +59,21 @@ interaction changes, and does not affect other entities or the server. Real
 walls, ceilings, and steps still participate in collision. It does not enable
 flight. The fluid movement option and model continue to work independently.
 
+`Ignore sprint hunger` is another independent toggle, disabled and unbound by
+default. It lets the local client player start and continue sprinting at food
+level 6 or below. Only the food-level query inside `ClientPlayerEntity.canSprint`
+is evaluated as full hunger. Actual food and saturation remain unchanged, and
+vanilla controls sprint movement and speed. Other sprint requirements, such as
+forward input, blindness, item use, and collision checks, still apply. Turning
+it off immediately restores the normal hunger requirement on the next movement
+tick. Assign its toggle hotkey in the same MaLiLib configuration screen.
+
 When the optional Mod Menu mod is installed, its configuration button opens
 the same MaLiLib configuration screen. BetterMoving works normally when Mod Menu
 is not installed.
 
 BetterMoving replaces Fluid Air and uses the `bettermoving` mod ID. When
-upgrading, replace the old jar with `bettermoving-1.4.0.jar`. Configuration is
+upgrading, replace the old jar with `bettermoving-1.5.0.jar`. Configuration is
 stored in `config/bettermoving.json`. If that file does not exist, BetterMoving
 imports the existing `config/fluidair.json`, including movement settings and
 hotkeys, and saves them under the new name.
@@ -83,5 +92,8 @@ compares 32 ticks of walking, sprinting, sneaking, and sprint-jumping against
 real stone ground, and checks fixed-height capture, disabling, session reset,
 fast diagonal movement, real obstacles, raycast and entity isolation, and
 both fluid movement modes. Add `-PbettermovingModMenuTest` to include Mod Menu.
+Add `-PbettermovingSprintCompatTest` to check every food level from 0 to 20,
+compare low-food sprint movement with vanilla full-food sprinting, verify
+toggle and hotkey persistence, and retain the other vanilla sprint restrictions.
 The test client must have accessibility onboarding completed, a render
 distance of at least 12 chunks, and `pauseOnLostFocus:false` in `options.txt`.

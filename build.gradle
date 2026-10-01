@@ -60,6 +60,9 @@ if (project.hasProperty('bettermovingCompatTest')) {
         if (project.hasProperty('bettermovingPlatformCompatTest')) {
             jvmArgs '-Dbettermoving.platformCompatTest=true'
         }
+        if (project.hasProperty('bettermovingSprintCompatTest')) {
+            jvmArgs '-Dbettermoving.sprintCompatTest=true'
+        }
     }
 }
 

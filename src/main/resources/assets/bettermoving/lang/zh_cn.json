@@ -9,6 +9,8 @@
   "bettermoving.config.value.model.water": "水规则",
   "bettermoving.config.name.virtualPlatform": "虚拟平台",
   "bettermoving.config.comment.virtualPlatform": "开启时记录脚底的精确高度，建立不可见的移动平台，可以像普通地面一样行走、疾跑、潜行和跳跃。关闭后重新开启可记录新高度；重生或切换维度时重新记录。不创建真实方块或交互目标，仅改变客户端移动碰撞。",
+  "bettermoving.config.name.ignoreSprintHunger": "忽略疾跑饥饿限制",
+  "bettermoving.config.comment.ignoreSprintHunger": "仅在本地客户端玩家的 canSprint 饱食度判断中按满值处理，使饱食度为 6 或以下时仍可正常疾跑。实际饱食度、饱和度、移速和其他疾跑条件保持原样。",
   "bettermoving.config.name.openConfigGui": "打开配置界面",
   "bettermoving.config.comment.openConfigGui": "打开 BetterMoving 的 malilib 配置界面。"
 }

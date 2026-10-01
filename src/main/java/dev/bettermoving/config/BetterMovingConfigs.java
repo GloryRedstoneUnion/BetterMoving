@@ -41,6 +41,14 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("virtualPlatform"),
                     prettyName("virtualPlatform"));
 
+    public static final ConfigBooleanHotkeyed IGNORE_SPRINT_HUNGER =
+            new ConfigBooleanHotkeyed(
+                    "ignoreSprintHunger",
+                    false,
+                    "",
+                    comment("ignoreSprintHunger"),
+                    prettyName("ignoreSprintHunger"));
+
     public static final ConfigHotkey OPEN_CONFIG_GUI =
             new ConfigHotkey(
                     "openConfigGui",
@@ -51,16 +59,19 @@ public final class BetterMovingConfigs implements IConfigHandler {
     public static final List<IConfigBase> OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
             MODEL,
-            VIRTUAL_PLATFORM);
+            VIRTUAL_PLATFORM,
+            IGNORE_SPRINT_HUNGER);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
             VIRTUAL_PLATFORM,
+            IGNORE_SPRINT_HUNGER,
             OPEN_CONFIG_GUI);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
             MODEL,
             VIRTUAL_PLATFORM,
+            IGNORE_SPRINT_HUNGER,
             OPEN_CONFIG_GUI);
 
     public static final BetterMovingConfigs INSTANCE = new BetterMovingConfigs();

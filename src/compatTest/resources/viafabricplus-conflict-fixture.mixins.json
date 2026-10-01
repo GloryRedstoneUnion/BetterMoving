@@ -3,6 +3,7 @@
   "package": "dev.bettermoving.compat",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "ClientPlayerSprintProbe",
     "MovementStateProbeMixin",
     "ViaFabricPlusClientPlayerConflictMixin"
   ],
