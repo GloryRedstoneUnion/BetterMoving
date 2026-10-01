@@ -100,6 +100,15 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     false,
                     comment("simulatedJumpBoostLevel"));
 
+    public static final ConfigInteger SIMULATED_DOLPHINS_GRACE_LEVEL =
+            new ConfigInteger(
+                    "simulatedDolphinsGraceLevel",
+                    0,
+                    0,
+                    255,
+                    false,
+                    comment("simulatedDolphinsGraceLevel"));
+
     public static final ConfigHotkey OPEN_CONFIG_GUI =
             new ConfigHotkey(
                     "openConfigGui",
@@ -117,7 +126,8 @@ public final class BetterMovingConfigs implements IConfigHandler {
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
             SIMULATED_SPEED_POTION_LEVEL,
-            SIMULATED_JUMP_BOOST_LEVEL);
+            SIMULATED_JUMP_BOOST_LEVEL,
+            SIMULATED_DOLPHINS_GRACE_LEVEL);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
@@ -139,6 +149,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_LEVITATION_AND_SLOWNESS,
             SIMULATED_SPEED_POTION_LEVEL,
             SIMULATED_JUMP_BOOST_LEVEL,
+            SIMULATED_DOLPHINS_GRACE_LEVEL,
             OPEN_CONFIG_GUI);
 
     public static final BetterMovingConfigs INSTANCE = new BetterMovingConfigs();

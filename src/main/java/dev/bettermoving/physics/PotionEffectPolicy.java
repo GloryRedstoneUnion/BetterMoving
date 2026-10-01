@@ -45,6 +45,19 @@ public final class PotionEffectPolicy {
         return jumpBoostModifier + JUMP_BOOST_PER_LEVEL * (effectiveLevel - actualLevel);
     }
 
+    public static boolean resolveDolphinsGrace(
+            boolean detectedEffect,
+            int simulatedLevel,
+            boolean enabled,
+            boolean overrideExistingEffect) {
+        if (!enabled) {
+            return detectedEffect;
+        }
+        return overrideExistingEffect
+                ? simulatedLevel > 0
+                : detectedEffect || simulatedLevel > 0;
+    }
+
     public static float removeSlowness(
             float movementSpeed,
             double slownessModifierAmount,

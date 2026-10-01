@@ -2,7 +2,7 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
-current release is **1.9.0**.
+current version is **1.9.1**.
 
 BetterMoving does not need to be installed on a server. Server-side movement
 validation still applies, so a server can correct movement that it considers
@@ -50,19 +50,23 @@ rendering, interactions, and other entities are unchanged.
 
 ### Simulated potion effects
 
-Enable `Simulate potion effects` to apply configured Speed and Jump Boost levels
-to local-player movement calculations without adding real status effects,
+Enable `Simulate potion effects` to apply configured Speed, Jump Boost, and
+Dolphin's Grace levels to local-player movement calculations without adding real status effects,
 particles, HUD icons, or server-side effects.
 
 - `Simulated speed potion level` uses the vanilla Speed formula. Level `0` has
   no effect; level `n` applies a `1 + 0.2 * n` movement-speed multiplier.
 - `Simulated jump boost level` uses the vanilla Jump Boost formula. Level `0`
   has no effect; each level adds `0.1` to jump velocity.
+- `Simulated dolphin's grace level` applies the vanilla Dolphin's Grace water
+  movement behavior. Level `0` has no effect; any level from `1` to `255`
+  matches the vanilla effect, which does not scale with the amplifier.
 - `Override existing potion effects` replaces the local player's existing
-  Speed and Jump Boost levels with the configured levels while simulation is
-  enabled. When it is disabled, stronger existing effects are preserved.
+  Speed, Jump Boost, and Dolphin's Grace effects with the configured levels
+  while simulation is enabled. When it is disabled, stronger existing Speed
+  and Jump Boost levels and any existing Dolphin's Grace effect are preserved.
 
-Both level values range from `0` to `255`.
+All simulated level values range from `0` to `255`.
 
 ### Levitation and slowness
 
@@ -92,7 +96,7 @@ MaLiLib configuration screen. BetterMoving does not require Mod Menu.
 
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
-3. Download `bettermoving-1.9.0.jar` from the
+3. Download `bettermoving-1.9.1.jar` from the
    [GitHub Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases)
    page and place it in the `mods` folder.
 4. Optionally install Mod Menu for an in-game configuration button.
@@ -112,8 +116,8 @@ unbound by default:
 - `Ignore levitation and slowness`
 
 `Movement model` defaults to `Air rules` and is used only while `Ignore fluid
-physics` is enabled. The simulated Speed and Jump Boost levels default to `0`
-and do not have hotkeys.
+physics` is enabled. The simulated Speed, Jump Boost, and Dolphin's Grace
+levels default to `0` and do not have hotkeys.
 
 Configuration is stored in `config/bettermoving.json`. If that file does not
 exist, BetterMoving imports `config/fluidair.json` and saves the migrated

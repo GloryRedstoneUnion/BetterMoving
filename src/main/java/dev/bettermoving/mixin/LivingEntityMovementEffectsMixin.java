@@ -55,12 +55,19 @@ public abstract class LivingEntityMovementEffectsMixin {
             StatusEffect effect,
             Operation<Boolean> original) {
         boolean detected = original.call(entity, effect);
+        boolean localPlayer = entity instanceof ClientPlayerEntity
+                && MinecraftClient.getInstance().player == entity;
         return effect == StatusEffects.LEVITATION
                 ? PotionEffectPolicy.resolveLevitation(
                         detected,
                         BetterMovingConfigs.ignoreLevitationAndSlowness(),
-                        entity instanceof ClientPlayerEntity
-                                && MinecraftClient.getInstance().player == entity)
+                        localPlayer)
+                : effect == StatusEffects.DOLPHINS_GRACE
+                        ? PotionEffectPolicy.resolveDolphinsGrace(
+                                detected,
+                                BetterMovingConfigs.SIMULATED_DOLPHINS_GRACE_LEVEL.getIntegerValue(),
+                                BetterMovingConfigs.simulatePotionEffects() && localPlayer,
+                                BetterMovingConfigs.overridePotionEffects() && localPlayer)
                 : detected;
     }
 }

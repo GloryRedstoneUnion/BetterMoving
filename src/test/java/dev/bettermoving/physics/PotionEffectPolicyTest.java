@@ -58,6 +58,40 @@ final class PotionEffectPolicyTest {
     }
 
     @Test
+    void simulatedDolphinsGraceActivatesAtAnyPositiveLevel() {
+        assertEquals(
+                true,
+                PotionEffectPolicy.resolveDolphinsGrace(false, 1, true, false));
+        assertEquals(
+                true,
+                PotionEffectPolicy.resolveDolphinsGrace(false, 255, true, false));
+    }
+
+    @Test
+    void simulatedDolphinsGracePreservesExistingEffectWhenOverrideIsDisabled() {
+        assertEquals(
+                true,
+                PotionEffectPolicy.resolveDolphinsGrace(true, 0, true, false));
+    }
+
+    @Test
+    void overrideCanRemoveExistingDolphinsGraceEffect() {
+        assertEquals(
+                false,
+                PotionEffectPolicy.resolveDolphinsGrace(true, 0, true, true));
+    }
+
+    @Test
+    void disabledDolphinsGraceSimulationPreservesDetectedEffect() {
+        assertEquals(
+                true,
+                PotionEffectPolicy.resolveDolphinsGrace(true, 0, false, true));
+        assertEquals(
+                false,
+                PotionEffectPolicy.resolveDolphinsGrace(false, 1, false, false));
+    }
+
+    @Test
     void disabledSimulationPreservesBothCalculations() {
         assertEquals(
                 0.14F,
