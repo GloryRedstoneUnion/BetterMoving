@@ -6,6 +6,14 @@ client-side sprint hunger override, and normal-friction movement on slippery
 blocks. The configuration is provided by
 [MaLiLib](https://github.com/maruohon/malilib).
 
+## 1.6.0 release
+
+This release adds `Ignore slippery blocks`, an optional client-side movement
+rule that gives ice and other slippery blocks normal ground friction for the
+local player. It also includes the existing fluid movement, virtual platform,
+and sprint hunger controls with the BetterMoving configuration migration from
+FluidAir.
+
 ## Features
 
 ### Fluid movement
@@ -133,7 +141,7 @@ run with:
 Add `-PbettermovingModMenuTest` to include the optional Mod Menu integration.
 The suite checks fluid modes, virtual-platform collision behavior, sprint
 movement, food levels 0 through 20, hotkey/config persistence, and vanilla
-sprint restrictions.
+sprint restrictions, as well as normal-friction movement on slippery blocks.
 
 ## License
 
