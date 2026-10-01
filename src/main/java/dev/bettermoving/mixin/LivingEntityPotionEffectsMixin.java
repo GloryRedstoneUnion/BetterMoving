@@ -27,6 +27,7 @@ public abstract class LivingEntityPotionEffectsMixin {
                 jumpBoostModifier,
                 actualLevel,
                 BetterMovingConfigs.SIMULATED_JUMP_BOOST_LEVEL.getIntegerValue(),
-                BetterMovingConfigs.simulatePotionEffects());
+                BetterMovingConfigs.simulatePotionEffects(),
+                BetterMovingConfigs.overridePotionEffects());
     }
 }

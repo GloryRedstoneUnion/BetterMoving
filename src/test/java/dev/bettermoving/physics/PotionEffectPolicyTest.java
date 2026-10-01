@@ -9,7 +9,7 @@ final class PotionEffectPolicyTest {
     void simulatedSpeedUsesTheVanillaTwentyPercentPerLevelFormula() {
         assertEquals(
                 0.16F,
-                PotionEffectPolicy.applySimulatedSpeed(0.1F, 0, 3, true),
+                PotionEffectPolicy.applySimulatedSpeed(0.1F, 0, 3, true, false),
                 1.0E-6F);
     }
 
@@ -17,11 +17,11 @@ final class PotionEffectPolicyTest {
     void simulatedSpeedRaisesExistingEffectsToTheConfiguredLevel() {
         assertEquals(
                 0.16F,
-                PotionEffectPolicy.applySimulatedSpeed(0.14F, 2, 3, true),
+                PotionEffectPolicy.applySimulatedSpeed(0.14F, 2, 3, true, false),
                 1.0E-6F);
         assertEquals(
                 0.14F,
-                PotionEffectPolicy.applySimulatedSpeed(0.14F, 2, 1, true),
+                PotionEffectPolicy.applySimulatedSpeed(0.14F, 2, 1, true, false),
                 1.0E-6F);
     }
 
@@ -29,7 +29,15 @@ final class PotionEffectPolicyTest {
     void simulatedSpeedUsesTheVanillaTotalMultiplierWithOtherModifiers() {
         assertEquals(
                 0.28F,
-                PotionEffectPolicy.applySimulatedSpeed(0.24F, 1, 2, true),
+                PotionEffectPolicy.applySimulatedSpeed(0.24F, 1, 2, true, false),
+                1.0E-6F);
+    }
+
+    @Test
+    void overrideReplacesAnExistingSpeedEffect() {
+        assertEquals(
+                0.12F,
+                PotionEffectPolicy.applySimulatedSpeed(0.16F, 3, 1, true, true),
                 1.0E-6F);
     }
 
@@ -37,7 +45,15 @@ final class PotionEffectPolicyTest {
     void simulatedJumpBoostUsesTheVanillaPointOnePerLevelFormula() {
         assertEquals(
                 0.3F,
-                PotionEffectPolicy.applySimulatedJumpBoost(0.0F, 0, 3, true),
+                PotionEffectPolicy.applySimulatedJumpBoost(0.0F, 0, 3, true, false),
+                1.0E-6F);
+    }
+
+    @Test
+    void overrideReplacesAnExistingJumpBoostEffect() {
+        assertEquals(
+                0.1F,
+                PotionEffectPolicy.applySimulatedJumpBoost(0.3F, 3, 1, true, true),
                 1.0E-6F);
     }
 
@@ -45,11 +61,11 @@ final class PotionEffectPolicyTest {
     void disabledSimulationPreservesBothCalculations() {
         assertEquals(
                 0.14F,
-                PotionEffectPolicy.applySimulatedSpeed(0.14F, 0, 3, false),
+                PotionEffectPolicy.applySimulatedSpeed(0.14F, 0, 3, false, true),
                 1.0E-6F);
         assertEquals(
                 0.2F,
-                PotionEffectPolicy.applySimulatedJumpBoost(0.2F, 1, 3, false),
+                PotionEffectPolicy.applySimulatedJumpBoost(0.2F, 1, 3, false, true),
                 1.0E-6F);
     }
 }

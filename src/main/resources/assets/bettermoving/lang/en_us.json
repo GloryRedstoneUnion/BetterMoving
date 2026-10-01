@@ -15,6 +15,8 @@
   "bettermoving.config.comment.ignoreSlipperyBlocks": "Treat ice and other blocks with above-normal slipperiness as ordinary blocks during local-player movement. Block states, rendering, interactions, and other entities remain unchanged.",
   "bettermoving.config.name.simulatePotionEffects": "Simulate potion effects",
   "bettermoving.config.comment.simulatePotionEffects": "Simulate the configured Speed and Jump Boost potion levels in local-player movement calculations. The toggle is disabled and unbound by default.",
+  "bettermoving.config.name.overridePotionEffects": "Override existing potion effects",
+  "bettermoving.config.comment.overridePotionEffects": "When enabled with Simulate potion effects, replace the local player's existing Speed and Jump Boost levels with the configured simulated levels. When disabled, existing stronger effects are preserved. This changes client-side movement only.",
   "bettermoving.config.name.simulatedSpeedPotionLevel": "Simulated speed potion level",
   "bettermoving.config.comment.simulatedSpeedPotionLevel": "Use this Speed potion level for horizontal movement when Simulate potion effects is enabled. Level 0 adds no effect; level 1 matches Speed I. Existing stronger Speed effects are preserved. Values range from 0 to 255.",
   "bettermoving.config.name.simulatedJumpBoostLevel": "Simulated jump boost level",

@@ -6,7 +6,7 @@ client-side sprint hunger override, normal-friction movement on slippery
 blocks, and simulated potion movement effects. The configuration is provided by
 [MaLiLib](https://github.com/maruohon/malilib).
 
-## 1.8.0 release
+## 1.8.1 release
 
 This release replaces final-velocity scaling with client-side simulation of
 vanilla potion movement effects. `Simulated speed potion level` uses the same
@@ -14,6 +14,12 @@ horizontal movement calculation as Speed, while `Simulated jump boost level`
 uses the same jump calculation as Jump Boost. Both are controlled by the
 toggleable `Simulate potion effects` option. Existing stronger effects and
 other movement modifiers remain part of the calculation.
+
+`Override existing potion effects` is an optional hotkey-capable toggle. When
+enabled together with `Simulate potion effects`, the configured simulated
+levels replace the local player's existing Speed and Jump Boost levels. When
+disabled, existing stronger effects are preserved and the simulated levels
+only raise the local calculation when they are higher.
 
 ## Features
 
@@ -82,11 +88,14 @@ effect, potion particles, HUD icons, or server-side effects.
 - `Simulated jump boost level` controls jump velocity using the vanilla Jump
   Boost formula. Level `0` adds no effect, level `1` matches Jump Boost I,
   and each additional level adds another `0.1` to jump velocity.
+- `Override existing potion effects` replaces the local player's existing
+  Speed and Jump Boost levels with the configured simulated levels while
+  enabled. It is disabled and unbound by default and only applies while
+  `Simulate potion effects` is enabled.
 
 Both values range from `0` to `255`. Existing stronger Speed or Jump Boost
-effects are preserved, and the simulated level raises the local calculation to
-at least the configured level. Other movement modifiers are still included
-before the simulated potion calculation.
+effects are preserved when the override is disabled. Other movement modifiers
+are still included before the simulated potion calculation.
 
 ## Requirements
 
@@ -104,7 +113,7 @@ Menu to run.
 
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
-3. Download `bettermoving-1.8.0.jar` from the
+3. Download `bettermoving-1.8.1.jar` from the
    [Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases)
    page and place it in the `mods` folder.
 4. Optionally install Mod Menu for an in-game configuration button.
@@ -124,6 +133,7 @@ and unbound by default:
 - `Ignore sprint hunger`
 - `Ignore slippery blocks`
 - `Simulate potion effects`
+- `Override existing potion effects`
 
 `Simulated speed potion level` and `Simulated jump boost level` default to `0`
 and have no hotkeys. They are applied only while `Simulate potion effects` is

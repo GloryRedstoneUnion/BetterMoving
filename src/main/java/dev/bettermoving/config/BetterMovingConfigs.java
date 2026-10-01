@@ -66,6 +66,14 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("simulatePotionEffects"),
                     prettyName("simulatePotionEffects"));
 
+    public static final ConfigBooleanHotkeyed OVERRIDE_POTION_EFFECTS =
+            new ConfigBooleanHotkeyed(
+                    "overridePotionEffects",
+                    false,
+                    "",
+                    comment("overridePotionEffects"),
+                    prettyName("overridePotionEffects"));
+
     public static final ConfigInteger SIMULATED_SPEED_POTION_LEVEL =
             new ConfigInteger(
                     "simulatedSpeedPotionLevel",
@@ -98,6 +106,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_POTION_EFFECTS,
+            OVERRIDE_POTION_EFFECTS,
             SIMULATED_SPEED_POTION_LEVEL,
             SIMULATED_JUMP_BOOST_LEVEL);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
@@ -107,6 +116,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_POTION_EFFECTS,
+            OVERRIDE_POTION_EFFECTS,
             OPEN_CONFIG_GUI);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
@@ -115,6 +125,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_POTION_EFFECTS,
+            OVERRIDE_POTION_EFFECTS,
             SIMULATED_SPEED_POTION_LEVEL,
             SIMULATED_JUMP_BOOST_LEVEL,
             OPEN_CONFIG_GUI);
@@ -144,6 +155,10 @@ public final class BetterMovingConfigs implements IConfigHandler {
 
     public static boolean simulatePotionEffects() {
         return SIMULATE_POTION_EFFECTS.getBooleanValue();
+    }
+
+    public static boolean overridePotionEffects() {
+        return OVERRIDE_POTION_EFFECTS.getBooleanValue();
     }
 
     @Override

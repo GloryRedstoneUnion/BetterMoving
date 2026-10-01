@@ -11,12 +11,15 @@ public final class PotionEffectPolicy {
             float movementSpeed,
             int actualLevel,
             int simulatedLevel,
-            boolean enabled) {
+            boolean enabled,
+            boolean overrideExistingEffect) {
         if (!enabled) {
             return movementSpeed;
         }
 
-        int effectiveLevel = Math.max(actualLevel, simulatedLevel);
+        int effectiveLevel = overrideExistingEffect
+                ? simulatedLevel
+                : Math.max(actualLevel, simulatedLevel);
         if (effectiveLevel == actualLevel) {
             return movementSpeed;
         }
@@ -30,16 +33,15 @@ public final class PotionEffectPolicy {
             float jumpBoostModifier,
             int actualLevel,
             int simulatedLevel,
-            boolean enabled) {
-        int additionalLevels = getAdditionalLevels(actualLevel, simulatedLevel, enabled);
-        return jumpBoostModifier + JUMP_BOOST_PER_LEVEL * additionalLevels;
-    }
-
-    private static int getAdditionalLevels(int actualLevel, int simulatedLevel, boolean enabled) {
+            boolean enabled,
+            boolean overrideExistingEffect) {
         if (!enabled) {
-            return 0;
+            return jumpBoostModifier;
         }
 
-        return Math.max(0, simulatedLevel - actualLevel);
+        int effectiveLevel = overrideExistingEffect
+                ? simulatedLevel
+                : Math.max(actualLevel, simulatedLevel);
+        return jumpBoostModifier + JUMP_BOOST_PER_LEVEL * (effectiveLevel - actualLevel);
     }
 }

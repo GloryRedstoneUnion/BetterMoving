@@ -27,6 +27,7 @@ public abstract class PlayerEntityPotionEffectsMixin {
                 movementSpeed,
                 actualLevel,
                 BetterMovingConfigs.SIMULATED_SPEED_POTION_LEVEL.getIntegerValue(),
-                BetterMovingConfigs.simulatePotionEffects());
+                BetterMovingConfigs.simulatePotionEffects(),
+                BetterMovingConfigs.overridePotionEffects());
     }
 }
