@@ -12,7 +12,8 @@ This release replaces final-velocity scaling with client-side simulation of
 vanilla potion movement effects. `Simulated speed potion level` uses the same
 horizontal movement calculation as Speed, while `Simulated jump boost level`
 uses the same jump calculation as Jump Boost. Both are controlled by the
-toggleable `Simulate potion effects` option.
+toggleable `Simulate potion effects` option. Existing stronger effects and
+other movement modifiers remain part of the calculation.
 
 ## Features
 
@@ -76,7 +77,8 @@ effect, potion particles, HUD icons, or server-side effects.
 
 - `Simulated speed potion level` controls horizontal acceleration using the
   vanilla Speed formula. Level `0` adds no effect, level `1` matches Speed I,
-  and each level applies another 20% total movement-speed multiplier.
+  and level `n` applies the vanilla `1 + 0.2 * n` total movement-speed
+  multiplier.
 - `Simulated jump boost level` controls jump velocity using the vanilla Jump
   Boost formula. Level `0` adds no effect, level `1` matches Jump Boost I,
   and each additional level adds another `0.1` to jump velocity.
