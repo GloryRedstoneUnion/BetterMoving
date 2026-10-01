@@ -49,6 +49,14 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("ignoreSprintHunger"),
                     prettyName("ignoreSprintHunger"));
 
+    public static final ConfigBooleanHotkeyed IGNORE_SLIPPERY_BLOCKS =
+            new ConfigBooleanHotkeyed(
+                    "ignoreSlipperyBlocks",
+                    false,
+                    "",
+                    comment("ignoreSlipperyBlocks"),
+                    prettyName("ignoreSlipperyBlocks"));
+
     public static final ConfigHotkey OPEN_CONFIG_GUI =
             new ConfigHotkey(
                     "openConfigGui",
@@ -60,18 +68,21 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_FLUID_PHYSICS,
             MODEL,
             VIRTUAL_PLATFORM,
-            IGNORE_SPRINT_HUNGER);
+            IGNORE_SPRINT_HUNGER,
+            IGNORE_SLIPPERY_BLOCKS);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
             VIRTUAL_PLATFORM,
             IGNORE_SPRINT_HUNGER,
+            IGNORE_SLIPPERY_BLOCKS,
             OPEN_CONFIG_GUI);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
             MODEL,
             VIRTUAL_PLATFORM,
             IGNORE_SPRINT_HUNGER,
+            IGNORE_SLIPPERY_BLOCKS,
             OPEN_CONFIG_GUI);
 
     public static final BetterMovingConfigs INSTANCE = new BetterMovingConfigs();

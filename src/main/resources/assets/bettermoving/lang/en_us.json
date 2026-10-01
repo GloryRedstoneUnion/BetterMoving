@@ -11,6 +11,8 @@
   "bettermoving.config.comment.virtualPlatform": "Create an invisible movement-only floor at your exact feet height when enabled. Walk, sprint, sneak, and jump on it like ordinary ground. Toggle off and on to capture a new height. A new player or dimension captures a fresh height. No world blocks or interaction targets are created; only client movement collision is changed.",
   "bettermoving.config.name.ignoreSprintHunger": "Ignore sprint hunger",
   "bettermoving.config.comment.ignoreSprintHunger": "Allow normal client-side sprinting at food level 6 or below by treating the food check inside canSprint as full hunger. Actual food, saturation, movement speed, and other sprint requirements stay unchanged. Only affects the local client player.",
+  "bettermoving.config.name.ignoreSlipperyBlocks": "Ignore slippery blocks",
+  "bettermoving.config.comment.ignoreSlipperyBlocks": "Treat ice and other blocks with above-normal slipperiness as ordinary blocks during local-player movement. Block states, rendering, interactions, and other entities remain unchanged.",
   "bettermoving.config.name.openConfigGui": "Open configuration screen",
   "bettermoving.config.comment.openConfigGui": "Opens the BetterMoving configuration screen."
 }

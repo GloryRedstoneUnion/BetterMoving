@@ -1,8 +1,9 @@
 # BetterMoving
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It adds
-configurable fluid movement, an invisible movement-only platform, and an
-optional client-side sprint hunger override. The configuration is provided by
+configurable fluid movement, an invisible movement-only platform, an optional
+client-side sprint hunger override, and normal-friction movement on slippery
+blocks. The configuration is provided by
 [MaLiLib](https://github.com/maruohon/malilib).
 
 ## Features
@@ -51,6 +52,13 @@ Actual food, saturation, movement speed, velocity, and all other vanilla sprint
 requirements remain unchanged. Forward input, blindness, item use, collision,
 and pose restrictions still apply.
 
+### Slippery blocks
+
+`Ignore slippery blocks` treats ice and other blocks with above-normal
+slipperiness as ordinary blocks during local-player movement. It changes only
+the slipperiness value read by the client's movement calculation; block states,
+rendering, interactions, and other entities remain unchanged.
+
 ## Requirements
 
 - Minecraft 1.20.1
@@ -85,6 +93,7 @@ unbound by default:
 - `Ignore fluid physics`
 - `Virtual platform`
 - `Ignore sprint hunger`
+- `Ignore slippery blocks`
 
 Assign toggle hotkeys directly in the configuration screen. `Movement model`
 defaults to `Air rules` and is used only while `Ignore fluid physics` is
@@ -117,7 +126,8 @@ run with:
   -PbettermovingCompatTest \
   -PbettermovingPlatformCompatTest \
   -PbettermovingMovementCompatTest \
-  -PbettermovingSprintCompatTest
+  -PbettermovingSprintCompatTest \
+  -PbettermovingSlipperinessCompatTest
 ```
 
 Add `-PbettermovingModMenuTest` to include the optional Mod Menu integration.

@@ -8,6 +8,7 @@
     "ClientPlayerSprintMixin",
     "EntityFluidPhysicsMixin",
     "EntityVirtualPlatformMixin",
+    "LivingEntitySlipperinessMixin",
     "PlayerEntityMovementMixin",
     "PlayerEntityVirtualPlatformMixin",
     "TridentItemMovementMixin"

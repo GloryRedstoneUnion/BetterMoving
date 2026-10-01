@@ -74,6 +74,9 @@ public final class MovementCompatProbe {
             if (Boolean.getBoolean("bettermoving.sprintCompatTest")) {
                 SprintHungerCompatProbe.verify(client);
             }
+            if (Boolean.getBoolean("bettermoving.slipperinessCompatTest")) {
+                SlipperinessCompatProbe.verify(client);
+            }
             if (Boolean.getBoolean("bettermoving.platformCompatTest")) {
                 VirtualPlatformCompatProbe.verify(client);
             }
