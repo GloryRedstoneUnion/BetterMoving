@@ -2,7 +2,12 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
-current version is **1.9.1**.
+current release is **1.9.1**.
+
+Version 1.9.1 adds a configurable Dolphin's Grace level to `Simulate potion
+effects`. Positive levels apply the vanilla water-movement behavior to the
+local player without creating a real status effect or changing the server's
+state.
 
 BetterMoving does not need to be installed on a server. Server-side movement
 validation still applies, so a server can correct movement that it considers
@@ -51,8 +56,8 @@ rendering, interactions, and other entities are unchanged.
 ### Simulated potion effects
 
 Enable `Simulate potion effects` to apply configured Speed, Jump Boost, and
-Dolphin's Grace levels to local-player movement calculations without adding real status effects,
-particles, HUD icons, or server-side effects.
+Dolphin's Grace levels to local-player movement calculations without adding
+real status effects, particles, HUD icons, or server-side effects.
 
 - `Simulated speed potion level` uses the vanilla Speed formula. Level `0` has
   no effect; level `n` applies a `1 + 0.2 * n` movement-speed multiplier.
