@@ -31,7 +31,7 @@ loom {
     runs {
         client {
             client()
-            name 'Fluid Air Client'
+            name 'BetterMoving Client'
         }
     }
 }
@@ -43,10 +43,10 @@ sourceSets {
     }
 }
 
-if (project.hasProperty('fluidairCompatTest')) {
+if (project.hasProperty('bettermovingCompatTest')) {
     loom {
         mods {
-            fluidairCompatTest {
+            bettermovingCompatTest {
                 sourceSet sourceSets.compatTest
             }
         }
@@ -54,8 +54,8 @@ if (project.hasProperty('fluidairCompatTest')) {
     tasks.named('runClient').configure {
         dependsOn tasks.named('compatTestClasses')
         classpath sourceSets.compatTest.output
-        if (project.hasProperty('fluidairMovementCompatTest')) {
-            jvmArgs '-Dfluidair.movementCompatTest=true'
+        if (project.hasProperty('bettermovingMovementCompatTest')) {
+            jvmArgs '-Dbettermoving.movementCompatTest=true'
         }
     }
 }
@@ -68,7 +68,7 @@ dependencies {
     modImplementation "maven.modrinth:malilib:${project.malilib_version}"
     modCompileOnly "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
-    if (project.hasProperty('fluidairModMenuTest')) {
+    if (project.hasProperty('bettermovingModMenuTest')) {
         modRuntimeOnly "com.terraformersmc:modmenu:${project.mod_menu_version}"
     }
 

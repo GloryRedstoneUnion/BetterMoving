@@ -6,7 +6,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "dev.fluidair.test.CompatTestClient"
+      "dev.bettermoving.test.CompatTestClient"
     ]
   },
   "mixins": [

@@ -1,24 +1,24 @@
 {
   "schemaVersion": 1,
-  "id": "fluidair",
+  "id": "bettermoving",
   "version": "${version}",
-  "name": "Fluid Air",
+  "name": "BetterMoving",
   "description": "Applies configurable air or water rules to all local-player fluid movement while preserving non-movement fluid effects.",
   "authors": [
-    "Fluid Air contributors"
+    "BetterMoving contributors"
   ],
   "license": "MIT",
   "environment": "client",
   "entrypoints": {
     "client": [
-      "dev.fluidair.FluidAirClient"
+      "dev.bettermoving.BetterMovingClient"
     ],
     "modmenu": [
-      "dev.fluidair.modmenu.FluidAirModMenuIntegration"
+      "dev.bettermoving.modmenu.BetterMovingModMenuIntegration"
     ]
   },
   "mixins": [
-    "fluidair.mixins.json"
+    "bettermoving.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.15.11",

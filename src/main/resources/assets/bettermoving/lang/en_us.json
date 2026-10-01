@@ -1,0 +1,12 @@
+{
+  "bettermoving.gui.title": "BetterMoving Configuration",
+  "bettermoving.hotkeys.category": "BetterMoving",
+  "bettermoving.config.name.ignoreFluidPhysics": "Ignore fluid physics",
+  "bettermoving.config.comment.ignoreFluidPhysics": "Override all local-player fluid movement using the selected Movement model. Non-movement fluid effects remain unchanged. This changes client-side movement prediction only.",
+  "bettermoving.config.name.model": "Movement model",
+  "bettermoving.config.comment.model": "Air rules treat water, lava, and bubble columns as air. Water rules treat them as ordinary water, including swimming in lava while suppressing bubble-column lift and drag. This option only applies while Ignore fluid physics is enabled.",
+  "bettermoving.config.value.model.air": "Air rules",
+  "bettermoving.config.value.model.water": "Water rules",
+  "bettermoving.config.name.openConfigGui": "Open configuration screen",
+  "bettermoving.config.comment.openConfigGui": "Opens the BetterMoving configuration screen."
+}
