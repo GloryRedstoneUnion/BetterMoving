@@ -10,6 +10,7 @@ public final class CompatTestClient implements ClientModInitializer {
     private int ticks;
     private boolean modMenuVerified;
     private final MovementCompatProbe movementProbe = Boolean.getBoolean("bettermoving.movementCompatTest")
+                    || Boolean.getBoolean("bettermoving.platformCompatTest")
             ? new MovementCompatProbe()
             : null;
 

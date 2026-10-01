@@ -7,6 +7,8 @@
   "bettermoving.config.comment.model": "空气规则将水、熔岩和气泡柱视为空气。水规则将它们视为普通水，包括在熔岩中游泳，同时消除气泡柱的升降作用。此选项仅在“忽略流体物理”开启时生效。",
   "bettermoving.config.value.model.air": "空气规则",
   "bettermoving.config.value.model.water": "水规则",
+  "bettermoving.config.name.virtualPlatform": "虚拟平台",
+  "bettermoving.config.comment.virtualPlatform": "开启时记录脚底的精确高度，建立不可见的移动平台，可以像普通地面一样行走、疾跑、潜行和跳跃。关闭后重新开启可记录新高度；重生或切换维度时重新记录。不创建真实方块或交互目标，仅改变客户端移动碰撞。",
   "bettermoving.config.name.openConfigGui": "打开配置界面",
   "bettermoving.config.comment.openConfigGui": "打开 BetterMoving 的 malilib 配置界面。"
 }

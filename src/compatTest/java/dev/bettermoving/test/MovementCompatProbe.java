@@ -2,6 +2,7 @@ package dev.bettermoving.test;
 
 import dev.bettermoving.config.BetterMovingConfigs;
 import dev.bettermoving.config.FluidMovementModel;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -70,9 +71,17 @@ public final class MovementCompatProbe {
             if (client.player.age < 5) {
                 return;
             }
-            verifyDirectLavaMovement(client);
-            verifySwimmingInputMatchesWater(client);
-            verifyScopedAirState(client);
+            if (Boolean.getBoolean("bettermoving.platformCompatTest")) {
+                VirtualPlatformCompatProbe.verify(client);
+            }
+            if (Boolean.getBoolean("bettermoving.movementCompatTest")) {
+                verifyDirectLavaMovement(client);
+                verifySwimmingInputMatchesWater(client);
+                verifyScopedAirState(client);
+            }
+            if (FabricLoader.getInstance().isModLoaded("modmenu")) {
+                ModMenuCompatProbe.openConfigScreen(client);
+            }
             this.state = State.COMPLETE;
             client.scheduleStop();
         }

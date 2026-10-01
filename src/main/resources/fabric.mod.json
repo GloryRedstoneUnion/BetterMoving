@@ -3,7 +3,7 @@
   "id": "bettermoving",
   "version": "${version}",
   "name": "BetterMoving",
-  "description": "Applies configurable air or water rules to all local-player fluid movement while preserving non-movement fluid effects.",
+  "description": "Configurable client-side fluid movement and an invisible movement-only platform at a fixed feet height.",
   "authors": [
     "BetterMoving contributors"
   ],

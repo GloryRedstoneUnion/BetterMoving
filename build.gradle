@@ -57,6 +57,9 @@ if (project.hasProperty('bettermovingCompatTest')) {
         if (project.hasProperty('bettermovingMovementCompatTest')) {
             jvmArgs '-Dbettermoving.movementCompatTest=true'
         }
+        if (project.hasProperty('bettermovingPlatformCompatTest')) {
+            jvmArgs '-Dbettermoving.platformCompatTest=true'
+        }
     }
 }
 

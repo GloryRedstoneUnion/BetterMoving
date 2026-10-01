@@ -3,6 +3,7 @@ package dev.bettermoving.config;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.bettermoving.BetterMovingClient;
+import dev.bettermoving.physics.VirtualPlatform;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.IConfigBase;
@@ -32,6 +33,14 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("model"),
                     prettyName("model"));
 
+    public static final ConfigBooleanHotkeyed VIRTUAL_PLATFORM =
+            new ConfigBooleanHotkeyed(
+                    "virtualPlatform",
+                    false,
+                    "",
+                    comment("virtualPlatform"),
+                    prettyName("virtualPlatform"));
+
     public static final ConfigHotkey OPEN_CONFIG_GUI =
             new ConfigHotkey(
                     "openConfigGui",
@@ -41,14 +50,17 @@ public final class BetterMovingConfigs implements IConfigHandler {
 
     public static final List<IConfigBase> OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
-            MODEL);
+            MODEL,
+            VIRTUAL_PLATFORM);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
+            VIRTUAL_PLATFORM,
             OPEN_CONFIG_GUI);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
             MODEL,
+            VIRTUAL_PLATFORM,
             OPEN_CONFIG_GUI);
 
     public static final BetterMovingConfigs INSTANCE = new BetterMovingConfigs();
@@ -62,6 +74,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
     }
 
     public static void register() {
+        VIRTUAL_PLATFORM.setValueChangeCallback(config -> VirtualPlatform.onOptionChanged());
         ConfigManager.getInstance().registerConfigHandler(BetterMovingClient.MOD_ID, INSTANCE);
     }
 

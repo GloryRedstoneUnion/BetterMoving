@@ -1,8 +1,10 @@
 package dev.bettermoving;
 
 import dev.bettermoving.config.BetterMovingInitializationHandler;
+import dev.bettermoving.physics.VirtualPlatform;
 import fi.dy.masa.malilib.event.InitializationHandler;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +14,7 @@ public final class BetterMovingClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ClientTickEvents.START_CLIENT_TICK.register(VirtualPlatform::tick);
         InitializationHandler.getInstance()
                 .registerInitializationHandler(BetterMovingInitializationHandler.INSTANCE);
         LOGGER.info("BetterMoving initialized");
