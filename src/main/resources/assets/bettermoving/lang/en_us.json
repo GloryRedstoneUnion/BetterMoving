@@ -15,6 +15,11 @@
   "bettermoving.config.comment.ignoreSlipperyBlocks": "Treat ice and other blocks with above-normal slipperiness as ordinary blocks during local-player movement. Block states, rendering, interactions, and other entities remain unchanged.",
   "bettermoving.config.name.movementSpeedBoost": "Movement speed boost",
   "bettermoving.config.comment.movementSpeedBoost": "Multiply the local player's final movement velocity by 1 + this value after vanilla and other movement calculations. 0 disables the boost; 0.1 adds 10% and 1 adds 100%. The value can be greater than 1.",
+  "bettermoving.config.name.movementSpeedBoostMode": "Movement speed boost mode",
+  "bettermoving.config.comment.movementSpeedBoostMode": "Choose which final velocity axes receive Movement speed boost. Horizontal (X/Z) is the default, Vertical (Y) affects only vertical velocity, and All axes (X/Y/Z) affects the complete velocity vector.",
+  "bettermoving.config.value.movementSpeedBoostMode.horizontal": "Horizontal (X/Z)",
+  "bettermoving.config.value.movementSpeedBoostMode.vertical": "Vertical (Y)",
+  "bettermoving.config.value.movementSpeedBoostMode.allAxes": "All axes (X/Y/Z)",
   "bettermoving.config.name.openConfigGui": "Open configuration screen",
   "bettermoving.config.comment.openConfigGui": "Opens the BetterMoving configuration screen."
 }

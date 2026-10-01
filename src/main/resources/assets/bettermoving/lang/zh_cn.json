@@ -15,6 +15,11 @@
   "bettermoving.config.comment.ignoreSlipperyBlocks": "在本地玩家移动时，将冰和其他高于普通值的滑溜方块按普通方块处理。方块状态、渲染、交互和其他实体保持不变。",
   "bettermoving.config.name.movementSpeedBoost": "移动速度增幅",
   "bettermoving.config.comment.movementSpeedBoost": "在原版和其他移动计算全部完成后，将本地玩家的最终移动速度乘以 1 加上此数值。0 表示关闭，0.1 增加 10%，1 增加 100%；数值可以大于 1。",
+  "bettermoving.config.name.movementSpeedBoostMode": "移动速度增幅模式",
+  "bettermoving.config.comment.movementSpeedBoostMode": "选择移动速度增幅作用的最终速度轴。默认仅加速水平 X/Z 轴；垂直 Y 轴仅加速上下速度；全轴 X/Y/Z 加速完整速度向量。",
+  "bettermoving.config.value.movementSpeedBoostMode.horizontal": "水平（X/Z）",
+  "bettermoving.config.value.movementSpeedBoostMode.vertical": "垂直（Y）",
+  "bettermoving.config.value.movementSpeedBoostMode.allAxes": "全轴（X/Y/Z）",
   "bettermoving.config.name.openConfigGui": "打开配置界面",
   "bettermoving.config.comment.openConfigGui": "打开 BetterMoving 的 malilib 配置界面。"
 }

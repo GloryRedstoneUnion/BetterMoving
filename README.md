@@ -6,11 +6,13 @@ client-side sprint hunger override, and normal-friction movement on slippery
 blocks, plus a final movement speed boost. The configuration is provided by
 [MaLiLib](https://github.com/maruohon/malilib).
 
-## 1.7.0 release
+## 1.7.1 release
 
 This release adds `Movement speed boost`, a client-side floating-point value
 that scales the local player's final movement velocity after vanilla and other
-movement calculations. It also includes the existing fluid movement, virtual
+movement calculations. Its `Movement speed boost mode` setting selects
+horizontal X/Z acceleration (the default), vertical Y acceleration, or all-axis
+X/Y/Z acceleration. It also includes the existing fluid movement, virtual
 platform, sprint hunger, and slippery-block controls.
 
 ## Features
@@ -73,6 +75,11 @@ player's final movement velocity by `1 + value` after vanilla movement,
 status effects, and other movement modifications have completed. `0` leaves
 movement unchanged, `0.1` adds 10%, and `1` adds 100%. Values greater than `1`
 are allowed. The boost is client-side and applies to the final velocity vector.
+`Movement speed boost mode` controls which axes are scaled:
+
+- `Horizontal (X/Z)` scales only horizontal movement and is the default.
+- `Vertical (Y)` scales only vertical movement.
+- `All axes (X/Y/Z)` scales the complete velocity vector.
 
 ## Requirements
 
@@ -90,7 +97,7 @@ Menu to run.
 
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
-3. Download `bettermoving-1.7.0.jar` from the
+3. Download `bettermoving-1.7.1.jar` from the
    [Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases)
    page and place it in the `mods` folder.
 4. Optionally install Mod Menu for an in-game configuration button.

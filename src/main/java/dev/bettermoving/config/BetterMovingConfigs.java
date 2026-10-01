@@ -67,6 +67,13 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     false,
                     comment("movementSpeedBoost"));
 
+    public static final ConfigOptionList MOVEMENT_SPEED_BOOST_MODE =
+            new ConfigOptionList(
+                    "movementSpeedBoostMode",
+                    MovementSpeedBoostMode.HORIZONTAL,
+                    comment("movementSpeedBoostMode"),
+                    prettyName("movementSpeedBoostMode"));
+
     public static final ConfigHotkey OPEN_CONFIG_GUI =
             new ConfigHotkey(
                     "openConfigGui",
@@ -80,7 +87,8 @@ public final class BetterMovingConfigs implements IConfigHandler {
             VIRTUAL_PLATFORM,
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
-            MOVEMENT_SPEED_BOOST);
+            MOVEMENT_SPEED_BOOST,
+            MOVEMENT_SPEED_BOOST_MODE);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
@@ -95,6 +103,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
             MOVEMENT_SPEED_BOOST,
+            MOVEMENT_SPEED_BOOST_MODE,
             OPEN_CONFIG_GUI);
 
     public static final BetterMovingConfigs INSTANCE = new BetterMovingConfigs();
@@ -118,6 +127,10 @@ public final class BetterMovingConfigs implements IConfigHandler {
 
     public static FluidMovementModel movementModel() {
         return (FluidMovementModel) MODEL.getOptionListValue();
+    }
+
+    public static MovementSpeedBoostMode movementSpeedBoostMode() {
+        return (MovementSpeedBoostMode) MOVEMENT_SPEED_BOOST_MODE.getOptionListValue();
     }
 
     @Override

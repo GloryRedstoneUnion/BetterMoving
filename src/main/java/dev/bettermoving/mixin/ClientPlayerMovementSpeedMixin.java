@@ -15,6 +15,7 @@ public abstract class ClientPlayerMovementSpeedMixin {
         ClientPlayerEntity player = (ClientPlayerEntity) (Object) this;
         player.setVelocity(MovementSpeedPolicy.apply(
                 player.getVelocity(),
-                BetterMovingConfigs.MOVEMENT_SPEED_BOOST.getDoubleValue()));
+                BetterMovingConfigs.MOVEMENT_SPEED_BOOST.getDoubleValue(),
+                BetterMovingConfigs.movementSpeedBoostMode()));
     }
 }
