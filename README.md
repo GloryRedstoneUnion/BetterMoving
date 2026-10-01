@@ -118,7 +118,9 @@ and unbound by default:
 - `Ignore slippery blocks`
 
 `Movement speed boost` defaults to `0` and has no hotkey. It accepts values
-greater than `1`.
+greater than `1`. `Movement speed boost mode` defaults to `Horizontal (X/Z)`
+and also has no hotkey; it controls which final velocity axes receive the
+configured boost.
 
 Assign toggle hotkeys directly in the configuration screen. `Movement model`
 defaults to `Air rules` and is used only while `Ignore fluid physics` is
@@ -161,7 +163,8 @@ The suite checks fluid modes, virtual-platform collision behavior, sprint
 movement, food levels 0 through 20, hotkey/config persistence, and vanilla
 sprint restrictions, as well as normal-friction movement on slippery blocks.
 The movement-speed compatibility probe also checks the floating-point option,
-configuration persistence, and final velocity scaling.
+mode defaults and persistence, all three axis selections, and final velocity
+scaling.
 
 ## License
 
