@@ -66,8 +66,8 @@ if (project.hasProperty('bettermovingCompatTest')) {
         if (project.hasProperty('bettermovingSlipperinessCompatTest')) {
             jvmArgs '-Dbettermoving.slipperinessCompatTest=true'
         }
-        if (project.hasProperty('bettermovingMovementSpeedCompatTest')) {
-            jvmArgs '-Dbettermoving.movementSpeedCompatTest=true'
+        if (project.hasProperty('bettermovingPotionEffectsCompatTest')) {
+            jvmArgs '-Dbettermoving.potionEffectsCompatTest=true'
         }
     }
 }

@@ -9,8 +9,8 @@ import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigHandler;
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed;
-import fi.dy.masa.malilib.config.options.ConfigDouble;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
+import fi.dy.masa.malilib.config.options.ConfigInteger;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.util.FileUtils;
@@ -58,21 +58,31 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("ignoreSlipperyBlocks"),
                     prettyName("ignoreSlipperyBlocks"));
 
-    public static final ConfigDouble MOVEMENT_SPEED_BOOST =
-            new ConfigDouble(
-                    "movementSpeedBoost",
-                    0.0,
-                    0.0,
-                    Double.MAX_VALUE,
+    public static final ConfigBooleanHotkeyed SIMULATE_POTION_EFFECTS =
+            new ConfigBooleanHotkeyed(
+                    "simulatePotionEffects",
                     false,
-                    comment("movementSpeedBoost"));
+                    "",
+                    comment("simulatePotionEffects"),
+                    prettyName("simulatePotionEffects"));
 
-    public static final ConfigOptionList MOVEMENT_SPEED_BOOST_MODE =
-            new ConfigOptionList(
-                    "movementSpeedBoostMode",
-                    MovementSpeedBoostMode.HORIZONTAL,
-                    comment("movementSpeedBoostMode"),
-                    prettyName("movementSpeedBoostMode"));
+    public static final ConfigInteger SIMULATED_SPEED_POTION_LEVEL =
+            new ConfigInteger(
+                    "simulatedSpeedPotionLevel",
+                    0,
+                    0,
+                    255,
+                    false,
+                    comment("simulatedSpeedPotionLevel"));
+
+    public static final ConfigInteger SIMULATED_JUMP_BOOST_LEVEL =
+            new ConfigInteger(
+                    "simulatedJumpBoostLevel",
+                    0,
+                    0,
+                    255,
+                    false,
+                    comment("simulatedJumpBoostLevel"));
 
     public static final ConfigHotkey OPEN_CONFIG_GUI =
             new ConfigHotkey(
@@ -87,14 +97,16 @@ public final class BetterMovingConfigs implements IConfigHandler {
             VIRTUAL_PLATFORM,
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
-            MOVEMENT_SPEED_BOOST,
-            MOVEMENT_SPEED_BOOST_MODE);
+            SIMULATE_POTION_EFFECTS,
+            SIMULATED_SPEED_POTION_LEVEL,
+            SIMULATED_JUMP_BOOST_LEVEL);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
             VIRTUAL_PLATFORM,
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
+            SIMULATE_POTION_EFFECTS,
             OPEN_CONFIG_GUI);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
@@ -102,8 +114,9 @@ public final class BetterMovingConfigs implements IConfigHandler {
             VIRTUAL_PLATFORM,
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
-            MOVEMENT_SPEED_BOOST,
-            MOVEMENT_SPEED_BOOST_MODE,
+            SIMULATE_POTION_EFFECTS,
+            SIMULATED_SPEED_POTION_LEVEL,
+            SIMULATED_JUMP_BOOST_LEVEL,
             OPEN_CONFIG_GUI);
 
     public static final BetterMovingConfigs INSTANCE = new BetterMovingConfigs();
@@ -129,8 +142,8 @@ public final class BetterMovingConfigs implements IConfigHandler {
         return (FluidMovementModel) MODEL.getOptionListValue();
     }
 
-    public static MovementSpeedBoostMode movementSpeedBoostMode() {
-        return (MovementSpeedBoostMode) MOVEMENT_SPEED_BOOST_MODE.getOptionListValue();
+    public static boolean simulatePotionEffects() {
+        return SIMULATE_POTION_EFFECTS.getBooleanValue();
     }
 
     @Override

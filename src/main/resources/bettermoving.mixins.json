@@ -5,12 +5,13 @@
   "refmap": "bettermoving-refmap.json",
   "client": [
     "ClientPlayerMovementMixin",
-    "ClientPlayerMovementSpeedMixin",
     "ClientPlayerSprintMixin",
     "EntityFluidPhysicsMixin",
     "EntityVirtualPlatformMixin",
     "LivingEntitySlipperinessMixin",
     "PlayerEntityMovementMixin",
+    "PlayerEntityPotionEffectsMixin",
+    "LivingEntityPotionEffectsMixin",
     "PlayerEntityVirtualPlatformMixin",
     "TridentItemMovementMixin"
   ],

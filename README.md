@@ -2,18 +2,17 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It adds
 configurable fluid movement, an invisible movement-only platform, an optional
-client-side sprint hunger override, and normal-friction movement on slippery
-blocks, plus a final movement speed boost. The configuration is provided by
+client-side sprint hunger override, normal-friction movement on slippery
+blocks, and simulated potion movement effects. The configuration is provided by
 [MaLiLib](https://github.com/maruohon/malilib).
 
-## 1.7.1 release
+## 1.8.0 release
 
-This release adds `Movement speed boost`, a client-side floating-point value
-that scales the local player's final movement velocity after vanilla and other
-movement calculations. Its `Movement speed boost mode` setting selects
-horizontal X/Z acceleration (the default), vertical Y acceleration, or all-axis
-X/Y/Z acceleration. It also includes the existing fluid movement, virtual
-platform, sprint hunger, and slippery-block controls.
+This release replaces final-velocity scaling with client-side simulation of
+vanilla potion movement effects. `Simulated speed potion level` uses the same
+horizontal movement calculation as Speed, while `Simulated jump boost level`
+uses the same jump calculation as Jump Boost. Both are controlled by the
+toggleable `Simulate potion effects` option.
 
 ## Features
 
@@ -68,18 +67,24 @@ slipperiness as ordinary blocks during local-player movement. It changes only
 the slipperiness value read by the client's movement calculation; block states,
 rendering, interactions, and other entities remain unchanged.
 
-### Movement speed boost
+### Simulated potion effects
 
-`Movement speed boost` is a floating-point value that multiplies the local
-player's final movement velocity by `1 + value` after vanilla movement,
-status effects, and other movement modifications have completed. `0` leaves
-movement unchanged, `0.1` adds 10%, and `1` adds 100%. Values greater than `1`
-are allowed. The boost is client-side and applies to the final velocity vector.
-`Movement speed boost mode` controls which axes are scaled:
+Enable `Simulate potion effects` to make local-player movement calculations act
+as though the player has the configured potion effects. The toggle is disabled
+and unbound by default. The effect is client-side and does not add a real status
+effect, potion particles, HUD icons, or server-side effects.
 
-- `Horizontal (X/Z)` scales only horizontal movement and is the default.
-- `Vertical (Y)` scales only vertical movement.
-- `All axes (X/Y/Z)` scales the complete velocity vector.
+- `Simulated speed potion level` controls horizontal acceleration using the
+  vanilla Speed formula. Level `0` adds no effect, level `1` matches Speed I,
+  and each level applies another 20% total movement-speed multiplier.
+- `Simulated jump boost level` controls jump velocity using the vanilla Jump
+  Boost formula. Level `0` adds no effect, level `1` matches Jump Boost I,
+  and each additional level adds another `0.1` to jump velocity.
+
+Both values range from `0` to `255`. Existing stronger Speed or Jump Boost
+effects are preserved, and the simulated level raises the local calculation to
+at least the configured level. Other movement modifiers are still included
+before the simulated potion calculation.
 
 ## Requirements
 
@@ -97,7 +102,7 @@ Menu to run.
 
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
-3. Download `bettermoving-1.7.1.jar` from the
+3. Download `bettermoving-1.8.0.jar` from the
    [Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases)
    page and place it in the `mods` folder.
 4. Optionally install Mod Menu for an in-game configuration button.
@@ -116,11 +121,11 @@ and unbound by default:
 - `Virtual platform`
 - `Ignore sprint hunger`
 - `Ignore slippery blocks`
+- `Simulate potion effects`
 
-`Movement speed boost` defaults to `0` and has no hotkey. It accepts values
-greater than `1`. `Movement speed boost mode` defaults to `Horizontal (X/Z)`
-and also has no hotkey; it controls which final velocity axes receive the
-configured boost.
+`Simulated speed potion level` and `Simulated jump boost level` default to `0`
+and have no hotkeys. They are applied only while `Simulate potion effects` is
+enabled.
 
 Assign toggle hotkeys directly in the configuration screen. `Movement model`
 defaults to `Air rules` and is used only while `Ignore fluid physics` is
@@ -155,16 +160,16 @@ run with:
   -PbettermovingMovementCompatTest \
   -PbettermovingSprintCompatTest \
   -PbettermovingSlipperinessCompatTest \
-  -PbettermovingMovementSpeedCompatTest
+  -PbettermovingPotionEffectsCompatTest
 ```
 
 Add `-PbettermovingModMenuTest` to include the optional Mod Menu integration.
 The suite checks fluid modes, virtual-platform collision behavior, sprint
 movement, food levels 0 through 20, hotkey/config persistence, and vanilla
 sprint restrictions, as well as normal-friction movement on slippery blocks.
-The movement-speed compatibility probe also checks the floating-point option,
-mode defaults and persistence, all three axis selections, and final velocity
-scaling.
+The potion-effects compatibility probe checks the toggle, level defaults and
+persistence, hotkey registration, Speed and Jump Boost formulas, and disabled
+behavior.
 
 ## License
 
