@@ -1,99 +1,130 @@
 # BetterMoving
 
-BetterMoving is a client-side Fabric 1.20.1 mod built on malilib, with configurable
-fluid movement, an invisible virtual platform, and a sprint hunger override.
+BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It adds
+configurable fluid movement, an invisible movement-only platform, and an
+optional client-side sprint hunger override. The configuration is provided by
+[MaLiLib](https://github.com/maruohon/malilib).
 
-When `Ignore fluid physics` is enabled, it
-applies the selected movement model to water, lava, and bubble columns for the
-local player. Non-movement effects such as underwater vision, breathing, and
-lava damage remain unchanged.
+## Features
 
-This includes walking, sprinting, jumping, fall-distance tracking, fluid
-currents and drag, swimming pose transitions, Elytra activation and flight,
-and Riptide eligibility.
+### Fluid movement
 
-Water rules expose a scoped virtual fluid state to the vanilla movement code:
-while the local player is evaluating movement, lava contact, submersion, and
-fluid height are resolved through the same state queries used for water. The
-scope ends when the movement call returns, so lava damage, fire, breathing,
-underwater vision, and other non-movement behavior continue to use the real
-world state.
+Enable `Ignore fluid physics` to replace the local player's fluid movement
+queries with one of two selectable models:
 
-The available movement models are:
+- `Air rules` treats water, lava, and bubble columns as air for movement. The
+  player can walk, sprint, jump, fall, use an Elytra, and move through fluids
+  without fluid drag, swimming slowdown, or bubble-column lift.
+- `Water rules` treats water, lava, and bubble columns as ordinary water for
+  movement. Lava uses the complete water movement path, including swimming
+  pose transitions and sprint-swimming. Bubble-column lift and drag are
+  suppressed.
 
-- `Air rules` treats water, lava, and bubble columns as air. Rain still enables
-  Riptide exactly as it does in vanilla.
-- `Water rules` treats all three as ordinary water. Lava supports the complete
-  water movement path, including sprint-swimming and the swimming pose without
-  the crawling input slowdown, while bubble-column lift and drag are suppressed.
+The model only affects client-side movement prediction. Fluid rendering,
+underwater vision, breathing, fire, lava damage, and other non-movement effects
+continue to use the real world state.
+
+### Virtual platform
+
+`Virtual platform` creates an invisible, movement-only horizontal floor at the
+local player's captured feet height. It behaves like ordinary ground for
+walking, sprinting, sneaking, jumping, and landing.
+
+The platform:
+
+- affects only the local player's movement collision;
+- does not create blocks or change rendering, raycasts, interaction targets, or
+  other entities;
+- preserves real walls, ceilings, and steps; and
+- captures a fresh height after toggling, respawning, reconnecting, or changing
+  dimension.
+
+It is not creative flight and does not enable flight abilities.
+
+### Sprint hunger override
+
+`Ignore sprint hunger` allows the local player to start and maintain normal
+sprinting at food level 6 or below. It changes only the food-level expression
+inside `ClientPlayerEntity.canSprint()`.
+
+Actual food, saturation, movement speed, velocity, and all other vanilla sprint
+requirements remain unchanged. Forward input, blindness, item use, collision,
+and pose restrictions still apply.
 
 ## Requirements
 
 - Minecraft 1.20.1
 - Fabric Loader 0.15.11 or newer
 - Fabric API 0.92.2 or newer for Minecraft 1.20.1
-- malilib 0.16.x
+- MaLiLib 0.16.x
 - Java 17 or newer
 
-## Usage
+Mod Menu is optional. When installed, its BetterMoving configuration button
+opens the same MaLiLib configuration screen. BetterMoving does not require Mod
+Menu to run.
 
-Press `L`, then `C` to open the malilib configuration screen. The
-`Ignore fluid physics` option is disabled by default. Its toggle hotkey is
-unbound by default and can be assigned directly in the configuration screen.
-The `Movement model` option defaults to `Air rules` and only changes behavior
-while `Ignore fluid physics` is enabled.
+## Installation
 
-`Virtual platform` is an independent toggle, disabled and unbound by default.
-Enabling it captures the exact Y coordinate at the bottom of the player's
-bounding box and creates a horizontal, one-block-thick collision layer with
-its top at that height. The layer supports normal walking, sprinting, sneaking,
-jumping, and landing. Its height stays fixed while moving or jumping; toggle
-it off and on to capture a different height. Turning it off restores ordinary
-falling. If enabled before joining a world, it captures the height once the
-player becomes available. Respawning, reconnecting, or changing dimension
-captures a fresh height for the new player or world.
+1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
+2. Install MaLiLib 0.16.x.
+3. Download `bettermoving-1.5.0.jar` from the
+   [Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases)
+   page and place it in the `mods` folder.
+4. Optionally install Mod Menu for an in-game configuration button.
 
-The platform affects only the local player's movement collisions and ledge
-checks. It creates no world blocks, rendering, raycast targets, or block
-interaction changes, and does not affect other entities or the server. Real
-walls, ceilings, and steps still participate in collision. It does not enable
-flight. The fluid movement option and model continue to work independently.
+BetterMoving is a client-only mod. It does not need to be installed on a
+server, although a server or anti-cheat may correct movement that it considers
+invalid.
 
-`Ignore sprint hunger` is another independent toggle, disabled and unbound by
-default. It lets the local client player start and continue sprinting at food
-level 6 or below. Only the food-level query inside `ClientPlayerEntity.canSprint`
-is evaluated as full hunger. Actual food and saturation remain unchanged, and
-vanilla controls sprint movement and speed. Other sprint requirements, such as
-forward input, blindness, item use, and collision checks, still apply. Turning
-it off immediately restores the normal hunger requirement on the next movement
-tick. Assign its toggle hotkey in the same MaLiLib configuration screen.
+## Configuration
 
-When the optional Mod Menu mod is installed, its configuration button opens
-the same MaLiLib configuration screen. BetterMoving works normally when Mod Menu
-is not installed.
+Open the MaLiLib configuration screen with `L`, then `C`, or use the
+`Open configuration screen` hotkey. The following options are disabled and
+unbound by default:
 
-BetterMoving replaces Fluid Air and uses the `bettermoving` mod ID. When
-upgrading, replace the old jar with `bettermoving-1.5.0.jar`. Configuration is
-stored in `config/bettermoving.json`. If that file does not exist, BetterMoving
-imports the existing `config/fluidair.json`, including movement settings and
-hotkeys, and saves them under the new name.
+- `Ignore fluid physics`
+- `Virtual platform`
+- `Ignore sprint hunger`
 
-This mod only changes client-side movement prediction. Servers still evaluate
-movement and Elytra state using their own fluid state, so a server or
-anti-cheat may reject or correct movement that it considers invalid.
+Assign toggle hotkeys directly in the configuration screen. `Movement model`
+defaults to `Air rules` and is used only while `Ignore fluid physics` is
+enabled.
 
-## Validation
+Configuration is stored in `config/bettermoving.json`. If that file does not
+exist, BetterMoving imports `config/fluidair.json` and saves the migrated
+settings under the new name.
 
-Run `./gradlew build compatTestClasses` for the build and unit tests. The runtime
-probe can be launched with `./gradlew runClient -PbettermovingCompatTest
--PbettermovingPlatformCompatTest -PbettermovingMovementCompatTest` (use
-`gradlew.bat` on Windows). It creates a disposable single-player test world,
-compares 32 ticks of walking, sprinting, sneaking, and sprint-jumping against
-real stone ground, and checks fixed-height capture, disabling, session reset,
-fast diagonal movement, real obstacles, raycast and entity isolation, and
-both fluid movement modes. Add `-PbettermovingModMenuTest` to include Mod Menu.
-Add `-PbettermovingSprintCompatTest` to check every food level from 0 to 20,
-compare low-food sprint movement with vanilla full-food sprinting, verify
-toggle and hotkey persistence, and retain the other vanilla sprint restrictions.
-The test client must have accessibility onboarding completed, a render
-distance of at least 12 chunks, and `pauseOnLostFocus:false` in `options.txt`.
+## Client-side limitations
+
+The mod changes local movement prediction only. The server still evaluates
+the player's real fluid state, hunger, collisions, and Elytra state. On a
+server that validates movement, the server can reject or correct a movement
+that is not allowed by its own rules.
+
+## Development and testing
+
+Build the mod and run unit tests with:
+
+```text
+./gradlew build compatTestClasses
+```
+
+On Windows, use `gradlew.bat`. The disposable client compatibility suite can be
+run with:
+
+```text
+./gradlew runClient \
+  -PbettermovingCompatTest \
+  -PbettermovingPlatformCompatTest \
+  -PbettermovingMovementCompatTest \
+  -PbettermovingSprintCompatTest
+```
+
+Add `-PbettermovingModMenuTest` to include the optional Mod Menu integration.
+The suite checks fluid modes, virtual-platform collision behavior, sprint
+movement, food levels 0 through 20, hotkey/config persistence, and vanilla
+sprint restrictions.
+
+## License
+
+BetterMoving is licensed under the MIT License. See [LICENSE](LICENSE).
