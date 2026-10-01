@@ -1,121 +1,81 @@
 # BetterMoving
 
-BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It adds
-configurable fluid movement, an invisible movement-only platform, an optional
-client-side sprint hunger override, normal-friction movement on slippery
-blocks, and simulated potion movement effects. The configuration is provided by
-[MaLiLib](https://github.com/maruohon/malilib).
+BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
+local movement calculations through a MaLiLib configuration screen. The
+current release is **1.9.0**.
 
-## 1.9.0 release
-
-This release adds the hotkey-capable `Ignore levitation and slowness` toggle.
-When enabled, local-player movement treats Levitation as absent and removes the
-Slowness movement-speed modifier. The real status effects remain present for
-rendering, particles, icons, and non-movement behavior.
-
-## 1.8.1 release
-
-This release replaces final-velocity scaling with client-side simulation of
-vanilla potion movement effects. `Simulated speed potion level` uses the same
-horizontal movement calculation as Speed, while `Simulated jump boost level`
-uses the same jump calculation as Jump Boost. Both are controlled by the
-toggleable `Simulate potion effects` option. Existing stronger effects and
-other movement modifiers remain part of the calculation.
-
-`Override existing potion effects` is an optional hotkey-capable toggle. When
-enabled together with `Simulate potion effects`, the configured simulated
-levels replace the local player's existing Speed and Jump Boost levels. When
-disabled, existing stronger effects are preserved and the simulated levels
-only raise the local calculation when they are higher.
+BetterMoving does not need to be installed on a server. Server-side movement
+validation still applies, so a server can correct movement that it considers
+invalid.
 
 ## Features
 
 ### Fluid movement
 
-Enable `Ignore fluid physics` to replace the local player's fluid movement
-queries with one of two selectable models:
+Enable `Ignore fluid physics` and choose a `Movement model`:
 
 - `Air rules` treats water, lava, and bubble columns as air for movement. The
-  player can walk, sprint, jump, fall, use an Elytra, and move through fluids
-  without fluid drag, swimming slowdown, or bubble-column lift.
-- `Water rules` treats water, lava, and bubble columns as ordinary water for
-  movement. Lava uses the complete water movement path, including swimming
-  pose transitions and sprint-swimming. Bubble-column lift and drag are
-  suppressed.
+  local player can walk, sprint, jump, fall, fly with an Elytra, and move
+  through fluids without fluid drag, swimming slowdown, or bubble-column lift.
+- `Water rules` routes water, lava, and bubble columns through the ordinary
+  water movement path. This includes swimming poses and sprint-swimming in
+  lava while suppressing bubble-column lift and drag.
 
-The model only affects client-side movement prediction. Fluid rendering,
-underwater vision, breathing, fire, lava damage, and other non-movement effects
-continue to use the real world state.
+Only client-side movement prediction is changed. Fluid rendering, breathing,
+fire, damage, underwater vision, and other non-movement effects use the real
+world state.
 
 ### Virtual platform
 
-`Virtual platform` creates an invisible, movement-only horizontal floor at the
-local player's captured feet height. It behaves like ordinary ground for
-walking, sprinting, sneaking, jumping, and landing.
+`Virtual platform` records the local player's feet height and creates an
+invisible movement-only floor at that height. It behaves like ordinary ground
+for walking, sprinting, sneaking, jumping, and landing.
 
-The platform:
-
-- affects only the local player's movement collision;
-- does not create blocks or change rendering, raycasts, interaction targets, or
-  other entities;
-- preserves real walls, ceilings, and steps; and
-- captures a fresh height after toggling, respawning, reconnecting, or changing
-  dimension.
-
-It is not creative flight and does not enable flight abilities.
+The platform does not create blocks, affect rendering, change raycasts or
+interaction targets, or affect other entities. It is not creative flight. A
+new height is captured after toggling the option, respawning, reconnecting, or
+changing dimension.
 
 ### Sprint hunger override
 
-`Ignore sprint hunger` allows the local player to start and maintain normal
-sprinting at food level 6 or below. It changes only the food-level expression
-inside `ClientPlayerEntity.canSprint()`.
-
-Actual food, saturation, movement speed, velocity, and all other vanilla sprint
-requirements remain unchanged. Forward input, blindness, item use, collision,
-and pose restrictions still apply.
+`Ignore sprint hunger` lets the local player start and maintain normal
+sprinting at food level 6 or below. It changes only the food-level check inside
+`ClientPlayerEntity.canSprint()`; all other sprint requirements remain intact.
 
 ### Slippery blocks
 
 `Ignore slippery blocks` treats ice and other blocks with above-normal
-slipperiness as ordinary blocks during local-player movement. It changes only
-the slipperiness value read by the client's movement calculation; block states,
-rendering, interactions, and other entities remain unchanged.
+slipperiness as ordinary blocks during local-player movement. Block states,
+rendering, interactions, and other entities are unchanged.
 
 ### Simulated potion effects
 
-Enable `Simulate potion effects` to make local-player movement calculations act
-as though the player has the configured potion effects. The toggle is disabled
-and unbound by default. The effect is client-side and does not add a real status
-effect, potion particles, HUD icons, or server-side effects.
+Enable `Simulate potion effects` to apply configured Speed and Jump Boost levels
+to local-player movement calculations without adding real status effects,
+particles, HUD icons, or server-side effects.
 
-- `Simulated speed potion level` controls horizontal acceleration using the
-  vanilla Speed formula. Level `0` adds no effect, level `1` matches Speed I,
-  and level `n` applies the vanilla `1 + 0.2 * n` total movement-speed
-  multiplier.
-- `Simulated jump boost level` controls jump velocity using the vanilla Jump
-  Boost formula. Level `0` adds no effect, level `1` matches Jump Boost I,
-  and each additional level adds another `0.1` to jump velocity.
+- `Simulated speed potion level` uses the vanilla Speed formula. Level `0` has
+  no effect; level `n` applies a `1 + 0.2 * n` movement-speed multiplier.
+- `Simulated jump boost level` uses the vanilla Jump Boost formula. Level `0`
+  has no effect; each level adds `0.1` to jump velocity.
 - `Override existing potion effects` replaces the local player's existing
-  Speed and Jump Boost levels with the configured simulated levels while
-  enabled. It is disabled and unbound by default and only applies while
-  `Simulate potion effects` is enabled.
+  Speed and Jump Boost levels with the configured levels while simulation is
+  enabled. When it is disabled, stronger existing effects are preserved.
 
-Both values range from `0` to `255`. Existing stronger Speed or Jump Boost
-effects are preserved when the override is disabled. Other movement modifiers
-are still included before the simulated potion calculation.
+Both level values range from `0` to `255`.
 
 ### Levitation and slowness
 
-`Ignore levitation and slowness` is a shared client-side movement toggle. While
-enabled:
+`Ignore levitation and slowness` is a shared, hotkey-capable movement toggle.
+When enabled for the local player:
 
-- Levitation does not add vertical motion, reset fall distance, or block Elytra
-  activation and flight.
-- Slowness does not reduce the local player's movement speed. Other attribute
-  modifiers continue to apply.
+- Levitation does not add vertical movement or block Elytra activation and
+  flight.
+- Slowness does not reduce movement speed; other attribute modifiers continue
+  to apply.
 
-The status effects themselves are not removed, and their non-movement behavior
-continues to use the real client state.
+The actual status effects remain active for rendering, particles, icons, and
+other non-movement behavior.
 
 ## Requirements
 
@@ -125,28 +85,23 @@ continues to use the real client state.
 - MaLiLib 0.16.x
 - Java 17 or newer
 
-Mod Menu is optional. When installed, its BetterMoving configuration button
-opens the same MaLiLib configuration screen. BetterMoving does not require Mod
-Menu to run.
+Mod Menu is optional. When installed, its BetterMoving button opens the same
+MaLiLib configuration screen. BetterMoving does not require Mod Menu.
 
 ## Installation
 
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
 3. Download `bettermoving-1.9.0.jar` from the
-   [Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases)
+   [GitHub Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases)
    page and place it in the `mods` folder.
 4. Optionally install Mod Menu for an in-game configuration button.
-
-BetterMoving is a client-only mod. It does not need to be installed on a
-server, although a server or anti-cheat may correct movement that it considers
-invalid.
 
 ## Configuration
 
 Open the MaLiLib configuration screen with `L`, then `C`, or use the
-`Open configuration screen` hotkey. The following toggle options are disabled
-and unbound by default:
+`Open configuration screen` hotkey. The following toggles are disabled and
+unbound by default:
 
 - `Ignore fluid physics`
 - `Virtual platform`
@@ -156,24 +111,13 @@ and unbound by default:
 - `Override existing potion effects`
 - `Ignore levitation and slowness`
 
-`Simulated speed potion level` and `Simulated jump boost level` default to `0`
-and have no hotkeys. They are applied only while `Simulate potion effects` is
-enabled.
-
-Assign toggle hotkeys directly in the configuration screen. `Movement model`
-defaults to `Air rules` and is used only while `Ignore fluid physics` is
-enabled.
+`Movement model` defaults to `Air rules` and is used only while `Ignore fluid
+physics` is enabled. The simulated Speed and Jump Boost levels default to `0`
+and do not have hotkeys.
 
 Configuration is stored in `config/bettermoving.json`. If that file does not
 exist, BetterMoving imports `config/fluidair.json` and saves the migrated
 settings under the new name.
-
-## Client-side limitations
-
-The mod changes local movement prediction only. The server still evaluates
-the player's real fluid state, hunger, collisions, and Elytra state. On a
-server that validates movement, the server can reject or correct a movement
-that is not allowed by its own rules.
 
 ## Development and testing
 
@@ -183,14 +127,13 @@ Build the mod and run unit tests with:
 ./gradlew build compatTestClasses
 ```
 
-On Windows, use `gradlew.bat`. The disposable client compatibility suite can be
-run with:
+On Windows, use `gradlew.bat`. Run the complete disposable client suite with:
 
 ```text
 ./gradlew runClient \
   -PbettermovingCompatTest \
-  -PbettermovingPlatformCompatTest \
   -PbettermovingMovementCompatTest \
+  -PbettermovingPlatformCompatTest \
   -PbettermovingSprintCompatTest \
   -PbettermovingSlipperinessCompatTest \
   -PbettermovingPotionEffectsCompatTest
@@ -198,11 +141,8 @@ run with:
 
 Add `-PbettermovingModMenuTest` to include the optional Mod Menu integration.
 The suite checks fluid modes, virtual-platform collision behavior, sprint
-movement, food levels 0 through 20, hotkey/config persistence, and vanilla
-sprint restrictions, as well as normal-friction movement on slippery blocks.
-The potion-effects compatibility probe checks the toggle, level defaults and
-persistence, hotkey registration, Speed and Jump Boost formulas, and disabled
-behavior. It also checks the Levitation and Slowness movement override.
+movement and restrictions, slippery-block friction, potion formulas,
+configuration persistence, and the Levitation and Slowness movement override.
 
 ## License
 
