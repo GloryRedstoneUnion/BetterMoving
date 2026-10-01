@@ -68,4 +68,27 @@ final class PotionEffectPolicyTest {
                 PotionEffectPolicy.applySimulatedJumpBoost(0.2F, 1, 3, false, true),
                 1.0E-6F);
     }
+
+    @Test
+    void ignoringSlownessRemovesOnlyItsTotalMultiplier() {
+        assertEquals(
+                0.1F,
+                PotionEffectPolicy.removeSlowness(0.085F, -0.15, true),
+                1.0E-6F);
+    }
+
+    @Test
+    void disabledSlownessOverridePreservesMovementSpeed() {
+        assertEquals(
+                0.085F,
+                PotionEffectPolicy.removeSlowness(0.085F, -0.15, false),
+                1.0E-6F);
+    }
+
+    @Test
+    void levitationIsIgnoredOnlyForTheLocalEnabledPlayer() {
+        assertEquals(false, PotionEffectPolicy.resolveLevitation(true, true, true));
+        assertEquals(true, PotionEffectPolicy.resolveLevitation(true, false, true));
+        assertEquals(true, PotionEffectPolicy.resolveLevitation(true, true, false));
+    }
 }

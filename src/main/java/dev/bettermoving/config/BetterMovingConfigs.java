@@ -74,6 +74,14 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("overridePotionEffects"),
                     prettyName("overridePotionEffects"));
 
+    public static final ConfigBooleanHotkeyed IGNORE_LEVITATION_AND_SLOWNESS =
+            new ConfigBooleanHotkeyed(
+                    "ignoreLevitationAndSlowness",
+                    false,
+                    "",
+                    comment("ignoreLevitationAndSlowness"),
+                    prettyName("ignoreLevitationAndSlowness"));
+
     public static final ConfigInteger SIMULATED_SPEED_POTION_LEVEL =
             new ConfigInteger(
                     "simulatedSpeedPotionLevel",
@@ -107,6 +115,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_POTION_EFFECTS,
             OVERRIDE_POTION_EFFECTS,
+            IGNORE_LEVITATION_AND_SLOWNESS,
             SIMULATED_SPEED_POTION_LEVEL,
             SIMULATED_JUMP_BOOST_LEVEL);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
@@ -117,6 +126,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_POTION_EFFECTS,
             OVERRIDE_POTION_EFFECTS,
+            IGNORE_LEVITATION_AND_SLOWNESS,
             OPEN_CONFIG_GUI);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
@@ -126,6 +136,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_POTION_EFFECTS,
             OVERRIDE_POTION_EFFECTS,
+            IGNORE_LEVITATION_AND_SLOWNESS,
             SIMULATED_SPEED_POTION_LEVEL,
             SIMULATED_JUMP_BOOST_LEVEL,
             OPEN_CONFIG_GUI);
@@ -159,6 +170,10 @@ public final class BetterMovingConfigs implements IConfigHandler {
 
     public static boolean overridePotionEffects() {
         return OVERRIDE_POTION_EFFECTS.getBooleanValue();
+    }
+
+    public static boolean ignoreLevitationAndSlowness() {
+        return IGNORE_LEVITATION_AND_SLOWNESS.getBooleanValue();
     }
 
     @Override

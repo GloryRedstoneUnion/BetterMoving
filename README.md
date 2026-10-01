@@ -6,6 +6,13 @@ client-side sprint hunger override, normal-friction movement on slippery
 blocks, and simulated potion movement effects. The configuration is provided by
 [MaLiLib](https://github.com/maruohon/malilib).
 
+## 1.9.0 release
+
+This release adds the hotkey-capable `Ignore levitation and slowness` toggle.
+When enabled, local-player movement treats Levitation as absent and removes the
+Slowness movement-speed modifier. The real status effects remain present for
+rendering, particles, icons, and non-movement behavior.
+
 ## 1.8.1 release
 
 This release replaces final-velocity scaling with client-side simulation of
@@ -97,6 +104,19 @@ Both values range from `0` to `255`. Existing stronger Speed or Jump Boost
 effects are preserved when the override is disabled. Other movement modifiers
 are still included before the simulated potion calculation.
 
+### Levitation and slowness
+
+`Ignore levitation and slowness` is a shared client-side movement toggle. While
+enabled:
+
+- Levitation does not add vertical motion, reset fall distance, or block Elytra
+  activation and flight.
+- Slowness does not reduce the local player's movement speed. Other attribute
+  modifiers continue to apply.
+
+The status effects themselves are not removed, and their non-movement behavior
+continues to use the real client state.
+
 ## Requirements
 
 - Minecraft 1.20.1
@@ -113,7 +133,7 @@ Menu to run.
 
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
-3. Download `bettermoving-1.8.1.jar` from the
+3. Download `bettermoving-1.9.0.jar` from the
    [Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases)
    page and place it in the `mods` folder.
 4. Optionally install Mod Menu for an in-game configuration button.
@@ -134,6 +154,7 @@ and unbound by default:
 - `Ignore slippery blocks`
 - `Simulate potion effects`
 - `Override existing potion effects`
+- `Ignore levitation and slowness`
 
 `Simulated speed potion level` and `Simulated jump boost level` default to `0`
 and have no hotkeys. They are applied only while `Simulate potion effects` is
@@ -181,7 +202,7 @@ movement, food levels 0 through 20, hotkey/config persistence, and vanilla
 sprint restrictions, as well as normal-friction movement on slippery blocks.
 The potion-effects compatibility probe checks the toggle, level defaults and
 persistence, hotkey registration, Speed and Jump Boost formulas, and disabled
-behavior.
+behavior. It also checks the Levitation and Slowness movement override.
 
 ## License
 

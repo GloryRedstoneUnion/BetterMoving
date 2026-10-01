@@ -4,13 +4,19 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.bettermoving.config.BetterMovingConfigs;
 import dev.bettermoving.physics.BetterMovingMovementPolicy;
 import dev.bettermoving.physics.FluidMovementContext;
+import dev.bettermoving.physics.PotionEffectPolicy;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -93,5 +99,24 @@ public abstract class PlayerEntityMovementMixin {
                 (Object) this instanceof ClientPlayerEntity,
                 detectedWaterState,
                 detectedOtherFluidState);
+    }
+
+    @WrapOperation(
+            method = "checkFallFlying",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/player/PlayerEntity;hasStatusEffect(Lnet/minecraft/entity/effect/StatusEffect;)Z"))
+    private boolean bettermoving$ignoreLevitationInFallFlyingCheck(
+            PlayerEntity entity,
+            StatusEffect effect,
+            Operation<Boolean> original) {
+        boolean detected = original.call(entity, effect);
+        return effect == StatusEffects.LEVITATION
+                ? PotionEffectPolicy.resolveLevitation(
+                        detected,
+                        BetterMovingConfigs.ignoreLevitationAndSlowness(),
+                        entity instanceof ClientPlayerEntity
+                                && MinecraftClient.getInstance().player == entity)
+                : detected;
     }
 }

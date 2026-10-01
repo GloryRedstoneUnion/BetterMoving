@@ -3,7 +3,7 @@
   "id": "bettermoving",
   "version": "${version}",
   "name": "BetterMoving",
-  "description": "Configurable client-side fluid movement, a fixed-height virtual platform, sprinting without the food-level restriction, normal friction on slippery blocks, and simulated speed and jump boost effects with optional overrides.",
+  "description": "Configurable client-side fluid movement, a fixed-height virtual platform, sprinting without the food-level restriction, normal friction on slippery blocks, simulated speed and jump boost effects, and optional Levitation and Slowness movement overrides.",
   "authors": [
     "BetterMoving contributors"
   ],

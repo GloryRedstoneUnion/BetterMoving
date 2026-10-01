@@ -44,4 +44,26 @@ public final class PotionEffectPolicy {
                 : Math.max(actualLevel, simulatedLevel);
         return jumpBoostModifier + JUMP_BOOST_PER_LEVEL * (effectiveLevel - actualLevel);
     }
+
+    public static float removeSlowness(
+            float movementSpeed,
+            double slownessModifierAmount,
+            boolean enabled) {
+        if (!enabled) {
+            return movementSpeed;
+        }
+
+        double multiplier = 1.0 + slownessModifierAmount;
+        if (Math.abs(multiplier) < 1.0E-6) {
+            return movementSpeed;
+        }
+        return (float) (movementSpeed / multiplier);
+    }
+
+    public static boolean resolveLevitation(
+            boolean detectedLevitation,
+            boolean enabled,
+            boolean localPlayer) {
+        return detectedLevitation && !(enabled && localPlayer);
+    }
 }
