@@ -4,11 +4,13 @@ BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
 current release is **1.10.1**.
 
-Version 1.10.1 adds `Elytra firework block use`. While the local player is
-Elytra gliding, using a firework rocket on a block or wall is routed to Elytra
-acceleration instead of the block-use path. `Infinite Elytra fireworks` still
-controls whether the rocket is simulated without consumption; when it is
-disabled, the normal vanilla item-use and consumption path is preserved.
+## 1.10.1 release highlights
+
+This release adds `Elytra firework block use`. While Elytra gliding, a
+firework aimed at a block or wall follows the Elytra boost path instead of
+being placed or otherwise used on the targeted block. The existing
+`Infinite Elytra fireworks` option still decides whether that boost is
+simulated without consuming a rocket.
 
 BetterMoving does not need to be installed on a server. Server-side movement
 validation still applies, so a server can correct movement that it considers
