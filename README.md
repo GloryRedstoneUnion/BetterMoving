@@ -2,16 +2,21 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
-current version is **1.10.3**.
+current release is
+**[1.10.3](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.3)**.
 
 ## 1.10.3 release highlights
 
 This release fixes `Block non-Elytra firework use` so it blocks only the item
 use path that would actually launch a firework from a block or wall. Accepted
-workbench and container interactions continue normally, as do entity
+workbench, container, and lever interactions continue normally, as do entity
 interactions. A blocked launch sends no interaction packet, consumes no rocket,
 creates no entity, and does not swing the hand. Normal block prediction cleanup
 is preserved.
+
+The fix covers both hands in Creative and Survival, including sneaking past a
+block's normal interaction. Ordinary and infinite Elytra firework acceleration
+keep their existing behavior.
 
 BetterMoving does not need to be installed on a server. Server-side movement
 validation still applies, so a server can correct movement that it considers
@@ -135,10 +140,13 @@ MaLiLib configuration screen. BetterMoving does not require Mod Menu.
 
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
-3. Download the mod JAR from
-   [BetterMoving Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases)
-   and place it in the `mods` folder. Local builds of this version produce
-   `bettermoving-1.10.3.jar` and `bettermoving-1.10.3-sources.jar`.
+3. Download
+   [bettermoving-1.10.3.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.10.3/bettermoving-1.10.3.jar)
+   from the
+   [1.10.3 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.3)
+   and place it in the `mods` folder. The release also includes
+   [bettermoving-1.10.3-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.10.3/bettermoving-1.10.3-sources.jar)
+   for source inspection; it is not an installable mod.
 4. Optionally install Mod Menu for an in-game configuration button.
 
 ## Configuration
