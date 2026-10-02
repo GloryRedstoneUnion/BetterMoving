@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.bettermoving.config.BetterMovingConfigs;
 import dev.bettermoving.physics.BetterMovingMovementPolicy;
 import dev.bettermoving.physics.FluidMovementContext;
+import dev.bettermoving.physics.LevitationElytraFlight;
 import dev.bettermoving.physics.PotionEffectPolicy;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -23,6 +24,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = PlayerEntity.class, priority = 2100)
 public abstract class PlayerEntityMovementMixin {
+    @Inject(method = "startFallFlying", at = @At("RETURN"))
+    private void bettermoving$startLocalLevitationFlight(CallbackInfo ci) {
+        LevitationElytraFlight.start((PlayerEntity) (Object) this);
+    }
+
+    @Inject(method = "stopFallFlying", at = @At("RETURN"))
+    private void bettermoving$stopLocalLevitationFlight(CallbackInfo ci) {
+        // Vanilla briefly sets the flag to true and triggers tracked-data callbacks.
+        LevitationElytraFlight.stop((PlayerEntity) (Object) this);
+    }
+
     @Inject(method = "travel", at = @At("HEAD"))
     private void bettermoving$enterTravelContext(Vec3d movementInput, CallbackInfo ci) {
         FluidMovementContext.enter((PlayerEntity) (Object) this);

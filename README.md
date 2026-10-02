@@ -2,21 +2,21 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
-current release is
+current development version is **1.10.4** (not yet published). The latest
+published release is
 **[1.10.3](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.3)**.
 
-## 1.10.3 release highlights
+## 1.10.4 changes
 
-This release fixes `Block non-Elytra firework use` so it blocks only the item
-use path that would actually launch a firework from a block or wall. Accepted
-workbench, container, and lever interactions continue normally, as do entity
-interactions. A blocked launch sends no interaction packet, consumes no rocket,
-creates no entity, and does not swing the hand. Normal block prediction cleanup
-is preserved.
+Fixes interrupted Elytra flight with `Ignore levitation and slowness` enabled
+while the player has real Levitation. Vanilla servers reject the flight and
+synchronize a cleared Elytra flag; BetterMoving now retains the local flight
+session while ignoring Levitation instead of letting that update interrupt it.
 
-The fix covers both hands in Creative and Survival, including sneaking past a
-block's normal interaction. Ordinary and infinite Elytra firework acceleration
-keep their existing behavior.
+Landing, riding, creative flight, death, water movement, missing or unusable
+Elytra, explicit flight stops, disconnecting, disabling the option, and effect
+removal end the local override. Air-rule fluid movement and Elytra firework
+boosts remain compatible. Other entities and incoming metadata are unchanged.
 
 BetterMoving does not need to be installed on a server. Server-side movement
 validation still applies, so a server can correct movement that it considers
@@ -94,6 +94,11 @@ When enabled for the local player:
 
 The actual status effects remain active for rendering, particles, icons, and
 other non-movement behavior.
+
+While real Levitation is present, an already-started local Elytra flight can
+continue even if the server clears its gliding flag. This does not enable
+server-side gliding or bypass server movement validation. Ending the effect or
+disabling the option returns flight decisions to the synchronized vanilla state.
 
 ### Elytra fireworks
 
@@ -182,6 +187,9 @@ Build the mod and run unit tests with:
 ./gradlew build compatTestClasses
 ```
 
+The installable development JAR is `build/libs/bettermoving-1.10.4.jar`;
+the `-sources.jar` is for source inspection only.
+
 On Windows, use `gradlew.bat`. Run the complete disposable client suite with:
 
 ```text
@@ -200,7 +208,11 @@ The suite checks fluid modes, virtual-platform collision behavior, sprint
 movement and restrictions, slippery-block friction, potion formulas,
 configuration persistence, the Levitation and Slowness movement override, and
 Elytra firework block-use routing, non-consuming Elytra firework boosts, and
-non-Elytra firework launch suppression. Firework checks cover both hands in
+non-Elytra firework launch suppression. Levitation checks reproduce a real
+vanilla integrated-server flight rejection, replay its metadata through the
+client packet handler, and verify sustained flight, stopping conditions,
+remote-player isolation, fluid modes, and local firework acceleration.
+Firework checks cover both hands in
 Creative and Survival modes, workbench and container interactions, sneaking
 fallbacks, entity interactions, outgoing interaction packets, and block
 prediction cleanup.

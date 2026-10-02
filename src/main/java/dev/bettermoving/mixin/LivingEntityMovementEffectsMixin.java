@@ -1,8 +1,10 @@
 package dev.bettermoving.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.bettermoving.config.BetterMovingConfigs;
+import dev.bettermoving.physics.LevitationElytraFlight;
 import dev.bettermoving.physics.PotionEffectPolicy;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -14,6 +16,11 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = LivingEntity.class, priority = 2100)
 public abstract class LivingEntityMovementEffectsMixin {
+    @ModifyReturnValue(method = "isFallFlying", at = @At("RETURN"))
+    private boolean bettermoving$preserveLocalLevitationFlight(boolean trackedFlight) {
+        return LevitationElytraFlight.resolve((LivingEntity) (Object) this, trackedFlight);
+    }
+
     @WrapOperation(
             method = "travel",
             at = @At(

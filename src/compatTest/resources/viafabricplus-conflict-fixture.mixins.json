@@ -5,6 +5,7 @@
   "client": [
     "ClientPlayerSprintProbe",
     "ClientWorldPredictionProbe",
+    "EntityFlagsProbe",
     "InteractionPacketProbeMixin",
     "MovementStateProbeMixin",
     "ViaFabricPlusClientPlayerConflictMixin"

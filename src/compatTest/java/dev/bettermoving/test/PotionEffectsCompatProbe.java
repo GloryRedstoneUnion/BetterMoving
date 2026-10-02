@@ -1,20 +1,39 @@
 package dev.bettermoving.test;
 
 import com.google.gson.JsonObject;
+import com.mojang.authlib.GameProfile;
 import dev.bettermoving.BetterMovingClient;
+import dev.bettermoving.compat.EntityFlagsProbe;
 import dev.bettermoving.config.BetterMovingConfigs;
+import dev.bettermoving.config.FluidMovementModel;
+import dev.bettermoving.physics.LevitationElytraFlight;
 import dev.bettermoving.physics.PotionEffectPolicy;
 import fi.dy.masa.malilib.config.ConfigUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.input.Input;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.OtherClientPlayerEntity;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.projectile.FireworkRocketEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
+import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket;
 import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -357,6 +376,262 @@ public final class PotionEffectsCompatProbe {
         check(player.checkFallFlying(),
                 "Ignored Levitation did not allow Elytra activation");
         player.stopFallFlying();
+        verifyLevitationElytraInput(player);
+    }
+
+    private static void verifyLevitationElytraInput(ClientPlayerEntity player) {
+        Input originalInput = player.input;
+        boolean originalAllowFlying = player.getAbilities().allowFlying;
+        boolean originalFlying = player.getAbilities().flying;
+        TrackedData<Byte> flags = EntityFlagsProbe.bettermovingTest$getFlags();
+        byte originalFlags = player.getDataTracker().get(flags);
+        try {
+            player.getAbilities().allowFlying = false;
+            player.getAbilities().flying = false;
+            player.input = new Input() {
+                @Override
+                public void tick(boolean slowDown, float slowDownFactor) {
+                    this.jumping = true;
+                }
+            };
+            player.setOnGround(false);
+            player.setVelocity(0.0, -0.1, 0.0);
+            player.tick();
+            check(player.isFallFlying(),
+                    "Ignored Levitation blocked Elytra activation through the real jump-input path");
+            serverLevitationRejection(player).apply(player.networkHandler);
+            check(player.isFallFlying(),
+                    "Server metadata interrupted local Elytra flight while Levitation was ignored");
+            check((player.getDataTracker().get(flags) & (1 << 7)) == 0,
+                    "Local flight override changed server-synchronized metadata");
+            player.input = new Input();
+            for (int tick = 0; tick < 20; ++tick) {
+                clearServerFlight(player);
+                player.tick();
+                check(player.isFallFlying(),
+                        "Ignored Levitation interrupted Elytra flight at tick " + tick);
+                check(player.getPose() == EntityPose.FALL_FLYING,
+                        "Ignored Levitation lost the Elytra pose at tick " + tick);
+            }
+            check(player.hasStatusEffect(StatusEffects.LEVITATION),
+                    "Elytra movement override removed the real Levitation effect");
+            verifyLevitationElytraBoundaries(player);
+        } finally {
+            player.stopFallFlying();
+            player.getDataTracker().set(flags, (byte) (originalFlags & ~(1 << 7)));
+            player.input = originalInput;
+            player.getAbilities().allowFlying = originalAllowFlying;
+            player.getAbilities().flying = originalFlying;
+        }
+    }
+
+    private static void verifyLevitationElytraBoundaries(ClientPlayerEntity player) {
+        check(!BetterMovingConfigs.simulatePotionEffects(),
+                "Levitation Elytra regression must not depend on potion simulation");
+        clearServerFlight(player);
+        byte originalFlags = player.getDataTracker().get(EntityFlagsProbe.bettermovingTest$getFlags());
+        syncFlags(player, (byte) (originalFlags | (1 << 6)));
+        check(player.isGlowing() && player.isFallFlying(),
+                "Preserving local Elytra flight discarded unrelated metadata flags");
+        syncFlags(player, originalFlags);
+
+        OtherClientPlayerEntity remote = new OtherClientPlayerEntity(player.clientWorld,
+                new GameProfile(UUID.randomUUID(), "ElytraRegressionRemote"));
+        remote.equipStack(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA));
+        remote.addStatusEffect(new StatusEffectInstance(StatusEffects.LEVITATION, 200, 0));
+        remote.setOnGround(false);
+        remote.startFallFlying();
+        remote.getDataTracker().set(EntityFlagsProbe.bettermovingTest$getFlags(), (byte) 0);
+        check(!remote.isFallFlying() && player.isFallFlying(),
+                "Local Elytra override leaked to another player or lost its own session");
+
+        verifyLevitationFireworks(player);
+        assertFlightStops(player, "explicit stop", player::stopFallFlying, () -> { });
+        assertFlightStops(player, "landing",
+                () -> player.setOnGround(true), () -> player.setOnGround(false));
+        assertFlightStops(player, "disabled override",
+                () -> BetterMovingConfigs.IGNORE_LEVITATION_AND_SLOWNESS.setBooleanValue(false),
+                () -> BetterMovingConfigs.IGNORE_LEVITATION_AND_SLOWNESS.setBooleanValue(true));
+        assertFlightStops(player, "effect removal",
+                () -> player.removeStatusEffect(StatusEffects.LEVITATION),
+                () -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.LEVITATION, 200, 0)));
+        assertFlightStops(player, "missing Elytra",
+                () -> player.equipStack(EquipmentSlot.CHEST, ItemStack.EMPTY),
+                () -> player.equipStack(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA)));
+        ItemStack brokenElytra = new ItemStack(Items.ELYTRA);
+        brokenElytra.setDamage(brokenElytra.getMaxDamage() - 1);
+        assertFlightStops(player, "unusable Elytra",
+                () -> player.equipStack(EquipmentSlot.CHEST, brokenElytra),
+                () -> player.equipStack(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA)));
+        assertFlightStops(player, "creative flight",
+                () -> player.getAbilities().flying = true,
+                () -> player.getAbilities().flying = false);
+        var vehicle = EntityType.PIG.create(player.getWorld());
+        assertFlightStops(player, "riding",
+                () -> check(player.startRiding(vehicle, true), "Could not mount the test vehicle"),
+                player::stopRiding);
+        float health = player.getHealth();
+        assertFlightStops(player, "death", () -> player.setHealth(0.0F), () -> player.setHealth(health));
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        assertFlightStops(player, "disconnect",
+                () -> {
+                    client.player = null;
+                    LevitationElytraFlight.tick(client);
+                    client.player = player;
+                }, () -> { });
+
+        BetterMovingConfigs.IGNORE_LEVITATION_AND_SLOWNESS.setBooleanValue(false);
+        check(!player.checkFallFlying(), "Disabled override allowed Levitation Elytra activation");
+        BetterMovingConfigs.IGNORE_LEVITATION_AND_SLOWNESS.setBooleanValue(true);
+        player.removeStatusEffect(StatusEffects.LEVITATION);
+        check(player.checkFallFlying(), "Ordinary Elytra activation was broken");
+        clearServerFlight(player);
+        check(!player.isFallFlying(), "Non-Levitation server flight resets were ignored");
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.LEVITATION, 200, 0));
+        check(!player.isFallFlying(), "Adding Levitation started an unrequested Elytra flight");
+
+        player.removeStatusEffect(StatusEffects.LEVITATION);
+        check(player.checkFallFlying(), "Ordinary flight could not start before receiving Levitation");
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.LEVITATION, 200, 0));
+        clearServerFlight(player);
+        check(player.isFallFlying(), "Receiving Levitation interrupted an existing Elytra flight");
+        player.stopFallFlying();
+        verifyLevitationFluidModes(player);
+        BetterMovingClient.LOGGER.info("Levitation Elytra activation, metadata, stopping, fluid and firework checks passed");
+    }
+
+    private static void assertFlightStops(
+            ClientPlayerEntity player, String label, Runnable stopCondition, Runnable restore) {
+        player.stopFallFlying();
+        check(player.checkFallFlying(), label + ": could not start the control flight");
+        clearServerFlight(player);
+        check(player.isFallFlying(), label + ": could not retain the control flight");
+        try {
+            stopCondition.run();
+            check(!player.isFallFlying(), label + ": local flight was not stopped");
+        } finally {
+            restore.run();
+        }
+        check(!player.isFallFlying(), label + ": local flight resumed without new input");
+    }
+
+    private static void verifyLevitationFireworks(ClientPlayerEntity player) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        ItemStack originalHand = player.getMainHandStack();
+        boolean originalInfinite = BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.getBooleanValue();
+        FireworkRocketEntity rocket = null;
+        try {
+            player.setStackInHand(Hand.MAIN_HAND, new ItemStack(Items.FIREWORK_ROCKET, 3));
+            BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.setBooleanValue(true);
+            check(client.interactionManager.interactItem(player, Hand.MAIN_HAND).isAccepted(),
+                    "Local Elytra flight with Levitation did not accept a firework boost");
+            check(player.getMainHandStack().getCount() == 3,
+                    "Infinite Levitation Elytra boost consumed a rocket");
+            rocket = client.world.getEntitiesByType(TypeFilter.instanceOf(FireworkRocketEntity.class),
+                            player.getBoundingBox().expand(2.0), entity -> true)
+                    .stream().findFirst().orElseThrow(() -> new AssertionError("No Levitation Elytra boost rocket"));
+            player.setYaw(0.0F);
+            player.setPitch(0.0F);
+            player.setVelocity(Vec3d.ZERO);
+            rocket.tick();
+            check(player.getVelocity().z > 0.0, "Levitation Elytra firework did not accelerate the player");
+        } finally {
+            if (rocket != null) {
+                rocket.discard();
+            }
+            player.setStackInHand(Hand.MAIN_HAND, originalHand);
+            BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.setBooleanValue(originalInfinite);
+        }
+    }
+
+    private static void verifyLevitationFluidModes(ClientPlayerEntity player) {
+        boolean originalFluidToggle = BetterMovingConfigs.ignoreFluidPhysics();
+        FluidMovementModel originalModel = BetterMovingConfigs.movementModel();
+        Vec3d originalPosition = player.getPos();
+        BlockPos center = player.getBlockPos().up(10);
+        try {
+            for (BlockPos pos : BlockPos.iterate(center.add(-1, -1, -1), center.add(1, 1, 1))) {
+                player.getWorld().setBlockState(pos, Blocks.WATER.getDefaultState(), Block.NOTIFY_ALL);
+            }
+            player.setPosition(Vec3d.ofCenter(center));
+            player.baseTick();
+            player.setOnGround(false);
+            check(player.isTouchingWater(), "Levitation fluid fixture did not contain water");
+            BetterMovingConfigs.IGNORE_FLUID_PHYSICS.setBooleanValue(false);
+            check(!player.checkFallFlying(), "Ordinary water allowed Levitation Elytra activation");
+            BetterMovingConfigs.IGNORE_FLUID_PHYSICS.setBooleanValue(true);
+            BetterMovingConfigs.MODEL.setOptionListValue(FluidMovementModel.AIR);
+            check(player.checkFallFlying(), "Air rules did not allow Levitation Elytra activation in water");
+            clearServerFlight(player);
+            check(player.isFallFlying(), "Air rules did not preserve Levitation Elytra flight in water");
+            BetterMovingConfigs.MODEL.setOptionListValue(FluidMovementModel.WATER);
+            check(!player.isFallFlying(), "Water rules did not stop local Levitation Elytra flight");
+            check(!player.checkFallFlying(), "Water rules incorrectly allowed Levitation Elytra activation");
+        } finally {
+            player.stopFallFlying();
+            BetterMovingConfigs.IGNORE_FLUID_PHYSICS.setBooleanValue(originalFluidToggle);
+            BetterMovingConfigs.MODEL.setOptionListValue(originalModel);
+            player.setPosition(originalPosition);
+            player.baseTick();
+        }
+    }
+
+    private static void clearServerFlight(ClientPlayerEntity player) {
+        byte flags = player.getDataTracker().get(EntityFlagsProbe.bettermovingTest$getFlags());
+        syncFlags(player, (byte) (flags & ~(1 << 7)));
+    }
+
+    private static void syncFlags(ClientPlayerEntity player, byte value) {
+        new EntityTrackerUpdateS2CPacket(player.getId(), List.of(DataTracker.SerializedEntry.of(
+                EntityFlagsProbe.bettermovingTest$getFlags(), value))).apply(player.networkHandler);
+    }
+
+    private static EntityTrackerUpdateS2CPacket serverLevitationRejection(ClientPlayerEntity player) {
+        try {
+            return MinecraftClient.getInstance().getServer().submit(() -> {
+                ServerPlayerEntity serverPlayer = MinecraftClient.getInstance().getServer()
+                        .getPlayerManager().getPlayer(player.getUuid());
+                ItemStack originalChest = serverPlayer.getEquippedStack(EquipmentSlot.CHEST).copy();
+                StatusEffectInstance originalEffect = copy(serverPlayer.getStatusEffect(StatusEffects.LEVITATION));
+                boolean originalGround = serverPlayer.isOnGround();
+                boolean originalFlight = serverPlayer.isFallFlying();
+                try {
+                    serverPlayer.equipStack(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA));
+                    serverPlayer.setOnGround(false);
+                    serverPlayer.removeStatusEffect(StatusEffects.LEVITATION);
+                    serverPlayer.stopFallFlying();
+                    check(serverPlayer.checkFallFlying(),
+                            "Server Elytra control failed without Levitation");
+                    serverPlayer.stopFallFlying();
+                    serverPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.LEVITATION, 200, 0));
+                    serverPlayer.getDataTracker().getDirtyEntries();
+                    serverPlayer.networkHandler.onClientCommand(new ClientCommandC2SPacket(
+                            serverPlayer, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
+                    check(!serverPlayer.isFallFlying(),
+                            "Client override unexpectedly changed server Levitation behavior");
+                    List<DataTracker.SerializedEntry<?>> updates = serverPlayer.getDataTracker().getDirtyEntries();
+                    check(updates != null && updates.stream().anyMatch(entry ->
+                                    entry.id() == EntityFlagsProbe.bettermovingTest$getFlags().getId()),
+                            "Server did not produce the rejected-flight flag update");
+                    return new EntityTrackerUpdateS2CPacket(serverPlayer.getId(), updates);
+                } finally {
+                    serverPlayer.removeStatusEffect(StatusEffects.LEVITATION);
+                    if (originalEffect != null) {
+                        serverPlayer.addStatusEffect(originalEffect);
+                    }
+                    serverPlayer.equipStack(EquipmentSlot.CHEST, originalChest);
+                    serverPlayer.setOnGround(originalGround);
+                    if (originalFlight) {
+                        serverPlayer.startFallFlying();
+                    } else {
+                        serverPlayer.stopFallFlying();
+                    }
+                }
+            }).get(10, TimeUnit.SECONDS);
+        } catch (Exception exception) {
+            throw new AssertionError("Failed to reproduce vanilla server Elytra rejection", exception);
+        }
     }
 
     private static void applySlownessAttributeModifier(ClientPlayerEntity player, int amplifier) {
