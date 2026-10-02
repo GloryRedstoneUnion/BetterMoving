@@ -2,11 +2,10 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
-current development version is **1.10.4** (not yet published). The latest
-published release is
-**[1.10.3](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.3)**.
+current release is
+**[1.10.4](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.4)**.
 
-## 1.10.4 changes
+## 1.10.4 release highlights
 
 Fixes interrupted Elytra flight with `Ignore levitation and slowness` enabled
 while the player has real Levitation. Vanilla servers reject the flight and
@@ -146,11 +145,11 @@ MaLiLib configuration screen. BetterMoving does not require Mod Menu.
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
 3. Download
-   [bettermoving-1.10.3.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.10.3/bettermoving-1.10.3.jar)
+   [bettermoving-1.10.4.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.10.4/bettermoving-1.10.4.jar)
    from the
-   [1.10.3 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.3)
+   [1.10.4 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.4)
    and place it in the `mods` folder. The release also includes
-   [bettermoving-1.10.3-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.10.3/bettermoving-1.10.3-sources.jar)
+   [bettermoving-1.10.4-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.10.4/bettermoving-1.10.4-sources.jar)
    for source inspection; it is not an installable mod.
 4. Optionally install Mod Menu for an in-game configuration button.
 
@@ -187,7 +186,7 @@ Build the mod and run unit tests with:
 ./gradlew build compatTestClasses
 ```
 
-The installable development JAR is `build/libs/bettermoving-1.10.4.jar`;
+The installable JAR is `build/libs/bettermoving-1.10.4.jar`;
 the `-sources.jar` is for source inspection only.
 
 On Windows, use `gradlew.bat`. Run the complete disposable client suite with:
@@ -212,8 +211,8 @@ non-Elytra firework launch suppression. Levitation checks reproduce a real
 vanilla integrated-server flight rejection, replay its metadata through the
 client packet handler, and verify sustained flight, stopping conditions,
 remote-player isolation, fluid modes, and local firework acceleration.
-Firework checks cover both hands in
-Creative and Survival modes, workbench and container interactions, sneaking
+Firework checks cover both hands in Creative and Survival modes, workbench
+and container interactions, sneaking
 fallbacks, entity interactions, outgoing interaction packets, and block
 prediction cleanup.
 
