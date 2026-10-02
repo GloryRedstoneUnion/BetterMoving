@@ -24,7 +24,7 @@
   "bettermoving.config.name.elytraFireworkBlockUse": "鞘翅烟花方块使用",
   "bettermoving.config.comment.elytraFireworkBlockUse": "本地玩家使用鞘翅滑翔时，对方块或墙壁使用烟花火箭将改为鞘翅加速，而不是走方块使用路径。开启“无限鞘翅烟花加速”时本地模拟且不消耗；关闭时保留原版物品使用和消耗逻辑。此开关默认关闭且未绑定快捷键。",
   "bettermoving.config.name.blockNonElytraFireworkUse": "阻止非鞘翅烟花使用",
-  "bettermoving.config.comment.blockNonElytraFireworkUse": "除非本地玩家正在鞘翅滑翔且开启“鞘翅烟花方块使用”，否则阻止对方块或墙壁使用烟花火箭。被阻止的使用不会发送数据包、消耗烟花、创建烟花实体或挥动手臂。此开关默认关闭且未绑定快捷键。",
+  "bettermoving.config.comment.blockNonElytraFireworkUse": "除非本地玩家正在鞘翅滑翔且开启“鞘翅烟花方块使用”，否则仅阻止从方块或墙壁放飞烟花火箭。打开工作台、容器和生物交互仍可正常进行。被阻止的发射不会发送交互数据包、消耗烟花、创建烟花实体或挥动手臂。此开关默认关闭且未绑定快捷键。",
   "bettermoving.config.name.simulatedSpeedPotionLevel": "模拟速度药水等级",
   "bettermoving.config.comment.simulatedSpeedPotionLevel": "开启“模拟药水效果”后，将此速度药水等级用于水平移动。等级 0 不添加效果，等级 1 等同于速度 I；玩家已有的更高速度效果会保留。可填 0 至 255。",
   "bettermoving.config.name.simulatedJumpBoostLevel": "模拟跳跃提升等级",

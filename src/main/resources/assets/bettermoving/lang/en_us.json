@@ -24,7 +24,7 @@
   "bettermoving.config.name.elytraFireworkBlockUse": "Elytra firework block use",
   "bettermoving.config.comment.elytraFireworkBlockUse": "While the local player is Elytra gliding, use a firework rocket on a block or wall for Elytra acceleration instead of the block-use path. With Infinite Elytra fireworks enabled the rocket is simulated locally without consumption; otherwise vanilla item use and consumption are preserved. Disabled and unbound by default.",
   "bettermoving.config.name.blockNonElytraFireworkUse": "Block non-Elytra firework use",
-  "bettermoving.config.comment.blockNonElytraFireworkUse": "Prevent the local player from using a firework rocket on a block or wall unless Elytra gliding with Elytra firework block use enabled. Blocked uses send no packet, consume no rocket, create no rocket entity, and do not swing the hand. Disabled and unbound by default.",
+  "bettermoving.config.comment.blockNonElytraFireworkUse": "Prevent firework launches from blocks or walls unless Elytra gliding with Elytra firework block use enabled. Normal workbench, container, and entity interactions remain available. Blocked launches send no interaction packet, consume no rocket, create no rocket entity, and do not swing the hand. Disabled and unbound by default.",
   "bettermoving.config.name.simulatedSpeedPotionLevel": "Simulated speed potion level",
   "bettermoving.config.comment.simulatedSpeedPotionLevel": "Use this Speed potion level for horizontal movement when Simulate potion effects is enabled. Level 0 adds no effect; level 1 matches Speed I. Existing stronger Speed effects are preserved. Values range from 0 to 255.",
   "bettermoving.config.name.simulatedJumpBoostLevel": "Simulated jump boost level",

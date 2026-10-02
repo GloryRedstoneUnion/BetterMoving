@@ -2,14 +2,16 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
-current release is **1.10.2**.
+current version is **1.10.3**.
 
-## 1.10.2 release highlights
+## 1.10.3 release highlights
 
-This release adds `Block non-Elytra firework use`. When enabled, a firework
-aimed at a block or wall is ignored unless the local player is Elytra gliding
-with `Elytra firework block use` enabled. The blocked action sends no packet,
-consumes no rocket, creates no entity, and does not swing the hand.
+This release fixes `Block non-Elytra firework use` so it blocks only the item
+use path that would actually launch a firework from a block or wall. Accepted
+workbench and container interactions continue normally, as do entity
+interactions. A blocked launch sends no interaction packet, consumes no rocket,
+creates no entity, and does not swing the hand. Normal block prediction cleanup
+is preserved.
 
 BetterMoving does not need to be installed on a server. Server-side movement
 validation still applies, so a server can correct movement that it considers
@@ -109,10 +111,14 @@ feature changes client-side movement prediction only; the server may still
 correct movement according to its own state.
 
 `Block non-Elytra firework use` is a shared, hotkey-capable safety toggle. When
-enabled, using a firework rocket on a block or wall does nothing unless the
-local player is Elytra gliding and `Elytra firework block use` is also enabled.
-Blocked uses send no packet, consume no rocket, create no rocket entity, and
-do not swing the hand. Aiming at air is unaffected.
+enabled, it blocks only a firework rocket use that reaches the actual launch
+path on a block or wall, unless the local player is Elytra gliding and
+`Elytra firework block use` is also enabled. Accepted block interactions such as
+workbenches and containers remain available, and entity interactions are
+unaffected. Sneaking past a block's normal interaction is still blocked when
+it would launch a rocket instead. Blocked launches send no interaction packet,
+consume no rocket, create no rocket entity, and do not swing the hand. Aiming
+at air is unaffected.
 
 ## Requirements
 
@@ -129,10 +135,10 @@ MaLiLib configuration screen. BetterMoving does not require Mod Menu.
 
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
-3. Download `bettermoving-1.10.2.jar` from the
-   [BetterMoving v1.10.2 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.2)
-   and place it in the `mods` folder. The release also includes the matching
-   `bettermoving-1.10.2-sources.jar` for source inspection.
+3. Download the mod JAR from
+   [BetterMoving Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases)
+   and place it in the `mods` folder. Local builds of this version produce
+   `bettermoving-1.10.3.jar` and `bettermoving-1.10.3-sources.jar`.
 4. Optionally install Mod Menu for an in-game configuration button.
 
 ## Configuration
@@ -186,7 +192,10 @@ The suite checks fluid modes, virtual-platform collision behavior, sprint
 movement and restrictions, slippery-block friction, potion formulas,
 configuration persistence, the Levitation and Slowness movement override, and
 Elytra firework block-use routing, non-consuming Elytra firework boosts, and
-non-Elytra firework block-use suppression.
+non-Elytra firework launch suppression. Firework checks cover both hands in
+Creative and Survival modes, workbench and container interactions, sneaking
+fallbacks, entity interactions, outgoing interaction packets, and block
+prediction cleanup.
 
 ## License
 
