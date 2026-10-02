@@ -35,11 +35,22 @@ public abstract class ClientPlayerInteractionManagerMixin {
             BlockHitResult hitResult,
             CallbackInfoReturnable<ActionResult> cir) {
         MinecraftClient client = MinecraftClient.getInstance();
+        boolean holdingFirework = player.getStackInHand(hand).isOf(Items.FIREWORK_ROCKET);
+        if (ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(
+                BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.getBooleanValue(),
+                client.player == player,
+                player.isFallFlying(),
+                BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.getBooleanValue(),
+                holdingFirework)) {
+            cir.setReturnValue(ActionResult.FAIL);
+            return;
+        }
+
         if (!ElytraFireworkPolicy.shouldRedirectBlockUse(
                 BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.getBooleanValue(),
                 client.player == player,
                 player.isFallFlying(),
-                player.getStackInHand(hand).isOf(Items.FIREWORK_ROCKET))) {
+                holdingFirework)) {
             return;
         }
 

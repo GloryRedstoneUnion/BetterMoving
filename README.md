@@ -109,6 +109,12 @@ The local rocket is temporary and is removed after its normal lifetime. This
 feature changes client-side movement prediction only; the server may still
 correct movement according to its own state.
 
+`Block non-Elytra firework use` is a shared, hotkey-capable safety toggle. When
+enabled, using a firework rocket on a block or wall does nothing unless the
+local player is Elytra gliding and `Elytra firework block use` is also enabled.
+Blocked uses send no packet, consume no rocket, create no rocket entity, and
+do not swing the hand. Aiming at air is unaffected.
+
 ## Requirements
 
 - Minecraft 1.20.1
@@ -144,6 +150,7 @@ unbound by default:
 - `Override existing potion effects`
 - `Ignore levitation and slowness`
 - `Elytra firework block use`
+- `Block non-Elytra firework use`
 - `Infinite Elytra fireworks`
 
 `Movement model` defaults to `Air rules` and is used only while `Ignore fluid
@@ -179,7 +186,8 @@ Add `-PbettermovingModMenuTest` to include the optional Mod Menu integration.
 The suite checks fluid modes, virtual-platform collision behavior, sprint
 movement and restrictions, slippery-block friction, potion formulas,
 configuration persistence, the Levitation and Slowness movement override, and
-Elytra firework block-use routing and non-consuming Elytra firework boosts.
+Elytra firework block-use routing, non-consuming Elytra firework boosts, and
+non-Elytra firework block-use suppression.
 
 ## License
 

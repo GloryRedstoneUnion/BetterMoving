@@ -25,6 +25,8 @@ public final class ElytraFireworkCompatProbe {
         ItemStack previousMainHand = player.getMainHandStack();
         boolean previousToggle = BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.getBooleanValue();
         boolean previousBlockUseToggle = BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.getBooleanValue();
+        boolean previousBlockNonElytraUseToggle =
+                BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.getBooleanValue();
         try {
             player.equipStack(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA));
             player.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.FIREWORK_ROCKET, 3));
@@ -32,13 +34,40 @@ public final class ElytraFireworkCompatProbe {
             player.setVelocity(Vec3d.ZERO);
             player.setYaw(0.0F);
             player.setPitch(0.0F);
-            player.startFallFlying();
             BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.setBooleanValue(true);
-            BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.setBooleanValue(true);
+            BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.setBooleanValue(true);
 
             BlockPos target = player.getBlockPos().down();
             client.world.setBlockState(target, net.minecraft.block.Blocks.STONE.getDefaultState());
+            BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.setBooleanValue(false);
+            player.stopFallFlying();
             ActionResult result = client.interactionManager.interactBlock(
+                    player,
+                    Hand.MAIN_HAND,
+                    new BlockHitResult(Vec3d.ofCenter(target), Direction.NORTH, target, false));
+            if (result != ActionResult.FAIL || player.getMainHandStack().getCount() != 3) {
+                throw new AssertionError(
+                        "Non-Elytra firework block use was not fully blocked on the ground: result="
+                                + result
+                                + ", count="
+                                + player.getMainHandStack().getCount());
+            }
+
+            player.startFallFlying();
+            result = client.interactionManager.interactBlock(
+                    player,
+                    Hand.MAIN_HAND,
+                    new BlockHitResult(Vec3d.ofCenter(target), Direction.NORTH, target, false));
+            if (result != ActionResult.FAIL || player.getMainHandStack().getCount() != 3) {
+                throw new AssertionError(
+                        "Firework block use was not blocked while gliding without the Elytra route: result="
+                                + result
+                                + ", count="
+                                + player.getMainHandStack().getCount());
+            }
+
+            BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.setBooleanValue(true);
+            result = client.interactionManager.interactBlock(
                     player,
                     Hand.MAIN_HAND,
                     new BlockHitResult(Vec3d.ofCenter(target), Direction.NORTH, target, false));
@@ -73,6 +102,7 @@ public final class ElytraFireworkCompatProbe {
         } finally {
             BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.setBooleanValue(previousToggle);
             BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.setBooleanValue(previousBlockUseToggle);
+            BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.setBooleanValue(previousBlockNonElytraUseToggle);
             player.stopFallFlying();
             player.equipStack(EquipmentSlot.CHEST, previousChest);
             player.equipStack(EquipmentSlot.MAINHAND, previousMainHand);

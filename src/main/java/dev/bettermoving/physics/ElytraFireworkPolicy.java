@@ -19,4 +19,16 @@ public final class ElytraFireworkPolicy {
             boolean holdingFirework) {
         return enabled && localPlayer && fallFlying && holdingFirework;
     }
+
+    public static boolean shouldBlockNonElytraBlockUse(
+            boolean enabled,
+            boolean localPlayer,
+            boolean fallFlying,
+            boolean elytraBlockUseEnabled,
+            boolean holdingFirework) {
+        return enabled
+                && localPlayer
+                && holdingFirework
+                && (!fallFlying || !elytraBlockUseEnabled);
+    }
 }

@@ -23,4 +23,15 @@ final class ElytraFireworkPolicyTest {
         assertFalse(ElytraFireworkPolicy.shouldRedirectBlockUse(true, true, false, true));
         assertFalse(ElytraFireworkPolicy.shouldRedirectBlockUse(true, true, true, false));
     }
+
+    @Test
+    void nonElytraBlockUseIsBlockedUntilTheElytraRouteIsAvailable() {
+        assertTrue(ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(true, true, false, false, true));
+        assertTrue(ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(true, true, true, false, true));
+        assertTrue(ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(true, true, false, true, true));
+        assertFalse(ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(true, true, true, true, true));
+        assertFalse(ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(false, true, false, false, true));
+        assertFalse(ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(true, false, false, false, true));
+        assertFalse(ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(true, true, false, false, false));
+    }
 }
