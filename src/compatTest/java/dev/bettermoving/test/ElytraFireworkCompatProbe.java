@@ -10,6 +10,9 @@ import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypeFilter;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 public final class ElytraFireworkCompatProbe {
@@ -21,6 +24,7 @@ public final class ElytraFireworkCompatProbe {
         ItemStack previousChest = player.getEquippedStack(EquipmentSlot.CHEST);
         ItemStack previousMainHand = player.getMainHandStack();
         boolean previousToggle = BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.getBooleanValue();
+        boolean previousBlockUseToggle = BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.getBooleanValue();
         try {
             player.equipStack(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA));
             player.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.FIREWORK_ROCKET, 3));
@@ -30,11 +34,17 @@ public final class ElytraFireworkCompatProbe {
             player.setPitch(0.0F);
             player.startFallFlying();
             BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.setBooleanValue(true);
+            BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.setBooleanValue(true);
 
-            ActionResult result = client.interactionManager.interactItem(player, Hand.MAIN_HAND);
+            BlockPos target = player.getBlockPos().down();
+            client.world.setBlockState(target, net.minecraft.block.Blocks.STONE.getDefaultState());
+            ActionResult result = client.interactionManager.interactBlock(
+                    player,
+                    Hand.MAIN_HAND,
+                    new BlockHitResult(Vec3d.ofCenter(target), Direction.NORTH, target, false));
             if (!result.isAccepted() || player.getMainHandStack().getCount() != 3) {
                 throw new AssertionError(
-                        "Infinite Elytra fireworks did not preserve the local rocket stack: result="
+                        "Elytra firework block use did not preserve the local rocket stack: result="
                                 + result
                                 + ", count="
                                 + player.getMainHandStack().getCount());
@@ -62,6 +72,7 @@ public final class ElytraFireworkCompatProbe {
             System.out.println("[bettermoving] Elytra firework compatibility checks passed");
         } finally {
             BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.setBooleanValue(previousToggle);
+            BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.setBooleanValue(previousBlockUseToggle);
             player.stopFallFlying();
             player.equipStack(EquipmentSlot.CHEST, previousChest);
             player.equipStack(EquipmentSlot.MAINHAND, previousMainHand);

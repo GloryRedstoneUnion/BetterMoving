@@ -90,6 +90,14 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("infiniteElytraFireworks"),
                     prettyName("infiniteElytraFireworks"));
 
+    public static final ConfigBooleanHotkeyed ELYTRA_FIREWORK_BLOCK_USE =
+            new ConfigBooleanHotkeyed(
+                    "elytraFireworkBlockUse",
+                    false,
+                    "",
+                    comment("elytraFireworkBlockUse"),
+                    prettyName("elytraFireworkBlockUse"));
+
     public static final ConfigInteger SIMULATED_SPEED_POTION_LEVEL =
             new ConfigInteger(
                     "simulatedSpeedPotionLevel",
@@ -134,6 +142,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
             INFINITE_ELYTRA_FIREWORKS,
+            ELYTRA_FIREWORK_BLOCK_USE,
             SIMULATED_SPEED_POTION_LEVEL,
             SIMULATED_JUMP_BOOST_LEVEL,
             SIMULATED_DOLPHINS_GRACE_LEVEL);
@@ -147,6 +156,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
             INFINITE_ELYTRA_FIREWORKS,
+            ELYTRA_FIREWORK_BLOCK_USE,
             OPEN_CONFIG_GUI);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
@@ -158,6 +168,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
             INFINITE_ELYTRA_FIREWORKS,
+            ELYTRA_FIREWORK_BLOCK_USE,
             SIMULATED_SPEED_POTION_LEVEL,
             SIMULATED_JUMP_BOOST_LEVEL,
             SIMULATED_DOLPHINS_GRACE_LEVEL,

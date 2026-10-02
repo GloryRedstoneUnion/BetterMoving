@@ -2,11 +2,13 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
-current release is **1.10.0**.
+current release is **1.10.1**.
 
-Version 1.10.0 adds `Infinite Elytra fireworks`. While the local player is
-Elytra gliding, it applies the vanilla firework boost locally without sending
-the item-use packet or consuming rockets on the server.
+Version 1.10.1 adds `Elytra firework block use`. While the local player is
+Elytra gliding, using a firework rocket on a block or wall is routed to Elytra
+acceleration instead of the block-use path. `Infinite Elytra fireworks` still
+controls whether the rocket is simulated without consumption; when it is
+disabled, the normal vanilla item-use and consumption path is preserved.
 
 BetterMoving does not need to be installed on a server. Server-side movement
 validation still applies, so a server can correct movement that it considers
@@ -87,6 +89,14 @@ other non-movement behavior.
 
 ### Elytra fireworks
 
+`Elytra firework block use` is a shared, hotkey-capable movement toggle. When
+enabled while the local player is Elytra gliding, using a firework rocket on a
+block or wall routes the action to Elytra acceleration instead of the block-use
+path. With `Infinite Elytra fireworks` enabled, the local rocket is simulated
+without sending the item-use packet or consuming the server-side rocket.
+When `Infinite Elytra fireworks` is disabled, the ordinary vanilla item-use
+packet and rocket consumption are preserved.
+
 `Infinite Elytra fireworks` is a shared, hotkey-capable movement toggle. When
 enabled while the local player is Elytra gliding, using a firework rocket
 creates a client-side rocket and applies the same acceleration as vanilla.
@@ -112,10 +122,10 @@ MaLiLib configuration screen. BetterMoving does not require Mod Menu.
 
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
-3. Download `bettermoving-1.10.0.jar` from the
-   [BetterMoving v1.10.0 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.0)
+3. Download `bettermoving-1.10.1.jar` from the
+   [BetterMoving v1.10.1 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.1)
    and place it in the `mods` folder. The release also includes the matching
-   `bettermoving-1.10.0-sources.jar` for source inspection.
+   `bettermoving-1.10.1-sources.jar` for source inspection.
 4. Optionally install Mod Menu for an in-game configuration button.
 
 ## Configuration
@@ -131,6 +141,7 @@ unbound by default:
 - `Simulate potion effects`
 - `Override existing potion effects`
 - `Ignore levitation and slowness`
+- `Elytra firework block use`
 - `Infinite Elytra fireworks`
 
 `Movement model` defaults to `Air rules` and is used only while `Ignore fluid
@@ -166,7 +177,7 @@ Add `-PbettermovingModMenuTest` to include the optional Mod Menu integration.
 The suite checks fluid modes, virtual-platform collision behavior, sprint
 movement and restrictions, slippery-block friction, potion formulas,
 configuration persistence, the Levitation and Slowness movement override, and
-non-consuming Elytra firework boosts.
+Elytra firework block-use routing and non-consuming Elytra firework boosts.
 
 ## License
 
