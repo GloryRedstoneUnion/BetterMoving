@@ -2,15 +2,14 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
-current release is **1.10.1**.
+current release is **1.10.2**.
 
-## 1.10.1 release highlights
+## 1.10.2 release highlights
 
-This release adds `Elytra firework block use`. While Elytra gliding, a
-firework aimed at a block or wall follows the Elytra boost path instead of
-being placed or otherwise used on the targeted block. The existing
-`Infinite Elytra fireworks` option still decides whether that boost is
-simulated without consuming a rocket.
+This release adds `Block non-Elytra firework use`. When enabled, a firework
+aimed at a block or wall is ignored unless the local player is Elytra gliding
+with `Elytra firework block use` enabled. The blocked action sends no packet,
+consumes no rocket, creates no entity, and does not swing the hand.
 
 BetterMoving does not need to be installed on a server. Server-side movement
 validation still applies, so a server can correct movement that it considers
@@ -130,10 +129,10 @@ MaLiLib configuration screen. BetterMoving does not require Mod Menu.
 
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
-3. Download `bettermoving-1.10.1.jar` from the
-   [BetterMoving v1.10.1 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.1)
+3. Download `bettermoving-1.10.2.jar` from the
+   [BetterMoving v1.10.2 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.2)
    and place it in the `mods` folder. The release also includes the matching
-   `bettermoving-1.10.1-sources.jar` for source inspection.
+   `bettermoving-1.10.2-sources.jar` for source inspection.
 4. Optionally install Mod Menu for an in-game configuration button.
 
 ## Configuration
