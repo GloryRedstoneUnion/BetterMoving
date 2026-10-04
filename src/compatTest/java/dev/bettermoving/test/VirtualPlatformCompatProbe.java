@@ -110,7 +110,13 @@ public final class VirtualPlatformCompatProbe {
     private static void verifyVoidProtectionPlatform(MinecraftClient client, BlockPos floor) {
         ClientPlayerEntity player = client.player;
         int bottomY = client.world.getBottomY();
-        BlockPos voidArea = floor.withY(bottomY);
+        int voidY = bottomY - 64;
+        BlockPos bottomArea = floor.withY(bottomY);
+        BlockPos voidArea = floor.withY(voidY);
+        for (BlockPos pos : BlockPos.iterate(
+                bottomArea.add(-2, 0, -2), bottomArea.add(2, 3, 2))) {
+            client.world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
+        }
         for (BlockPos pos : BlockPos.iterate(
                 voidArea.add(-2, 0, -2), voidArea.add(2, 3, 2))) {
             client.world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
@@ -121,22 +127,22 @@ public final class VirtualPlatformCompatProbe {
         player.setPosition(floor.getX() + 0.5, bottomY + 2.0, floor.getZ() + 0.5);
         player.setVelocity(Vec3d.ZERO);
         player.setOnGround(false);
-        player.move(MovementType.SELF, new Vec3d(0.0, -10.0, 0.0));
-        close("Disabled void protection allows falling below the world minimum", bottomY - 8.0, player.getY());
+        player.move(MovementType.SELF, new Vec3d(0.0, -100.0, 0.0));
+        close("Disabled void protection allows falling below the void boundary", bottomY - 98.0, player.getY());
 
         player.setPosition(floor.getX() + 0.5, bottomY + 2.0, floor.getZ() + 0.5);
         player.setVelocity(Vec3d.ZERO);
         player.setOnGround(false);
         BetterMovingConfigs.VOID_PROTECTION_PLATFORM.setBooleanValue(true);
-        player.move(MovementType.SELF, new Vec3d(0.0, -10.0, 0.0));
-        close("Void protection stops at the world's minimum build height", bottomY, player.getY());
+        player.move(MovementType.SELF, new Vec3d(0.0, -100.0, 0.0));
+        close("Void protection stops at the world's void damage boundary", voidY, player.getY());
         check(player.isOnGround() && player.verticalCollision,
                 "Void protection must create ordinary ground collision");
         check(client.world.getBlockState(voidArea).isAir(), "Void protection created a world block");
 
         ArmorStandEntity other = new ArmorStandEntity(client.world, player.getX(), bottomY + 2.0, player.getZ());
-        other.move(MovementType.SELF, new Vec3d(0.0, -10.0, 0.0));
-        close("Void protection changed another entity", bottomY - 8.0, other.getY());
+        other.move(MovementType.SELF, new Vec3d(0.0, -100.0, 0.0));
+        close("Void protection changed another entity", bottomY - 98.0, other.getY());
 
         player.setPosition(floor.getX() + 0.5, bottomY + 4.0, floor.getZ() + 0.5);
         player.setVelocity(Vec3d.ZERO);
@@ -156,8 +162,8 @@ public final class VirtualPlatformCompatProbe {
             client.player = player;
         }
         VoidProtectionPlatform.tick(client);
-        player.move(MovementType.SELF, new Vec3d(0.0, -10.0, 0.0));
-        close("Void protection rebinds after a player session change", bottomY, player.getY());
+        player.move(MovementType.SELF, new Vec3d(0.0, -100.0, 0.0));
+        close("Void protection rebinds after a player session change", voidY, player.getY());
         BetterMovingConfigs.VOID_PROTECTION_PLATFORM.setBooleanValue(false);
     }
 

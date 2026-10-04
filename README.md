@@ -10,10 +10,10 @@ published release is
 
 Adds `Void protection platform`, a disabled and hotkey-capable client-only
 movement option. When enabled, it creates an invisible movement-only floor at
-the current world's minimum build height, preventing the local player from
-falling below that world's void boundary. The height is resolved separately
-for each player and world, so dimensions with different minimum heights are
-handled correctly.
+the current world's void damage boundary (64 blocks below its minimum build
+height), preventing the local player from falling into the void. The height is
+resolved separately for each player and world, so dimensions with different
+minimum heights are handled correctly.
 
 The void platform does not create blocks, affect rendering or interaction
 targets, or affect other entities. It is independent from `Virtual platform`;

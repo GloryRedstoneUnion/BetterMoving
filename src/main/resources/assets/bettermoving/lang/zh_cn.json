@@ -10,7 +10,7 @@
   "bettermoving.config.name.virtualPlatform": "虚拟平台",
   "bettermoving.config.comment.virtualPlatform": "开启时记录脚底的精确高度，建立不可见的移动平台，可以像普通地面一样行走、疾跑、潜行和跳跃。关闭后重新开启可记录新高度；重生或切换维度时重新记录。不创建真实方块或交互目标，仅改变客户端移动碰撞。",
   "bettermoving.config.name.voidProtectionPlatform": "虚空保护平台",
-  "bettermoving.config.comment.voidProtectionPlatform": "在当前世界的最低建造高度创建不可见的移动平台，防止本地玩家掉入虚空。每个玩家和世界都会重新计算平台高度。不创建真实方块、不影响渲染或交互目标，也不影响其他实体。此开关默认关闭且未绑定快捷键。",
+  "bettermoving.config.comment.voidProtectionPlatform": "在当前世界最低建造高度以下 64 格的虚空伤害临界高度创建不可见的移动平台，防止本地玩家掉入虚空。每个玩家和世界都会重新计算平台高度。不创建真实方块、不影响渲染或交互目标，也不影响其他实体。此开关默认关闭且未绑定快捷键。",
   "bettermoving.config.name.ignoreSprintHunger": "忽略疾跑饥饿限制",
   "bettermoving.config.comment.ignoreSprintHunger": "仅在本地客户端玩家的 canSprint 饱食度判断中按满值处理，使饱食度为 6 或以下时仍可正常疾跑。实际饱食度、饱和度、移速和其他疾跑条件保持原样。",
   "bettermoving.config.name.ignoreSlipperyBlocks": "忽略方块滑溜度",

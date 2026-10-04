@@ -13,7 +13,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
 
 /**
- * Adds a movement-only floor at the active world's minimum build height.
+ * Adds a movement-only floor at the active world's void damage boundary.
  */
 public final class VoidProtectionPlatform {
     private static ClientPlayerEntity activePlayer;
@@ -38,7 +38,7 @@ public final class VoidProtectionPlatform {
         if (activePlayer != client.player || activeWorld != client.player.getWorld()) {
             activePlayer = client.player;
             activeWorld = client.player.getWorld();
-            height = activeWorld.getBottomY();
+            height = activeWorld.getBottomY() - 64;
         }
     }
 
