@@ -2,6 +2,7 @@ package dev.bettermoving.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.bettermoving.physics.VirtualPlatform;
+import dev.bettermoving.physics.VoidProtectionPlatform;
 import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
@@ -18,6 +19,8 @@ public abstract class EntityVirtualPlatformMixin {
                     target = "Lnet/minecraft/world/World;getEntityCollisions(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Box;)Ljava/util/List;"))
     private List<VoxelShape> bettermoving$addVirtualPlatform(
             List<VoxelShape> collisions, Vec3d movement) {
-        return VirtualPlatform.addMovementCollision((Entity) (Object) this, movement, collisions);
+        List<VoxelShape> result = VirtualPlatform.addMovementCollision(
+                (Entity) (Object) this, movement, collisions);
+        return VoidProtectionPlatform.addMovementCollision((Entity) (Object) this, movement, result);
     }
 }

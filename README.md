@@ -2,8 +2,22 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
-current release is
+current development version is **1.11.0** (not yet published). The latest
+published release is
 **[1.10.4](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.4)**.
+
+## 1.11.0 changes
+
+Adds `Void protection platform`, a disabled and hotkey-capable client-only
+movement option. When enabled, it creates an invisible movement-only floor at
+the current world's minimum build height, preventing the local player from
+falling below that world's void boundary. The height is resolved separately
+for each player and world, so dimensions with different minimum heights are
+handled correctly.
+
+The void platform does not create blocks, affect rendering or interaction
+targets, or affect other entities. It is independent from `Virtual platform`;
+both options can be configured and toggled separately.
 
 ## 1.10.4 release highlights
 
@@ -161,6 +175,7 @@ unbound by default:
 
 - `Ignore fluid physics`
 - `Virtual platform`
+- `Void protection platform`
 - `Ignore sprint hunger`
 - `Ignore slippery blocks`
 - `Simulate potion effects`
@@ -186,7 +201,7 @@ Build the mod and run unit tests with:
 ./gradlew build compatTestClasses
 ```
 
-The installable JAR is `build/libs/bettermoving-1.10.4.jar`;
+The installable development JAR is `build/libs/bettermoving-1.11.0.jar`;
 the `-sources.jar` is for source inspection only.
 
 On Windows, use `gradlew.bat`. Run the complete disposable client suite with:
@@ -203,7 +218,7 @@ On Windows, use `gradlew.bat`. Run the complete disposable client suite with:
 ```
 
 Add `-PbettermovingModMenuTest` to include the optional Mod Menu integration.
-The suite checks fluid modes, virtual-platform collision behavior, sprint
+The suite checks fluid modes, virtual-platform and void-protection collision behavior, sprint
 movement and restrictions, slippery-block friction, potion formulas,
 configuration persistence, the Levitation and Slowness movement override, and
 Elytra firework block-use routing, non-consuming Elytra firework boosts, and

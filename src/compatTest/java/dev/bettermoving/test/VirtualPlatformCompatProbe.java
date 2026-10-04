@@ -5,6 +5,7 @@ import dev.bettermoving.BetterMovingClient;
 import dev.bettermoving.config.BetterMovingConfigs;
 import dev.bettermoving.config.FluidMovementModel;
 import dev.bettermoving.physics.VirtualPlatform;
+import dev.bettermoving.physics.VoidProtectionPlatform;
 import fi.dy.masa.malilib.config.ConfigUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ public final class VirtualPlatformCompatProbe {
             verifyConfiguration();
             clearArea(client, floor);
             verifyFixedHeightAndIsolation(client, floor);
+            verifyVoidProtectionPlatform(client, floor);
             for (Motion motion : Motion.values()) {
                 List<Sample> ground = measure(client, floor, false, motion);
                 List<Sample> platform = measure(client, floor, true, motion);
@@ -49,9 +51,10 @@ public final class VirtualPlatformCompatProbe {
             verifyObstacles(client, floor);
             verifyFluidModes(client, floor);
             verifyToggleAndSessionReset(client, floor);
-            BetterMovingClient.LOGGER.info("Virtual platform compatibility checks passed");
+            BetterMovingClient.LOGGER.info("Virtual and void protection platform compatibility checks passed");
         } finally {
             BetterMovingConfigs.VIRTUAL_PLATFORM.setBooleanValue(false);
+            BetterMovingConfigs.VOID_PROTECTION_PLATFORM.setBooleanValue(false);
             BetterMovingConfigs.IGNORE_FLUID_PHYSICS.setBooleanValue(false);
             releaseKeys(client);
             player.getAbilities().allowFlying = allowedFlying;
@@ -82,6 +85,80 @@ public final class VirtualPlatformCompatProbe {
                 "Platform hotkey did not persist");
         BetterMovingConfigs.VIRTUAL_PLATFORM.setBooleanValue(false);
         BetterMovingConfigs.VIRTUAL_PLATFORM.getKeybind().setValueFromString("");
+
+        check(!BetterMovingConfigs.VOID_PROTECTION_PLATFORM.getDefaultBooleanValue(),
+                "Void protection platform must default to off");
+        check(BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.VOID_PROTECTION_PLATFORM),
+                "Missing void protection GUI toggle");
+        check(BetterMovingConfigs.ALL_HOTKEYS.contains(BetterMovingConfigs.VOID_PROTECTION_PLATFORM),
+                "Missing void protection toggle hotkey");
+        BetterMovingConfigs.VOID_PROTECTION_PLATFORM.getKeybind().setValueFromString("LEFT_ALT,O");
+        BetterMovingConfigs.VOID_PROTECTION_PLATFORM.setBooleanValue(true);
+        JsonObject voidSerialized = new JsonObject();
+        ConfigUtils.writeConfigBase(voidSerialized, "options", BetterMovingConfigs.OPTIONS);
+        BetterMovingConfigs.VOID_PROTECTION_PLATFORM.setBooleanValue(false);
+        BetterMovingConfigs.VOID_PROTECTION_PLATFORM.getKeybind().setValueFromString("");
+        ConfigUtils.readConfigBase(voidSerialized, "options", BetterMovingConfigs.OPTIONS);
+        check(BetterMovingConfigs.VOID_PROTECTION_PLATFORM.getBooleanValue(),
+                "Void protection toggle did not persist");
+        check("LEFT_ALT,O".equals(BetterMovingConfigs.VOID_PROTECTION_PLATFORM.getKeybind().getStringValue()),
+                "Void protection hotkey did not persist");
+        BetterMovingConfigs.VOID_PROTECTION_PLATFORM.setBooleanValue(false);
+        BetterMovingConfigs.VOID_PROTECTION_PLATFORM.getKeybind().setValueFromString("");
+    }
+
+    private static void verifyVoidProtectionPlatform(MinecraftClient client, BlockPos floor) {
+        ClientPlayerEntity player = client.player;
+        int bottomY = client.world.getBottomY();
+        BlockPos voidArea = floor.withY(bottomY);
+        for (BlockPos pos : BlockPos.iterate(
+                voidArea.add(-2, 0, -2), voidArea.add(2, 3, 2))) {
+            client.world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
+        }
+
+        BetterMovingConfigs.VIRTUAL_PLATFORM.setBooleanValue(false);
+        BetterMovingConfigs.VOID_PROTECTION_PLATFORM.setBooleanValue(false);
+        player.setPosition(floor.getX() + 0.5, bottomY + 2.0, floor.getZ() + 0.5);
+        player.setVelocity(Vec3d.ZERO);
+        player.setOnGround(false);
+        player.move(MovementType.SELF, new Vec3d(0.0, -10.0, 0.0));
+        close("Disabled void protection allows falling below the world minimum", bottomY - 8.0, player.getY());
+
+        player.setPosition(floor.getX() + 0.5, bottomY + 2.0, floor.getZ() + 0.5);
+        player.setVelocity(Vec3d.ZERO);
+        player.setOnGround(false);
+        BetterMovingConfigs.VOID_PROTECTION_PLATFORM.setBooleanValue(true);
+        player.move(MovementType.SELF, new Vec3d(0.0, -10.0, 0.0));
+        close("Void protection stops at the world's minimum build height", bottomY, player.getY());
+        check(player.isOnGround() && player.verticalCollision,
+                "Void protection must create ordinary ground collision");
+        check(client.world.getBlockState(voidArea).isAir(), "Void protection created a world block");
+
+        ArmorStandEntity other = new ArmorStandEntity(client.world, player.getX(), bottomY + 2.0, player.getZ());
+        other.move(MovementType.SELF, new Vec3d(0.0, -10.0, 0.0));
+        close("Void protection changed another entity", bottomY - 8.0, other.getY());
+
+        player.setPosition(floor.getX() + 0.5, bottomY + 4.0, floor.getZ() + 0.5);
+        player.setVelocity(Vec3d.ZERO);
+        player.setOnGround(false);
+        BetterMovingConfigs.VIRTUAL_PLATFORM.setBooleanValue(true);
+        player.move(MovementType.SELF, new Vec3d(0.0, -10.0, 0.0));
+        close("Virtual platform remains independent of void protection", bottomY + 4.0, player.getY());
+
+        BetterMovingConfigs.VIRTUAL_PLATFORM.setBooleanValue(false);
+        player.setPosition(floor.getX() + 0.5, bottomY + 2.0, floor.getZ() + 0.5);
+        player.setVelocity(Vec3d.ZERO);
+        player.setOnGround(false);
+        client.player = null;
+        try {
+            VoidProtectionPlatform.tick(client);
+        } finally {
+            client.player = player;
+        }
+        VoidProtectionPlatform.tick(client);
+        player.move(MovementType.SELF, new Vec3d(0.0, -10.0, 0.0));
+        close("Void protection rebinds after a player session change", bottomY, player.getY());
+        BetterMovingConfigs.VOID_PROTECTION_PLATFORM.setBooleanValue(false);
     }
 
     private static void verifyFixedHeightAndIsolation(MinecraftClient client, BlockPos floor) {

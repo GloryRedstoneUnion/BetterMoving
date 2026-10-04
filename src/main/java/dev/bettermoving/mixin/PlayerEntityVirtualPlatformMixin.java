@@ -3,6 +3,7 @@ package dev.bettermoving.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.bettermoving.physics.VirtualPlatform;
+import dev.bettermoving.physics.VoidProtectionPlatform;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
@@ -20,6 +21,7 @@ public abstract class PlayerEntityVirtualPlatformMixin {
     private boolean bettermoving$includeVirtualPlatformInLedgeCheck(
             World world, Entity entity, Box box, Operation<Boolean> original) {
         return original.call(world, entity, box)
-                && !VirtualPlatform.intersectsMovementSupport(entity, box);
+                && !VirtualPlatform.intersectsMovementSupport(entity, box)
+                && !VoidProtectionPlatform.intersectsMovementSupport(entity, box);
     }
 }

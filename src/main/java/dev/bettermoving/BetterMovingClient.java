@@ -3,6 +3,7 @@ package dev.bettermoving;
 import dev.bettermoving.config.BetterMovingInitializationHandler;
 import dev.bettermoving.physics.LevitationElytraFlight;
 import dev.bettermoving.physics.VirtualPlatform;
+import dev.bettermoving.physics.VoidProtectionPlatform;
 import fi.dy.masa.malilib.event.InitializationHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -16,6 +17,7 @@ public final class BetterMovingClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ClientTickEvents.START_CLIENT_TICK.register(VirtualPlatform::tick);
+        ClientTickEvents.START_CLIENT_TICK.register(VoidProtectionPlatform::tick);
         ClientTickEvents.START_CLIENT_TICK.register(LevitationElytraFlight::tick);
         InitializationHandler.getInstance()
                 .registerInitializationHandler(BetterMovingInitializationHandler.INSTANCE);

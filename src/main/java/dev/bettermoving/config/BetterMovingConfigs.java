@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.bettermoving.BetterMovingClient;
 import dev.bettermoving.physics.VirtualPlatform;
+import dev.bettermoving.physics.VoidProtectionPlatform;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.IConfigBase;
@@ -41,6 +42,14 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     "",
                     comment("virtualPlatform"),
                     prettyName("virtualPlatform"));
+
+    public static final ConfigBooleanHotkeyed VOID_PROTECTION_PLATFORM =
+            new ConfigBooleanHotkeyed(
+                    "voidProtectionPlatform",
+                    false,
+                    "",
+                    comment("voidProtectionPlatform"),
+                    prettyName("voidProtectionPlatform"));
 
     public static final ConfigBooleanHotkeyed IGNORE_SPRINT_HUNGER =
             new ConfigBooleanHotkeyed(
@@ -144,6 +153,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_FLUID_PHYSICS,
             MODEL,
             VIRTUAL_PLATFORM,
+            VOID_PROTECTION_PLATFORM,
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_POTION_EFFECTS,
@@ -159,6 +169,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
             VIRTUAL_PLATFORM,
+            VOID_PROTECTION_PLATFORM,
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_POTION_EFFECTS,
@@ -172,6 +183,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_FLUID_PHYSICS,
             MODEL,
             VIRTUAL_PLATFORM,
+            VOID_PROTECTION_PLATFORM,
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_POTION_EFFECTS,
@@ -197,6 +209,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
 
     public static void register() {
         VIRTUAL_PLATFORM.setValueChangeCallback(config -> VirtualPlatform.onOptionChanged());
+        VOID_PROTECTION_PLATFORM.setValueChangeCallback(config -> VoidProtectionPlatform.onOptionChanged());
         ConfigManager.getInstance().registerConfigHandler(BetterMovingClient.MOD_ID, INSTANCE);
     }
 
