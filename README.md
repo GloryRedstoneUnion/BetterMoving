@@ -1,146 +1,15 @@
 # BetterMoving
 
-BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
-local movement calculations through a MaLiLib configuration screen. The
-latest release is
-**[1.11.0](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.11.0)**.
+BetterMoving is a client-only Fabric mod for Minecraft 1.20.1. It provides
+configurable movement overrides through a MaLiLib configuration screen,
+including fluid movement, invisible platforms, simulated potion effects, and
+Elytra firework controls.
 
-## 1.11.0 release highlights
+Current release: [1.11.0](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.11.0).
 
-Adds `Void protection platform`, a disabled and hotkey-capable client-only
-movement option. When enabled, it creates an invisible movement-only floor at
-the current world's void damage boundary (64 blocks below its minimum build
-height), preventing the local player from falling into the void. The height is
-resolved separately for each player and world, so dimensions with different
-minimum heights are handled correctly.
-
-The void platform does not create blocks, affect rendering or interaction
-targets, or affect other entities. It is independent from `Virtual platform`;
-both options can be configured and toggled separately.
-
-## 1.10.4 release highlights
-
-Fixes interrupted Elytra flight with `Ignore levitation and slowness` enabled
-while the player has real Levitation. Vanilla servers reject the flight and
-synchronize a cleared Elytra flag; BetterMoving now retains the local flight
-session while ignoring Levitation instead of letting that update interrupt it.
-
-Landing, riding, creative flight, death, water movement, missing or unusable
-Elytra, explicit flight stops, disconnecting, disabling the option, and effect
-removal end the local override. Air-rule fluid movement and Elytra firework
-boosts remain compatible. Other entities and incoming metadata are unchanged.
-
-BetterMoving does not need to be installed on a server. Server-side movement
-validation still applies, so a server can correct movement that it considers
-invalid.
-
-## Features
-
-### Fluid movement
-
-Enable `Ignore fluid physics` and choose a `Movement model`:
-
-- `Air rules` treats water, lava, and bubble columns as air for movement. The
-  local player can walk, sprint, jump, fall, fly with an Elytra, and move
-  through fluids without fluid drag, swimming slowdown, or bubble-column lift.
-- `Water rules` routes water, lava, and bubble columns through the ordinary
-  water movement path. This includes swimming poses and sprint-swimming in
-  lava while suppressing bubble-column lift and drag.
-
-Only client-side movement prediction is changed. Fluid rendering, breathing,
-fire, damage, underwater vision, and other non-movement effects use the real
-world state.
-
-### Virtual platform
-
-`Virtual platform` records the local player's feet height and creates an
-invisible movement-only floor at that height. It behaves like ordinary ground
-for walking, sprinting, sneaking, jumping, and landing.
-
-The platform does not create blocks, affect rendering, change raycasts or
-interaction targets, or affect other entities. It is not creative flight. A
-new height is captured after toggling the option, respawning, reconnecting, or
-changing dimension.
-
-### Sprint hunger override
-
-`Ignore sprint hunger` lets the local player start and maintain normal
-sprinting at food level 6 or below. It changes only the food-level check inside
-`ClientPlayerEntity.canSprint()`; all other sprint requirements remain intact.
-
-### Slippery blocks
-
-`Ignore slippery blocks` treats ice and other blocks with above-normal
-slipperiness as ordinary blocks during local-player movement. Block states,
-rendering, interactions, and other entities are unchanged.
-
-### Simulated potion effects
-
-Enable `Simulate potion effects` to apply configured Speed, Jump Boost, and
-Dolphin's Grace levels to local-player movement calculations without adding
-real status effects, particles, HUD icons, or server-side effects.
-
-- `Simulated speed potion level` uses the vanilla Speed formula. Level `0` has
-  no effect; level `n` applies a `1 + 0.2 * n` movement-speed multiplier.
-- `Simulated jump boost level` uses the vanilla Jump Boost formula. Level `0`
-  has no effect; each level adds `0.1` to jump velocity.
-- `Simulated dolphin's grace level` applies the vanilla Dolphin's Grace water
-  movement behavior. Level `0` has no effect; any level from `1` to `255`
-  matches the vanilla effect, which does not scale with the amplifier.
-- `Override existing potion effects` replaces the local player's existing
-  Speed, Jump Boost, and Dolphin's Grace effects with the configured levels
-  while simulation is enabled. When it is disabled, stronger existing Speed
-  and Jump Boost levels and any existing Dolphin's Grace effect are preserved.
-
-All simulated level values range from `0` to `255`.
-
-### Levitation and slowness
-
-`Ignore levitation and slowness` is a shared, hotkey-capable movement toggle.
-When enabled for the local player:
-
-- Levitation does not add vertical movement or block Elytra activation and
-  flight.
-- Slowness does not reduce movement speed; other attribute modifiers continue
-  to apply.
-
-The actual status effects remain active for rendering, particles, icons, and
-other non-movement behavior.
-
-While real Levitation is present, an already-started local Elytra flight can
-continue even if the server clears its gliding flag. This does not enable
-server-side gliding or bypass server movement validation. Ending the effect or
-disabling the option returns flight decisions to the synchronized vanilla state.
-
-### Elytra fireworks
-
-`Elytra firework block use` is a shared, hotkey-capable movement toggle. When
-enabled while the local player is Elytra gliding, using a firework rocket on a
-block or wall routes the action to Elytra acceleration instead of the block-use
-path. With `Infinite Elytra fireworks` enabled, the local rocket is simulated
-without sending the item-use packet or consuming the server-side rocket.
-When `Infinite Elytra fireworks` is disabled, the ordinary vanilla item-use
-packet and rocket consumption are preserved.
-
-`Infinite Elytra fireworks` is a shared, hotkey-capable movement toggle. When
-enabled while the local player is Elytra gliding, using a firework rocket
-creates a client-side rocket and applies the same acceleration as vanilla.
-The client does not send the firework item-use packet, so the server does not
-consume a rocket. No rocket is created when the player is not fall-flying.
-
-The local rocket is temporary and is removed after its normal lifetime. This
-feature changes client-side movement prediction only; the server may still
-correct movement according to its own state.
-
-`Block non-Elytra firework use` is a shared, hotkey-capable safety toggle. When
-enabled, it blocks only a firework rocket use that reaches the actual launch
-path on a block or wall, unless the local player is Elytra gliding and
-`Elytra firework block use` is also enabled. Accepted block interactions such as
-workbenches and containers remain available, and entity interactions are
-unaffected. Sneaking past a block's normal interaction is still blocked when
-it would launch a rocket instead. Blocked launches send no interaction packet,
-consume no rocket, create no rocket entity, and do not swing the hand. Aiming
-at air is unaffected.
+Install BetterMoving only on the client. It changes local movement prediction,
+not server rules. Servers can reject or correct movement, and server-side
+damage and item consumption remain authoritative.
 
 ## Requirements
 
@@ -150,62 +19,170 @@ at air is unaffected.
 - MaLiLib 0.16.x
 - Java 17 or newer
 
-Mod Menu is optional. When installed, its BetterMoving button opens the same
-MaLiLib configuration screen. BetterMoving does not require Mod Menu.
+[Mod Menu](https://modrinth.com/mod/modmenu) is optional. When installed, its
+BetterMoving configuration button opens the MaLiLib screen. The configuration
+hotkey works without Mod Menu.
 
 ## Installation
 
-1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
-2. Install MaLiLib 0.16.x.
-3. Download
-   [bettermoving-1.11.0.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.11.0/bettermoving-1.11.0.jar)
-   from the
-   [1.11.0 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.11.0)
-   and place it in the `mods` folder. The release also includes
-   [bettermoving-1.11.0-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.11.0/bettermoving-1.11.0-sources.jar)
-   for source inspection; it is not an installable mod.
-4. Optionally install Mod Menu for an in-game configuration button.
+1. Install Fabric Loader for Minecraft 1.20.1.
+2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
+3. Download [bettermoving-1.11.0.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.11.0/bettermoving-1.11.0.jar)
+   and place it in the same `mods` folder.
+4. Optionally install Mod Menu, then launch Minecraft.
+
+The release also includes [bettermoving-1.11.0-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.11.0/bettermoving-1.11.0-sources.jar)
+for source inspection. Do not install the sources JAR as a mod.
 
 ## Configuration
 
-Open the MaLiLib configuration screen with `L`, then `C`, or use the
-`Open configuration screen` hotkey. The following toggles are disabled and
-unbound by default:
+Open the configuration screen with `L + C`, or use the BetterMoving button in
+Mod Menu. The `Open configuration screen` hotkey can be rebound in MaLiLib.
 
-- `Ignore fluid physics`
-- `Virtual platform`
-- `Void protection platform`
-- `Ignore sprint hunger`
-- `Ignore slippery blocks`
-- `Simulate potion effects`
-- `Override existing potion effects`
-- `Ignore levitation and slowness`
-- `Elytra firework block use`
-- `Block non-Elytra firework use`
-- `Infinite Elytra fireworks`
+All feature toggles are disabled and have no hotkey assigned by default.
+Each toggle supports a configurable hotkey. `Movement model` defaults to
+`Air rules`; all three simulated potion levels default to `0` and accept
+integers from `0` to `255`. The model and level settings do not have hotkeys.
 
-`Movement model` defaults to `Air rules` and is used only while `Ignore fluid
-physics` is enabled. The simulated Speed, Jump Boost, and Dolphin's Grace
-levels default to `0` and do not have hotkeys.
+Settings are saved in `config/bettermoving.json`. If that file does not exist,
+BetterMoving imports `config/fluidair.json`, when available, and saves the
+settings under the current name.
 
-Configuration is stored in `config/bettermoving.json`. If that file does not
-exist, BetterMoving imports `config/fluidair.json` and saves the migrated
-settings under the new name.
+## Features
 
-## Development and testing
+### Fluid movement
 
-Build the mod and run unit tests with:
+Enable `Ignore fluid physics`, then select a `Movement model`:
 
-```text
+- `Air rules` treats water, lava, and bubble columns as air for local movement.
+  Walk, sprint, jump, fall, and use an Elytra without fluid drag, swimming
+  slowdown, or bubble-column forces.
+- `Water rules` treats those fluids as ordinary water. This includes swimming
+  poses and sprint-swimming in lava and bubble columns, without bubble-column
+  lift or downward drag.
+
+The model applies only while `Ignore fluid physics` is enabled. Fluid
+rendering, breathing, fire, damage, underwater vision, and other non-movement
+behavior continue to use the real world state.
+
+### Virtual platform
+
+`Virtual platform` records the local player's feet height when enabled and
+adds an invisible movement-only floor at that height. Walk, sprint, sneak,
+jump, and land on it like ordinary ground; it is not creative flight.
+
+Toggle the option off and on to record a different height. Respawning,
+reconnecting, or changing dimension also captures a fresh height.
+
+### Void protection platform
+
+`Void protection platform` adds an invisible movement-only floor at the
+current world's void damage boundary:
+
+```java
+world.getBottomY() - 64
+```
+
+This is the boundary below which vanilla applies void damage, not the minimum
+build height itself. The platform stops local downward movement at that
+boundary. Its height is recalculated for each player and world, including
+dimensions with different minimum build heights.
+
+Both platform options affect only local-player movement collision. They do
+not create world blocks, render a platform, change raycasts or interaction
+targets, or affect other entities. `Void protection platform` and
+`Virtual platform` are independent and can be enabled together. Void
+protection does not cancel damage or change the server's position checks.
+
+### Sprint hunger override
+
+`Ignore sprint hunger` allows normal client-side sprinting at food level 6 or
+below. It changes only the food check in `ClientPlayerEntity.canSprint()`.
+Actual food, saturation, movement speed, and other sprint requirements are
+unchanged.
+
+### Slippery blocks
+
+`Ignore slippery blocks` treats ice and other blocks with above-normal
+slipperiness as ordinary blocks during local-player movement. It does not
+change block states, rendering, interactions, or other entities.
+
+### Simulated potion effects
+
+Enable `Simulate potion effects` to use the configured potion levels in
+local-player movement calculations. No real status effects, particles, HUD
+icons, or server-side effects are added.
+
+| Setting | Movement behavior |
+| --- | --- |
+| `Simulated speed potion level` | Uses the vanilla Speed multiplier: `1 + 0.2 * level`. |
+| `Simulated jump boost level` | Uses the vanilla Jump Boost formula, adding `0.1 * level` to jump velocity. |
+| `Simulated dolphin's grace level` | Enables vanilla Dolphin's Grace water movement at any level above `0`; vanilla does not scale it with the amplifier. |
+
+Level `0` represents no simulated effect. With
+`Override existing potion effects` disabled, stronger existing Speed and
+Jump Boost levels and any existing Dolphin's Grace effect are preserved.
+With that toggle enabled, the configured levels replace the corresponding
+real effects for movement calculations, including a configured level of `0`.
+The override applies only while `Simulate potion effects` is enabled.
+
+### Levitation and slowness
+
+`Ignore levitation and slowness` controls both movement overrides:
+
+- Levitation does not add vertical motion or block Elytra activation and
+  gliding.
+- Slowness does not reduce local movement speed. Other attribute modifiers
+  continue to apply.
+
+Real effects remain active for particles, icons, and non-movement behavior.
+While real Levitation is present, BetterMoving can retain a started local
+Elytra flight when the server clears its gliding flag. This does not enable
+server-side gliding or bypass movement validation.
+
+The local flight override ends on landing, riding, creative flight, climbing,
+death, water movement, missing or unusable Elytra, an explicit flight stop,
+disconnecting, disabling the option, or removal of Levitation. Air-rule fluid
+movement and local firework boosts remain compatible.
+
+### Elytra fireworks
+
+`Infinite Elytra fireworks` simulates a firework rocket while the local player
+is gliding, applying vanilla acceleration without sending the item-use packet
+or consuming a rocket on the server. The client-side rocket expires after its
+normal lifetime. This option does not create rockets outside Elytra flight.
+
+`Elytra firework block use` routes firework use on a block or wall to an Elytra
+boost while gliding, instead of launching a rocket from the block. With
+`Infinite Elytra fireworks` enabled, the boost is simulated without rocket
+consumption. Otherwise, vanilla item-use packets and rocket consumption are
+preserved.
+
+`Block non-Elytra firework use` blocks firework launches from blocks or walls
+unless the player is gliding with `Elytra firework block use` enabled. It
+blocks only the actual launch path: accepted workbench and container
+interactions still work, and entity interactions are unaffected. Sneaking
+past a block's normal interaction is blocked if it would launch a rocket.
+
+A blocked launch sends no interaction packet, consumes no rocket, creates no
+rocket entity, and does not swing the hand. Aiming at air is unaffected.
+These firework options are independent, hotkey-capable toggles.
+
+## Building and testing
+
+Build the mod, run unit tests, and compile the client compatibility suite:
+
+```sh
 ./gradlew build compatTestClasses
 ```
 
-The installable release JAR is `build/libs/bettermoving-1.11.0.jar`;
-the `-sources.jar` is for source inspection only.
+On Windows, use `gradlew.bat` instead of `./gradlew`. The installable JAR is
+`build/libs/bettermoving-1.11.0.jar`; the `-sources.jar` is for source
+inspection only.
 
-On Windows, use `gradlew.bat`. Run the complete disposable client suite with:
+Run the disposable client compatibility suite:
 
-```text
+```sh
 ./gradlew runClient \
   -PbettermovingCompatTest \
   -PbettermovingMovementCompatTest \
@@ -216,19 +193,16 @@ On Windows, use `gradlew.bat`. Run the complete disposable client suite with:
   -PbettermovingElytraFireworksCompatTest
 ```
 
-Add `-PbettermovingModMenuTest` to include the optional Mod Menu integration.
-The suite checks fluid modes, virtual-platform and void-protection collision behavior, sprint
-movement and restrictions, slippery-block friction, potion formulas,
-configuration persistence, the Levitation and Slowness movement override, and
-Elytra firework block-use routing, non-consuming Elytra firework boosts, and
-non-Elytra firework launch suppression. Levitation checks reproduce a real
-vanilla integrated-server flight rejection, replay its metadata through the
-client packet handler, and verify sustained flight, stopping conditions,
-remote-player isolation, fluid modes, and local firework acceleration.
-Firework checks cover both hands in Creative and Survival modes, workbench
-and container interactions, sneaking
-fallbacks, entity interactions, outgoing interaction packets, and block
-prediction cleanup.
+Add `-PbettermovingModMenuTest` to include optional Mod Menu integration.
+The suite covers configuration persistence, fluid models, both platforms,
+sprint restrictions, slippery-block friction, simulated potion formulas,
+Levitation and Slowness overrides, and Elytra firework behavior.
+
+Flight checks reproduce integrated-server Levitation rejection and verify
+local gliding, stopping conditions, remote-player isolation, fluid models,
+and firework acceleration. Firework checks cover both hands in Creative and
+Survival, block and entity interactions, sneaking fallbacks, outgoing packets,
+and block prediction cleanup.
 
 ## License
 
