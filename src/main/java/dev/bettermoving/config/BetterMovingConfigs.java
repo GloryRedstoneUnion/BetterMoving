@@ -156,7 +156,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     "simulatedElytraFireworkTargetSpeed",
                     64.0,
                     0.0,
-                    1000.0,
+                    Double.MAX_VALUE,
                     false,
                     comment("simulatedElytraFireworkTargetSpeed"));
 

@@ -167,6 +167,9 @@ public final class ElytraFireworkCompatProbe {
         check(Math.abs(BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED
                 .getDefaultDoubleValue() - 64.0) < 1.0E-9,
                 "Simulated Elytra firework target speed must default to 64 m/s");
+        check(BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.getMaxDoubleValue()
+                        == Double.MAX_VALUE,
+                "Simulated Elytra firework target speed must accept the full double range");
         check(BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED),
                 "Missing simulated Elytra firework speed GUI option");
         check(BetterMovingConfigs.GUI_OPTIONS.contains(

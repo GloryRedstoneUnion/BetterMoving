@@ -36,7 +36,7 @@
   "bettermoving.config.name.simulatedDolphinsGraceLevel": "模拟海豚的恩惠等级",
   "bettermoving.config.comment.simulatedDolphinsGraceLevel": "开启“模拟药水效果”后，将此海豚的恩惠效果等级用于水中移动。等级 0 不添加效果；等级 1 至 255 均等同于原版海豚的恩惠移动效果。除非开启“覆盖原有药水效果”，否则玩家已有的海豚的恩惠效果会保留。可填 0 至 255。",
   "bettermoving.config.name.simulatedElytraFireworkTargetSpeed": "模拟鞘翅烟花目标速度（米/秒）",
-  "bettermoving.config.comment.simulatedElytraFireworkTargetSpeed": "开启“模拟鞘翅烟花目标速度”后，本地玩家鞘翅烟花推进的平衡目标速度。单位为米/秒，可填 0 至 1000，默认 64（每 tick 3.2 格）。",
+  "bettermoving.config.comment.simulatedElytraFireworkTargetSpeed": "开启“模拟鞘翅烟花目标速度”后，本地玩家鞘翅烟花推进的平衡目标速度。单位为米/秒，可填 0 至 Double.MAX_VALUE，默认 64（每 tick 3.2 格）。",
   "bettermoving.config.name.openConfigGui": "打开配置界面",
   "bettermoving.config.comment.openConfigGui": "打开 BetterMoving 的 malilib 配置界面。"
 }
