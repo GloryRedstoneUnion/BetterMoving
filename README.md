@@ -2,11 +2,10 @@
 
 BetterMoving is a client-side Fabric mod for Minecraft 1.20.1. It changes
 local movement calculations through a MaLiLib configuration screen. The
-current development version is **1.11.0** (not yet published). The latest
-published release is
-**[1.10.4](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.4)**.
+latest release is
+**[1.11.0](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.11.0)**.
 
-## 1.11.0 changes
+## 1.11.0 release highlights
 
 Adds `Void protection platform`, a disabled and hotkey-capable client-only
 movement option. When enabled, it creates an invisible movement-only floor at
@@ -201,7 +200,7 @@ Build the mod and run unit tests with:
 ./gradlew build compatTestClasses
 ```
 
-The installable development JAR is `build/libs/bettermoving-1.11.0.jar`;
+The installable release JAR is `build/libs/bettermoving-1.11.0.jar`;
 the `-sources.jar` is for source inspection only.
 
 On Windows, use `gradlew.bat`. Run the complete disposable client suite with:
