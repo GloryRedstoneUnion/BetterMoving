@@ -174,9 +174,9 @@ acceleration toward a configurable equilibrium speed. The companion
 second and is converted to per-tick speed with `v_t = V / 20`. For example,
 `40` targets `2.0` meters per tick. Values from `0` through the Java double
 maximum (`Double.MAX_VALUE`) are accepted. The default value is `64 m/s`
-(`3.2` meters per tick); the toggle is disabled and unbound by default. The setting
-only changes the local player's Elytra firework propulsion and leaves vanilla
-behavior unchanged while disabled.
+(`3.2` meters per tick). The toggle is disabled and unbound by default. The
+setting only changes the local player's Elytra firework propulsion and leaves
+vanilla behavior unchanged while disabled.
 
 ## Building and testing
 
