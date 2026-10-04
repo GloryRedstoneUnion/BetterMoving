@@ -158,11 +158,11 @@ MaLiLib configuration screen. BetterMoving does not require Mod Menu.
 1. Install Fabric Loader and Fabric API for Minecraft 1.20.1.
 2. Install MaLiLib 0.16.x.
 3. Download
-   [bettermoving-1.10.4.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.10.4/bettermoving-1.10.4.jar)
+   [bettermoving-1.11.0.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.11.0/bettermoving-1.11.0.jar)
    from the
-   [1.10.4 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.10.4)
+   [1.11.0 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.11.0)
    and place it in the `mods` folder. The release also includes
-   [bettermoving-1.10.4-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.10.4/bettermoving-1.10.4-sources.jar)
+   [bettermoving-1.11.0-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.11.0/bettermoving-1.11.0-sources.jar)
    for source inspection; it is not an installable mod.
 4. Optionally install Mod Menu for an in-game configuration button.
 
