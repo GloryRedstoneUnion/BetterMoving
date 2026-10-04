@@ -2,6 +2,8 @@ package dev.bettermoving.test;
 
 import dev.bettermoving.compat.ClientWorldPredictionProbe;
 import dev.bettermoving.config.BetterMovingConfigs;
+import fi.dy.masa.malilib.config.ConfigUtils;
+import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -45,7 +47,12 @@ public final class ElytraFireworkCompatProbe {
         boolean previousBlockUseToggle = BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.getBooleanValue();
         boolean previousBlockNonElytraUseToggle =
                 BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.getBooleanValue();
+        boolean previousTargetSpeedToggle =
+                BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.getBooleanValue();
+        double previousTargetSpeed =
+                BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.getDoubleValue();
         try {
+            verifyConfiguration();
             capturePackets = true;
             player.input.sneaking = false;
             player.equipStack(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA));
@@ -56,6 +63,8 @@ public final class ElytraFireworkCompatProbe {
             player.setPitch(0.0F);
             BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.setBooleanValue(true);
             BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.setBooleanValue(true);
+            BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.setBooleanValue(true);
+            BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.setDoubleValue(40.0);
 
             BlockPos target = player.getBlockPos().down();
             client.world.setBlockState(target, Blocks.STONE.getDefaultState());
@@ -105,9 +114,11 @@ public final class ElytraFireworkCompatProbe {
                     .findFirst()
                     .orElseThrow(() -> new AssertionError("No local Elytra firework entity was created"));
             rocket.tick();
-            if (player.getVelocity().z <= 0.0) {
+            if (Math.abs(player.getVelocity().x) > 1.0E-6
+                    || Math.abs(player.getVelocity().y) > 1.0E-6
+                    || Math.abs(player.getVelocity().z - 1.0) > 1.0E-6) {
                 throw new AssertionError(
-                        "The local Elytra firework did not apply vanilla acceleration: velocity="
+                        "The local Elytra firework did not apply the configured target speed: velocity="
                                 + player.getVelocity());
             }
             for (int i = 0; i < 200 && !rocket.isRemoved(); ++i) {
@@ -138,6 +149,8 @@ public final class ElytraFireworkCompatProbe {
             BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.setBooleanValue(previousToggle);
             BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.setBooleanValue(previousBlockUseToggle);
             BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.setBooleanValue(previousBlockNonElytraUseToggle);
+            BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.setBooleanValue(previousTargetSpeedToggle);
+            BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.setDoubleValue(previousTargetSpeed);
             player.stopFallFlying();
             player.equipStack(EquipmentSlot.CHEST, previousChest);
             player.equipStack(EquipmentSlot.MAINHAND, previousMainHand);
@@ -145,6 +158,43 @@ public final class ElytraFireworkCompatProbe {
             player.input.sneaking = previousSneaking;
             client.interactionManager.setGameMode(previousGameMode);
             player.setVelocity(Vec3d.ZERO);
+        }
+    }
+
+    private static void verifyConfiguration() {
+        check(!BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.getDefaultBooleanValue(),
+                "Simulated Elytra firework target speed must default to disabled");
+        check(Math.abs(BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED
+                .getDefaultDoubleValue() - 64.0) < 1.0E-9,
+                "Simulated Elytra firework target speed must default to 64 m/s");
+        check(BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED),
+                "Missing simulated Elytra firework speed GUI option");
+        check(BetterMovingConfigs.GUI_OPTIONS.contains(
+                        BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED),
+                "Missing simulated Elytra firework target speed value GUI option");
+        check(BetterMovingConfigs.ALL_HOTKEYS.contains(BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED),
+                "Simulated Elytra firework target speed must be registered as a hotkey");
+        check(!BetterMovingConfigs.ALL_HOTKEYS.contains(
+                        BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED),
+                "Simulated Elytra firework target speed value must not be registered as a hotkey");
+
+        JsonObject serialized = new JsonObject();
+        BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.setBooleanValue(true);
+        BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.setDoubleValue(37.5);
+        ConfigUtils.writeConfigBase(serialized, "options", BetterMovingConfigs.OPTIONS);
+        BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.setBooleanValue(false);
+        BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.setDoubleValue(64.0);
+        ConfigUtils.readConfigBase(serialized, "options", BetterMovingConfigs.OPTIONS);
+        check(BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.getBooleanValue(),
+                "Simulated Elytra firework target speed toggle persistence was not restored");
+        check(Math.abs(BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED
+                .getDoubleValue() - 37.5) < 1.0E-9,
+                "Simulated Elytra firework target speed persistence was not restored");
+    }
+
+    private static void check(boolean condition, String message) {
+        if (!condition) {
+            throw new AssertionError(message);
         }
     }
 

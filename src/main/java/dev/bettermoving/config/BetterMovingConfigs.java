@@ -10,6 +10,7 @@ import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigHandler;
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed;
+import fi.dy.masa.malilib.config.options.ConfigDouble;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
 import fi.dy.masa.malilib.config.options.ConfigInteger;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
@@ -115,6 +116,14 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("blockNonElytraFireworkUse"),
                     prettyName("blockNonElytraFireworkUse"));
 
+    public static final ConfigBooleanHotkeyed SIMULATE_ELYTRA_FIREWORK_SPEED =
+            new ConfigBooleanHotkeyed(
+                    "simulateElytraFireworkSpeed",
+                    false,
+                    "",
+                    comment("simulateElytraFireworkSpeed"),
+                    prettyName("simulateElytraFireworkSpeed"));
+
     public static final ConfigInteger SIMULATED_SPEED_POTION_LEVEL =
             new ConfigInteger(
                     "simulatedSpeedPotionLevel",
@@ -142,6 +151,15 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     false,
                     comment("simulatedDolphinsGraceLevel"));
 
+    public static final ConfigDouble SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED =
+            new ConfigDouble(
+                    "simulatedElytraFireworkTargetSpeed",
+                    64.0,
+                    0.0,
+                    1000.0,
+                    false,
+                    comment("simulatedElytraFireworkTargetSpeed"));
+
     public static final ConfigHotkey OPEN_CONFIG_GUI =
             new ConfigHotkey(
                     "openConfigGui",
@@ -162,9 +180,11 @@ public final class BetterMovingConfigs implements IConfigHandler {
             INFINITE_ELYTRA_FIREWORKS,
             ELYTRA_FIREWORK_BLOCK_USE,
             BLOCK_NON_ELYTRA_FIREWORK_USE,
+            SIMULATE_ELYTRA_FIREWORK_SPEED,
             SIMULATED_SPEED_POTION_LEVEL,
             SIMULATED_JUMP_BOOST_LEVEL,
-            SIMULATED_DOLPHINS_GRACE_LEVEL);
+            SIMULATED_DOLPHINS_GRACE_LEVEL,
+            SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
@@ -178,6 +198,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             INFINITE_ELYTRA_FIREWORKS,
             ELYTRA_FIREWORK_BLOCK_USE,
             BLOCK_NON_ELYTRA_FIREWORK_USE,
+            SIMULATE_ELYTRA_FIREWORK_SPEED,
             OPEN_CONFIG_GUI);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
@@ -192,9 +213,11 @@ public final class BetterMovingConfigs implements IConfigHandler {
             INFINITE_ELYTRA_FIREWORKS,
             ELYTRA_FIREWORK_BLOCK_USE,
             BLOCK_NON_ELYTRA_FIREWORK_USE,
+            SIMULATE_ELYTRA_FIREWORK_SPEED,
             SIMULATED_SPEED_POTION_LEVEL,
             SIMULATED_JUMP_BOOST_LEVEL,
             SIMULATED_DOLPHINS_GRACE_LEVEL,
+            SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED,
             OPEN_CONFIG_GUI);
 
     public static final BetterMovingConfigs INSTANCE = new BetterMovingConfigs();

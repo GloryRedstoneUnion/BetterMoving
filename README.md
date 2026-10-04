@@ -5,7 +5,7 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, invisible platforms, simulated potion effects, and
 Elytra firework controls.
 
-Current release: [1.11.0](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.11.0).
+Current release: [1.12.0](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.12.0).
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -27,11 +27,11 @@ hotkey works without Mod Menu.
 
 1. Install Fabric Loader for Minecraft 1.20.1.
 2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
-3. Download [bettermoving-1.11.0.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.11.0/bettermoving-1.11.0.jar)
+3. Download [bettermoving-1.12.0.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.0/bettermoving-1.12.0.jar)
    and place it in the same `mods` folder.
 4. Optionally install Mod Menu, then launch Minecraft.
 
-The release also includes [bettermoving-1.11.0-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.11.0/bettermoving-1.11.0-sources.jar)
+The release also includes [bettermoving-1.12.0-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.0/bettermoving-1.12.0-sources.jar)
 for source inspection. Do not install the sources JAR as a mod.
 
 ## Configuration
@@ -168,6 +168,15 @@ A blocked launch sends no interaction packet, consumes no rocket, creates no
 rocket entity, and does not swing the hand. Aiming at air is unaffected.
 These firework options are independent, hotkey-capable toggles.
 
+`Simulate Elytra firework target speed` adjusts the local Elytra firework
+acceleration toward a configurable equilibrium speed. The companion
+`Simulated Elytra firework target speed (m/s)` value is expressed in meters per
+second and is converted to per-tick speed with `v_t = V / 20`. For example,
+`40` targets `2.0` meters per tick. The default value is `64 m/s` (`3.2`
+meters per tick); the toggle is disabled and unbound by default. The setting
+only changes the local player's Elytra firework propulsion and leaves vanilla
+behavior unchanged while disabled.
+
 ## Building and testing
 
 Build the mod, run unit tests, and compile the client compatibility suite:
@@ -177,7 +186,7 @@ Build the mod, run unit tests, and compile the client compatibility suite:
 ```
 
 On Windows, use `gradlew.bat` instead of `./gradlew`. The installable JAR is
-`build/libs/bettermoving-1.11.0.jar`; the `-sources.jar` is for source
+`build/libs/bettermoving-1.12.0.jar`; the `-sources.jar` is for source
 inspection only.
 
 Run the disposable client compatibility suite:

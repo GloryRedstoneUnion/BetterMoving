@@ -1,8 +1,10 @@
 package dev.bettermoving.physics;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
 
 final class ElytraFireworkPolicyTest {
@@ -33,5 +35,46 @@ final class ElytraFireworkPolicyTest {
         assertFalse(ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(false, true, false, false, true));
         assertFalse(ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(true, false, false, false, true));
         assertFalse(ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(true, true, false, false, false));
+    }
+
+    @Test
+    void targetSpeedUsesMetersPerSecondAndVanillaDamping() {
+        Vec3d result = ElytraFireworkPolicy.applyTargetSpeed(
+                new Vec3d(0.0, 0.0, 1.6),
+                Vec3d.ZERO,
+                new Vec3d(0.0, 0.0, 1.0),
+                64.0,
+                true);
+
+        assertEquals(0.0, result.x, 1.0E-9);
+        assertEquals(0.0, result.y, 1.0E-9);
+        assertEquals(1.6, result.z, 1.0E-9);
+    }
+
+    @Test
+    void targetSpeedPreservesVanillaVelocityWhenDisabled() {
+        Vec3d vanilla = new Vec3d(0.25, -0.5, 1.75);
+        assertEquals(
+                vanilla,
+                ElytraFireworkPolicy.applyTargetSpeed(
+                        vanilla,
+                        new Vec3d(5.0, 6.0, 7.0),
+                        new Vec3d(0.0, 1.0, 0.0),
+                        20.0,
+                        false));
+    }
+
+    @Test
+    void targetSpeedCanDampToAConfiguredZero() {
+        Vec3d result = ElytraFireworkPolicy.applyTargetSpeed(
+                Vec3d.ZERO,
+                new Vec3d(2.0, -4.0, 6.0),
+                new Vec3d(0.0, 0.0, 1.0),
+                0.0,
+                true);
+
+        assertEquals(1.0, result.x, 1.0E-9);
+        assertEquals(-2.0, result.y, 1.0E-9);
+        assertEquals(3.0, result.z, 1.0E-9);
     }
 }
