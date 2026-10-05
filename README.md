@@ -5,7 +5,7 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, invisible platforms, simulated potion effects, and
 Elytra firework controls.
 
-Current release: [1.12.1](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.12.1).
+Current release: [1.12.2](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.12.2).
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -27,11 +27,11 @@ hotkey works without Mod Menu.
 
 1. Install Fabric Loader for Minecraft 1.20.1.
 2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
-3. Download [bettermoving-1.12.1.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.1/bettermoving-1.12.1.jar)
+3. Download [bettermoving-1.12.2.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.2/bettermoving-1.12.2.jar)
    and place it in the same `mods` folder.
 4. Optionally install Mod Menu, then launch Minecraft.
 
-The release also includes [bettermoving-1.12.1-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.1/bettermoving-1.12.1-sources.jar)
+The release also includes [bettermoving-1.12.2-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.2/bettermoving-1.12.2-sources.jar)
 for source inspection. Do not install the sources JAR as a mod.
 
 ## Configuration
@@ -196,7 +196,7 @@ Build the mod, run unit tests, and compile the client compatibility suite:
 ```
 
 On Windows, use `gradlew.bat` instead of `./gradlew`. The installable JAR is
-`build/libs/bettermoving-1.12.1.jar`; the `-sources.jar` is for source
+`build/libs/bettermoving-1.12.2.jar`; the `-sources.jar` is for source
 inspection only.
 
 Run the disposable client compatibility suite:
