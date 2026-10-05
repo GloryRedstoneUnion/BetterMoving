@@ -37,6 +37,14 @@
   "bettermoving.config.comment.simulatedDolphinsGraceLevel": "Use this Dolphin's Grace effect level for water movement when Simulate potion effects is enabled. Level 0 adds no effect; any level from 1 to 255 matches the vanilla Dolphin's Grace movement behavior. Existing Dolphin's Grace is preserved unless Override existing potion effects is enabled.",
   "bettermoving.config.name.simulatedElytraFireworkTargetSpeed": "Simulated Elytra firework target speed (m/s)",
   "bettermoving.config.comment.simulatedElytraFireworkTargetSpeed": "Target equilibrium speed for local Elytra firework acceleration when Simulate Elytra firework target speed is enabled. The value is in meters per second, accepts 0 to Double.MAX_VALUE, and defaults to 64 (3.2 meters per tick).",
+  "bettermoving.config.name.customElytraFireworkLifetime": "Custom Elytra firework lifetime",
+  "bettermoving.config.comment.customElytraFireworkLifetime": "When enabled, replace the vanilla flight duration of Elytra firework rockets for Flight 1, 2, and 3 using the values below. Other Flight values remain unchanged. Disabled and unbound by default.",
+  "bettermoving.config.name.elytraFireworkLifetimeFlight1": "Elytra firework Flight 1 lifetime (ticks)",
+  "bettermoving.config.comment.elytraFireworkLifetimeFlight1": "Custom lifetime in ticks for Flight 1 firework rockets. Applied only while Custom Elytra firework lifetime is enabled. Values range from 0 to 255.",
+  "bettermoving.config.name.elytraFireworkLifetimeFlight2": "Elytra firework Flight 2 lifetime (ticks)",
+  "bettermoving.config.comment.elytraFireworkLifetimeFlight2": "Custom lifetime in ticks for Flight 2 firework rockets. Applied only while Custom Elytra firework lifetime is enabled. Values range from 0 to 255.",
+  "bettermoving.config.name.elytraFireworkLifetimeFlight3": "Elytra firework Flight 3 lifetime (ticks)",
+  "bettermoving.config.comment.elytraFireworkLifetimeFlight3": "Custom lifetime in ticks for Flight 3 firework rockets. Applied only while Custom Elytra firework lifetime is enabled. Values range from 0 to 255.",
   "bettermoving.config.name.openConfigGui": "Open configuration screen",
   "bettermoving.config.comment.openConfigGui": "Opens the BetterMoving configuration screen."
 }

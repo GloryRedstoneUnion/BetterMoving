@@ -37,6 +37,14 @@
   "bettermoving.config.comment.simulatedDolphinsGraceLevel": "开启“模拟药水效果”后，将此海豚的恩惠效果等级用于水中移动。等级 0 不添加效果；等级 1 至 255 均等同于原版海豚的恩惠移动效果。除非开启“覆盖原有药水效果”，否则玩家已有的海豚的恩惠效果会保留。可填 0 至 255。",
   "bettermoving.config.name.simulatedElytraFireworkTargetSpeed": "模拟鞘翅烟花目标速度（米/秒）",
   "bettermoving.config.comment.simulatedElytraFireworkTargetSpeed": "开启“模拟鞘翅烟花目标速度”后，本地玩家鞘翅烟花推进的平衡目标速度。单位为米/秒，可填 0 至 Double.MAX_VALUE，默认 64（每 tick 3.2 格）。",
+  "bettermoving.config.name.customElytraFireworkLifetime": "自定义鞘翅烟花飞行时长",
+  "bettermoving.config.comment.customElytraFireworkLifetime": "开启后，使用下方数值覆盖飞行时间为 1、2、3 的鞘翅烟花火箭时长；其他飞行时间等级保持原版。此开关默认关闭且未绑定快捷键。",
+  "bettermoving.config.name.elytraFireworkLifetimeFlight1": "鞘翅烟花飞行时间 1 时长（tick）",
+  "bettermoving.config.comment.elytraFireworkLifetimeFlight1": "飞行时间为 1 的烟花火箭自定义时长，单位 tick。仅在“自定义鞘翅烟花飞行时长”开启时生效，可填 0 至 255。",
+  "bettermoving.config.name.elytraFireworkLifetimeFlight2": "鞘翅烟花飞行时间 2 时长（tick）",
+  "bettermoving.config.comment.elytraFireworkLifetimeFlight2": "飞行时间为 2 的烟花火箭自定义时长，单位 tick。仅在“自定义鞘翅烟花飞行时长”开启时生效，可填 0 至 255。",
+  "bettermoving.config.name.elytraFireworkLifetimeFlight3": "鞘翅烟花飞行时间 3 时长（tick）",
+  "bettermoving.config.comment.elytraFireworkLifetimeFlight3": "飞行时间为 3 的烟花火箭自定义时长，单位 tick。仅在“自定义鞘翅烟花飞行时长”开启时生效，可填 0 至 255。",
   "bettermoving.config.name.openConfigGui": "打开配置界面",
   "bettermoving.config.comment.openConfigGui": "打开 BetterMoving 的 malilib 配置界面。"
 }

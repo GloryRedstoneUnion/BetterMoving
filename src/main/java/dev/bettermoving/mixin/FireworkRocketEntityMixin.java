@@ -6,6 +6,7 @@ import dev.bettermoving.physics.ElytraFireworkPolicy;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.FireworkRocketEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,10 +30,44 @@ public abstract class FireworkRocketEntityMixin implements ClientFireworkRocket 
     @Unique
     private boolean bettermoving$localSimulation;
 
+    @Unique
+    private boolean bettermoving$customLifetimeApplied;
+
     @Override
     @Unique
     public void bettermoving$markLocalSimulation() {
         this.bettermoving$localSimulation = true;
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void bettermoving$applyCustomLifetime(CallbackInfo ci) {
+        if (this.bettermoving$customLifetimeApplied) {
+            return;
+        }
+        this.bettermoving$customLifetimeApplied = true;
+        MinecraftClient client = MinecraftClient.getInstance();
+        FireworkRocketEntity rocket = (FireworkRocketEntity) (Object) this;
+        if (!rocket.getWorld().isClient
+                || !BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.getBooleanValue()
+                || this.shooter == null
+                || this.shooter != client.player
+                || !this.shooter.isFallFlying()) {
+            return;
+        }
+        NbtCompound fireworks = rocket.getStack().getSubNbt("Fireworks");
+        if (fireworks == null) {
+            return;
+        }
+        int flight = fireworks.contains("Flight", NbtCompound.BYTE_TYPE)
+                ? fireworks.getByte("Flight")
+                : 0;
+        this.lifeTime = ElytraFireworkPolicy.customLifetime(
+                true,
+                flight,
+                this.lifeTime,
+                BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.getIntegerValue(),
+                BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.getIntegerValue(),
+                BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.getIntegerValue());
     }
 
     @ModifyArg(

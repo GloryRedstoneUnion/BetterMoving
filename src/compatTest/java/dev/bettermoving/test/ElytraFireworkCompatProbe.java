@@ -2,6 +2,7 @@ package dev.bettermoving.test;
 
 import dev.bettermoving.compat.ClientWorldPredictionProbe;
 import dev.bettermoving.config.BetterMovingConfigs;
+import dev.bettermoving.entity.ClientFireworkRocket;
 import fi.dy.masa.malilib.config.ConfigUtils;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
@@ -14,6 +15,7 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.projectile.FireworkRocketEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
@@ -49,6 +51,11 @@ public final class ElytraFireworkCompatProbe {
                 BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.getBooleanValue();
         boolean previousTargetSpeedToggle =
                 BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.getBooleanValue();
+        boolean previousLifetimeToggle =
+                BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.getBooleanValue();
+        int previousFlight1Lifetime = BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.getIntegerValue();
+        int previousFlight2Lifetime = BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.getIntegerValue();
+        int previousFlight3Lifetime = BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.getIntegerValue();
         double previousTargetSpeed =
                 BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.getDoubleValue();
         try {
@@ -128,6 +135,17 @@ public final class ElytraFireworkCompatProbe {
                 throw new AssertionError("The local Elytra firework did not expire after its normal lifetime");
             }
 
+            BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.setBooleanValue(true);
+            BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.setIntegerValue(3);
+            BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.setIntegerValue(6);
+            BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.setIntegerValue(9);
+            verifyRocketLifetime(client, 1, 3);
+            verifyRocketLifetime(client, 2, 6);
+            verifyRocketLifetime(client, 3, 9);
+            verifyRocketLifetime(client, 4, 20);
+            BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.setBooleanValue(false);
+            verifyRocketLifetime(client, 2, 20);
+
             BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.setBooleanValue(false);
             result = interactBlock(client, Hand.MAIN_HAND, target);
             if (!result.isAccepted()) {
@@ -151,6 +169,10 @@ public final class ElytraFireworkCompatProbe {
             BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.setBooleanValue(previousBlockNonElytraUseToggle);
             BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.setBooleanValue(previousTargetSpeedToggle);
             BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.setDoubleValue(previousTargetSpeed);
+            BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.setBooleanValue(previousLifetimeToggle);
+            BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.setIntegerValue(previousFlight1Lifetime);
+            BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.setIntegerValue(previousFlight2Lifetime);
+            BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.setIntegerValue(previousFlight3Lifetime);
             player.stopFallFlying();
             player.equipStack(EquipmentSlot.CHEST, previousChest);
             player.equipStack(EquipmentSlot.MAINHAND, previousMainHand);
@@ -164,6 +186,20 @@ public final class ElytraFireworkCompatProbe {
     private static void verifyConfiguration() {
         check(!BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.getDefaultBooleanValue(),
                 "Simulated Elytra firework target speed must default to disabled");
+        check(!BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.getDefaultBooleanValue(),
+                "Custom Elytra firework lifetime must default to disabled");
+        check(BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME),
+                "Missing custom Elytra firework lifetime GUI toggle");
+        check(BetterMovingConfigs.ALL_HOTKEYS.contains(BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME),
+                "Custom Elytra firework lifetime must be registered as a hotkey");
+        check(BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.getDefaultIntegerValue() == 0
+                        && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.getDefaultIntegerValue() == 0
+                        && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.getDefaultIntegerValue() == 0,
+                "Custom Elytra firework lifetime values must default to zero ticks");
+        check(BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1)
+                        && BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2)
+                        && BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3),
+                "All custom Elytra firework lifetime values must be in the GUI");
         check(Math.abs(BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED
                 .getDefaultDoubleValue() - 64.0) < 1.0E-9,
                 "Simulated Elytra firework target speed must default to 64 m/s");
@@ -184,20 +220,61 @@ public final class ElytraFireworkCompatProbe {
         JsonObject serialized = new JsonObject();
         BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.setBooleanValue(true);
         BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.setDoubleValue(37.5);
+        BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.setBooleanValue(true);
+        BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.setIntegerValue(11);
+        BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.setIntegerValue(22);
+        BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.setIntegerValue(33);
         ConfigUtils.writeConfigBase(serialized, "options", BetterMovingConfigs.OPTIONS);
         BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.setBooleanValue(false);
         BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.setDoubleValue(64.0);
+        BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.setBooleanValue(false);
+        BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.setIntegerValue(0);
+        BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.setIntegerValue(0);
+        BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.setIntegerValue(0);
         ConfigUtils.readConfigBase(serialized, "options", BetterMovingConfigs.OPTIONS);
         check(BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.getBooleanValue(),
                 "Simulated Elytra firework target speed toggle persistence was not restored");
         check(Math.abs(BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED
                 .getDoubleValue() - 37.5) < 1.0E-9,
                 "Simulated Elytra firework target speed persistence was not restored");
+        check(BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.getBooleanValue()
+                        && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.getIntegerValue() == 11
+                        && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.getIntegerValue() == 22
+                        && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.getIntegerValue() == 33,
+                "Custom Elytra firework lifetime settings persistence was not restored");
     }
 
     private static void check(boolean condition, String message) {
         if (!condition) {
             throw new AssertionError(message);
+        }
+    }
+
+    private static void verifyRocketLifetime(MinecraftClient client, int flight, int expectedLifetime) {
+        ClientPlayerEntity player = client.player;
+        ItemStack stack = new ItemStack(Items.FIREWORK_ROCKET);
+        NbtCompound fireworks = new NbtCompound();
+        fireworks.putByte("Flight", (byte) flight);
+        stack.setSubNbt("Fireworks", fireworks);
+
+        FireworkRocketEntity rocket = new FireworkRocketEntity(client.world, stack, player);
+        NbtCompound savedState = new NbtCompound();
+        savedState.putInt("Life", 0);
+        savedState.putInt("LifeTime", 20);
+        rocket.readCustomDataFromNbt(savedState);
+        ((ClientFireworkRocket) rocket).bettermoving$markLocalSimulation();
+
+        for (int i = 0; i < expectedLifetime; ++i) {
+            rocket.tick();
+            if (rocket.isRemoved()) {
+                throw new AssertionError("Flight " + flight + " firework expired before tick "
+                        + (i + 1) + " of expected lifetime " + expectedLifetime);
+            }
+        }
+        rocket.tick();
+        if (!rocket.isRemoved()) {
+            throw new AssertionError("Flight " + flight + " firework did not expire after "
+                    + expectedLifetime + " ticks");
         }
     }
 

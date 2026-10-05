@@ -14,6 +14,25 @@ public final class ElytraFireworkPolicy {
         return enabled && localPlayer && fallFlying && holdingFirework;
     }
 
+    public static int customLifetime(
+            boolean enabled,
+            int flight,
+            int vanillaLifetime,
+            int flight1Lifetime,
+            int flight2Lifetime,
+            int flight3Lifetime) {
+        if (!enabled) {
+            return vanillaLifetime;
+        }
+
+        return switch (flight) {
+            case 1 -> flight1Lifetime;
+            case 2 -> flight2Lifetime;
+            case 3 -> flight3Lifetime;
+            default -> vanillaLifetime;
+        };
+    }
+
     public static boolean shouldRedirectBlockUse(
             boolean enabled,
             boolean localPlayer,

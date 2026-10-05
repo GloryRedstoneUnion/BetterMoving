@@ -9,6 +9,20 @@ import org.junit.jupiter.api.Test;
 
 final class ElytraFireworkPolicyTest {
     @Test
+    void customLifetimeOverridesOnlyFlightLevelsOneThroughThreeWhenEnabled() {
+        assertEquals(17, ElytraFireworkPolicy.customLifetime(true, 1, 12, 17, 28, 39));
+        assertEquals(28, ElytraFireworkPolicy.customLifetime(true, 2, 22, 17, 28, 39));
+        assertEquals(39, ElytraFireworkPolicy.customLifetime(true, 3, 32, 17, 28, 39));
+        assertEquals(8, ElytraFireworkPolicy.customLifetime(true, 0, 8, 17, 28, 39));
+        assertEquals(48, ElytraFireworkPolicy.customLifetime(true, 4, 48, 17, 28, 39));
+    }
+
+    @Test
+    void customLifetimePreservesVanillaWhenDisabled() {
+        assertEquals(22, ElytraFireworkPolicy.customLifetime(false, 2, 22, 17, 28, 39));
+    }
+
+    @Test
     void simulationRequiresTheToggleAndAllFireworkConditions() {
         assertTrue(ElytraFireworkPolicy.shouldSimulate(true, true, true, true));
         assertFalse(ElytraFireworkPolicy.shouldSimulate(false, true, true, true));

@@ -5,7 +5,7 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, invisible platforms, simulated potion effects, and
 Elytra firework controls.
 
-Current release: [1.12.0](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.12.0).
+Current release: [1.12.1](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.12.1).
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -27,11 +27,11 @@ hotkey works without Mod Menu.
 
 1. Install Fabric Loader for Minecraft 1.20.1.
 2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
-3. Download [bettermoving-1.12.0.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.0/bettermoving-1.12.0.jar)
+3. Download [bettermoving-1.12.1.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.1/bettermoving-1.12.1.jar)
    and place it in the same `mods` folder.
 4. Optionally install Mod Menu, then launch Minecraft.
 
-The release also includes [bettermoving-1.12.0-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.0/bettermoving-1.12.0-sources.jar)
+The release also includes [bettermoving-1.12.1-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.1/bettermoving-1.12.1-sources.jar)
 for source inspection. Do not install the sources JAR as a mod.
 
 ## Configuration
@@ -178,6 +178,14 @@ maximum (`Double.MAX_VALUE`) are accepted. The default value is `64 m/s`
 setting only changes the local player's Elytra firework propulsion and leaves
 vanilla behavior unchanged while disabled.
 
+`Custom Elytra firework lifetime` replaces the boost duration for Elytra
+fireworks with Flight 1, 2, or 3 using the corresponding tick value. Flight
+levels 0 and 4 or higher, non-Elytra launches, and rockets while the option is
+disabled retain their vanilla lifetime. It also applies to rockets created by
+`Infinite Elytra fireworks`; rocket consumption behavior is unchanged. The
+toggle is disabled and unbound by default, and all three values default to
+`0` ticks.
+
 ## Building and testing
 
 Build the mod, run unit tests, and compile the client compatibility suite:
@@ -187,7 +195,7 @@ Build the mod, run unit tests, and compile the client compatibility suite:
 ```
 
 On Windows, use `gradlew.bat` instead of `./gradlew`. The installable JAR is
-`build/libs/bettermoving-1.12.0.jar`; the `-sources.jar` is for source
+`build/libs/bettermoving-1.12.1.jar`; the `-sources.jar` is for source
 inspection only.
 
 Run the disposable client compatibility suite:

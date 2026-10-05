@@ -160,6 +160,24 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     false,
                     comment("simulatedElytraFireworkTargetSpeed"));
 
+    public static final ConfigBooleanHotkeyed CUSTOM_ELYTRA_FIREWORK_LIFETIME =
+            new ConfigBooleanHotkeyed(
+                    "customElytraFireworkLifetime",
+                    false,
+                    "",
+                    comment("customElytraFireworkLifetime"),
+                    prettyName("customElytraFireworkLifetime"));
+
+    public static final ConfigInteger ELYTRA_FIREWORK_LIFETIME_FLIGHT_1 =
+            new ConfigInteger("elytraFireworkLifetimeFlight1", 0, 0, 255, false,
+                    comment("elytraFireworkLifetimeFlight1"));
+    public static final ConfigInteger ELYTRA_FIREWORK_LIFETIME_FLIGHT_2 =
+            new ConfigInteger("elytraFireworkLifetimeFlight2", 0, 0, 255, false,
+                    comment("elytraFireworkLifetimeFlight2"));
+    public static final ConfigInteger ELYTRA_FIREWORK_LIFETIME_FLIGHT_3 =
+            new ConfigInteger("elytraFireworkLifetimeFlight3", 0, 0, 255, false,
+                    comment("elytraFireworkLifetimeFlight3"));
+
     public static final ConfigHotkey OPEN_CONFIG_GUI =
             new ConfigHotkey(
                     "openConfigGui",
@@ -184,7 +202,11 @@ public final class BetterMovingConfigs implements IConfigHandler {
             SIMULATED_SPEED_POTION_LEVEL,
             SIMULATED_JUMP_BOOST_LEVEL,
             SIMULATED_DOLPHINS_GRACE_LEVEL,
-            SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED);
+            SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED,
+            CUSTOM_ELYTRA_FIREWORK_LIFETIME,
+            ELYTRA_FIREWORK_LIFETIME_FLIGHT_1,
+            ELYTRA_FIREWORK_LIFETIME_FLIGHT_2,
+            ELYTRA_FIREWORK_LIFETIME_FLIGHT_3);
     public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
@@ -199,6 +221,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             ELYTRA_FIREWORK_BLOCK_USE,
             BLOCK_NON_ELYTRA_FIREWORK_USE,
             SIMULATE_ELYTRA_FIREWORK_SPEED,
+            CUSTOM_ELYTRA_FIREWORK_LIFETIME,
             OPEN_CONFIG_GUI);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
@@ -218,6 +241,10 @@ public final class BetterMovingConfigs implements IConfigHandler {
             SIMULATED_JUMP_BOOST_LEVEL,
             SIMULATED_DOLPHINS_GRACE_LEVEL,
             SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED,
+            CUSTOM_ELYTRA_FIREWORK_LIFETIME,
+            ELYTRA_FIREWORK_LIFETIME_FLIGHT_1,
+            ELYTRA_FIREWORK_LIFETIME_FLIGHT_2,
+            ELYTRA_FIREWORK_LIFETIME_FLIGHT_3,
             OPEN_CONFIG_GUI);
 
     public static final BetterMovingConfigs INSTANCE = new BetterMovingConfigs();
