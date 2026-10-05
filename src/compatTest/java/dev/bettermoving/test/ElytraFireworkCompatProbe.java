@@ -196,6 +196,10 @@ public final class ElytraFireworkCompatProbe {
                         && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.getDefaultIntegerValue() == 0
                         && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.getDefaultIntegerValue() == 0,
                 "Custom Elytra firework lifetime values must default to zero ticks");
+        check(BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.getMaxIntegerValue() == 31
+                        && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.getMaxIntegerValue() == 41
+                        && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.getMaxIntegerValue() == 51,
+                "Custom Elytra firework lifetime limits must match vanilla Flight 1/2/3 maxima");
         check(BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1)
                         && BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2)
                         && BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3),

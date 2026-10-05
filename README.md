@@ -181,7 +181,9 @@ vanilla behavior unchanged while disabled.
 `Custom Elytra firework lifetime` replaces the boost duration for Elytra
 fireworks with Flight 1, 2, or 3 using the corresponding tick value. Flight
 levels 0 and 4 or higher, non-Elytra launches, and rockets while the option is
-disabled retain their vanilla lifetime. It also applies to rockets created by
+disabled retain their vanilla lifetime. The Flight 1, 2, and 3 values accept up
+to 31, 41, and 51 ticks respectively, matching each rocket type's maximum
+vanilla lifetime. It also applies to rockets created by
 `Infinite Elytra fireworks`; rocket consumption behavior is unchanged. The
 toggle is disabled and unbound by default, and all three values default to
 `0` ticks.

@@ -40,11 +40,11 @@
   "bettermoving.config.name.customElytraFireworkLifetime": "自定义鞘翅烟花飞行时长",
   "bettermoving.config.comment.customElytraFireworkLifetime": "开启后，使用下方数值覆盖飞行时间为 1、2、3 的鞘翅烟花火箭时长；其他飞行时间等级保持原版。此开关默认关闭且未绑定快捷键。",
   "bettermoving.config.name.elytraFireworkLifetimeFlight1": "鞘翅烟花飞行时间 1 时长（tick）",
-  "bettermoving.config.comment.elytraFireworkLifetimeFlight1": "飞行时间为 1 的烟花火箭自定义时长，单位 tick。仅在“自定义鞘翅烟花飞行时长”开启时生效，可填 0 至 255。",
+  "bettermoving.config.comment.elytraFireworkLifetimeFlight1": "飞行时间为 1 的烟花火箭自定义时长，单位 tick。仅在“自定义鞘翅烟花飞行时长”开启时生效，可填 0 至 31 tick。",
   "bettermoving.config.name.elytraFireworkLifetimeFlight2": "鞘翅烟花飞行时间 2 时长（tick）",
-  "bettermoving.config.comment.elytraFireworkLifetimeFlight2": "飞行时间为 2 的烟花火箭自定义时长，单位 tick。仅在“自定义鞘翅烟花飞行时长”开启时生效，可填 0 至 255。",
+  "bettermoving.config.comment.elytraFireworkLifetimeFlight2": "飞行时间为 2 的烟花火箭自定义时长，单位 tick。仅在“自定义鞘翅烟花飞行时长”开启时生效，可填 0 至 41 tick。",
   "bettermoving.config.name.elytraFireworkLifetimeFlight3": "鞘翅烟花飞行时间 3 时长（tick）",
-  "bettermoving.config.comment.elytraFireworkLifetimeFlight3": "飞行时间为 3 的烟花火箭自定义时长，单位 tick。仅在“自定义鞘翅烟花飞行时长”开启时生效，可填 0 至 255。",
+  "bettermoving.config.comment.elytraFireworkLifetimeFlight3": "飞行时间为 3 的烟花火箭自定义时长，单位 tick。仅在“自定义鞘翅烟花飞行时长”开启时生效，可填 0 至 51 tick。",
   "bettermoving.config.name.openConfigGui": "打开配置界面",
   "bettermoving.config.comment.openConfigGui": "打开 BetterMoving 的 malilib 配置界面。"
 }

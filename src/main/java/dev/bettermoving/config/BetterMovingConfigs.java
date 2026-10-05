@@ -169,13 +169,13 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     prettyName("customElytraFireworkLifetime"));
 
     public static final ConfigInteger ELYTRA_FIREWORK_LIFETIME_FLIGHT_1 =
-            new ConfigInteger("elytraFireworkLifetimeFlight1", 0, 0, 255, false,
+            new ConfigInteger("elytraFireworkLifetimeFlight1", 0, 0, 31, false,
                     comment("elytraFireworkLifetimeFlight1"));
     public static final ConfigInteger ELYTRA_FIREWORK_LIFETIME_FLIGHT_2 =
-            new ConfigInteger("elytraFireworkLifetimeFlight2", 0, 0, 255, false,
+            new ConfigInteger("elytraFireworkLifetimeFlight2", 0, 0, 41, false,
                     comment("elytraFireworkLifetimeFlight2"));
     public static final ConfigInteger ELYTRA_FIREWORK_LIFETIME_FLIGHT_3 =
-            new ConfigInteger("elytraFireworkLifetimeFlight3", 0, 0, 255, false,
+            new ConfigInteger("elytraFireworkLifetimeFlight3", 0, 0, 51, false,
                     comment("elytraFireworkLifetimeFlight3"));
 
     public static final ConfigHotkey OPEN_CONFIG_GUI =
