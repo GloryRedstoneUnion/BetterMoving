@@ -9,8 +9,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.projectile.FireworkRocketEntity;
 import net.minecraft.item.ItemStack;
@@ -28,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
+import java.lang.reflect.Method;
 
 public final class ElytraFireworkCompatProbe {
     private static boolean capturePackets;
@@ -46,6 +48,8 @@ public final class ElytraFireworkCompatProbe {
         boolean previousSneaking = player.input.sneaking;
         GameMode previousGameMode = client.interactionManager.getCurrentGameMode();
         boolean previousToggle = BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.getBooleanValue();
+        boolean previousCancelOnStopToggle =
+                BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP.getBooleanValue();
         boolean previousBlockUseToggle = BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.getBooleanValue();
         boolean previousBlockNonElytraUseToggle =
                 BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.getBooleanValue();
@@ -69,6 +73,8 @@ public final class ElytraFireworkCompatProbe {
             player.setYaw(0.0F);
             player.setPitch(0.0F);
             BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.setBooleanValue(true);
+            BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP.setBooleanValue(false);
+            BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.setBooleanValue(false);
             BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.setBooleanValue(true);
             BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.setBooleanValue(true);
             BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.setDoubleValue(40.0);
@@ -120,6 +126,43 @@ public final class ElytraFireworkCompatProbe {
                     .stream()
                     .findFirst()
                     .orElseThrow(() -> new AssertionError("No local Elytra firework entity was created"));
+            BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP.setBooleanValue(true);
+            player.stopFallFlying();
+            if (!rocket.isRemoved()) {
+                throw new AssertionError("Stopping Elytra gliding did not remove the local simulated firework");
+            }
+            player.startFallFlying();
+            result = interactBlock(client, Hand.MAIN_HAND, target);
+            if (!result.isAccepted()) {
+                throw new AssertionError("Could not create a second local Elytra firework for lifetime checks: " + result);
+            }
+            rocket = client.world.getEntitiesByType(
+                            TypeFilter.instanceOf(FireworkRocketEntity.class),
+                            player.getBoundingBox().expand(2.0),
+                            entity -> !entity.isRemoved())
+                    .stream()
+                    .findFirst()
+                    .orElseThrow(() -> new AssertionError("No replacement local Elytra firework entity was created"));
+            BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.setBooleanValue(true);
+            clearTrackedFallFlying(player);
+            if (!rocket.isRemoved()) {
+                throw new AssertionError(
+                        "A local Elytra firework survived a tracked glide stop and boosted the next glide");
+            }
+            player.startFallFlying();
+            result = interactBlock(client, Hand.MAIN_HAND, target);
+            if (!result.isAccepted()) {
+                throw new AssertionError("Could not create a third local Elytra firework for lifetime checks: " + result);
+            }
+            rocket = client.world.getEntitiesByType(
+                            TypeFilter.instanceOf(FireworkRocketEntity.class),
+                            player.getBoundingBox().expand(2.0),
+                            entity -> !entity.isRemoved())
+                    .stream()
+                    .findFirst()
+                    .orElseThrow(() -> new AssertionError("No third local Elytra firework entity was created"));
+            BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.setBooleanValue(false);
+            BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP.setBooleanValue(false);
             rocket.tick();
             if (Math.abs(player.getVelocity().x) > 1.0E-6
                     || Math.abs(player.getVelocity().y) > 1.0E-6
@@ -155,6 +198,7 @@ public final class ElytraFireworkCompatProbe {
 
             BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.setBooleanValue(false);
             BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.setBooleanValue(false);
+            BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP.setBooleanValue(false);
             player.stopFallFlying();
             result = interactBlock(client, Hand.MAIN_HAND, target);
             if (!result.isAccepted()) {
@@ -165,6 +209,7 @@ public final class ElytraFireworkCompatProbe {
         } finally {
             capturePackets = false;
             BetterMovingConfigs.INFINITE_ELYTRA_FIREWORKS.setBooleanValue(previousToggle);
+            BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP.setBooleanValue(previousCancelOnStopToggle);
             BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.setBooleanValue(previousBlockUseToggle);
             BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.setBooleanValue(previousBlockNonElytraUseToggle);
             BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.setBooleanValue(previousTargetSpeedToggle);
@@ -189,12 +234,18 @@ public final class ElytraFireworkCompatProbe {
                 "Open configuration screen must be the first GUI option");
         check(!BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.getDefaultBooleanValue(),
                 "Simulated Elytra firework target speed must default to disabled");
+        check(!BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP.getDefaultBooleanValue(),
+                "Cancel Elytra fireworks on glide stop must default to disabled");
         check(!BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.getDefaultBooleanValue(),
                 "Custom Elytra firework lifetime must default to disabled");
         check(BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME),
                 "Missing custom Elytra firework lifetime GUI toggle");
+        check(BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP),
+                "Missing cancel Elytra fireworks on glide stop GUI toggle");
         check(BetterMovingConfigs.ALL_HOTKEYS.contains(BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME),
                 "Custom Elytra firework lifetime must be registered as a hotkey");
+        check(BetterMovingConfigs.ALL_HOTKEYS.contains(BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP),
+                "Cancel Elytra fireworks on glide stop must be registered as a hotkey");
         check(BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.getDefaultIntegerValue() == 0
                         && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.getDefaultIntegerValue() == 0
                         && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.getDefaultIntegerValue() == 0,
@@ -233,6 +284,7 @@ public final class ElytraFireworkCompatProbe {
         BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.setBooleanValue(true);
         BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.setDoubleValue(37.5);
         BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.setBooleanValue(true);
+        BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP.setBooleanValue(true);
         BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.setIntegerValue(11);
         BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.setIntegerValue(22);
         BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.setIntegerValue(33);
@@ -240,6 +292,7 @@ public final class ElytraFireworkCompatProbe {
         BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.setBooleanValue(false);
         BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED.setDoubleValue(64.0);
         BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.setBooleanValue(false);
+        BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP.setBooleanValue(false);
         BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_1.setIntegerValue(0);
         BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.setIntegerValue(0);
         BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.setIntegerValue(0);
@@ -254,11 +307,23 @@ public final class ElytraFireworkCompatProbe {
                         && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_2.getIntegerValue() == 22
                         && BetterMovingConfigs.ELYTRA_FIREWORK_LIFETIME_FLIGHT_3.getIntegerValue() == 33,
                 "Custom Elytra firework lifetime settings persistence was not restored");
+        check(BetterMovingConfigs.CANCEL_ELYTRA_FIREWORK_ON_STOP.getBooleanValue(),
+                "Cancel Elytra fireworks on glide stop persistence was not restored");
     }
 
     private static void check(boolean condition, String message) {
         if (!condition) {
             throw new AssertionError(message);
+        }
+    }
+
+    private static void clearTrackedFallFlying(ClientPlayerEntity player) {
+        try {
+            Method setFlag = Entity.class.getDeclaredMethod("setFlag", int.class, boolean.class);
+            setFlag.setAccessible(true);
+            setFlag.invoke(player, 7, false);
+        } catch (ReflectiveOperationException exception) {
+            throw new AssertionError("Could not simulate a tracked Elytra glide stop", exception);
         }
     }
 

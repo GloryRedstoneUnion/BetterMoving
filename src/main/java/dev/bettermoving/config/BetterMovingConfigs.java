@@ -100,6 +100,14 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("infiniteElytraFireworks"),
                     prettyName("infiniteElytraFireworks"));
 
+    public static final ConfigBooleanHotkeyed CANCEL_ELYTRA_FIREWORK_ON_STOP =
+            new ConfigBooleanHotkeyed(
+                    "cancelElytraFireworkOnStop",
+                    false,
+                    "",
+                    comment("cancelElytraFireworkOnStop"),
+                    prettyName("cancelElytraFireworkOnStop"));
+
     public static final ConfigBooleanHotkeyed ELYTRA_FIREWORK_BLOCK_USE =
             new ConfigBooleanHotkeyed(
                     "elytraFireworkBlockUse",
@@ -196,6 +204,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
             INFINITE_ELYTRA_FIREWORKS,
+            CANCEL_ELYTRA_FIREWORK_ON_STOP,
             ELYTRA_FIREWORK_BLOCK_USE,
             BLOCK_NON_ELYTRA_FIREWORK_USE,
             SIMULATE_ELYTRA_FIREWORK_SPEED,
@@ -218,6 +227,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
             INFINITE_ELYTRA_FIREWORKS,
+            CANCEL_ELYTRA_FIREWORK_ON_STOP,
             ELYTRA_FIREWORK_BLOCK_USE,
             BLOCK_NON_ELYTRA_FIREWORK_USE,
             SIMULATE_ELYTRA_FIREWORK_SPEED,
@@ -235,6 +245,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
             INFINITE_ELYTRA_FIREWORKS,
+            CANCEL_ELYTRA_FIREWORK_ON_STOP,
             ELYTRA_FIREWORK_BLOCK_USE,
             BLOCK_NON_ELYTRA_FIREWORK_USE,
             SIMULATE_ELYTRA_FIREWORK_SPEED,

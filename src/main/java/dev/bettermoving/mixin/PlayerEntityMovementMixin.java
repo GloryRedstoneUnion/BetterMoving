@@ -2,6 +2,7 @@ package dev.bettermoving.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.bettermoving.config.BetterMovingConfigs;
+import dev.bettermoving.entity.ClientFireworkRocketManager;
 import dev.bettermoving.physics.BetterMovingMovementPolicy;
 import dev.bettermoving.physics.FluidMovementContext;
 import dev.bettermoving.physics.LevitationElytraFlight;
@@ -24,6 +25,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = PlayerEntity.class, priority = 2100)
 public abstract class PlayerEntityMovementMixin {
+    @Unique
+    private boolean bettermoving$wasFallFlyingBeforeStop;
+
+    @Inject(method = "stopFallFlying", at = @At("HEAD"))
+    private void bettermoving$rememberFallFlyingState(CallbackInfo ci) {
+        this.bettermoving$wasFallFlyingBeforeStop = ((PlayerEntity) (Object) this).isFallFlying();
+    }
+
     @Inject(method = "startFallFlying", at = @At("RETURN"))
     private void bettermoving$startLocalLevitationFlight(CallbackInfo ci) {
         LevitationElytraFlight.start((PlayerEntity) (Object) this);
@@ -32,7 +41,13 @@ public abstract class PlayerEntityMovementMixin {
     @Inject(method = "stopFallFlying", at = @At("RETURN"))
     private void bettermoving$stopLocalLevitationFlight(CallbackInfo ci) {
         // Vanilla briefly sets the flag to true and triggers tracked-data callbacks.
-        LevitationElytraFlight.stop((PlayerEntity) (Object) this);
+        PlayerEntity player = (PlayerEntity) (Object) this;
+        LevitationElytraFlight.stop(player);
+        if (player instanceof ClientPlayerEntity clientPlayer) {
+            ClientFireworkRocketManager.cancelOnGlideStop(
+                    clientPlayer,
+                    this.bettermoving$wasFallFlyingBeforeStop);
+        }
     }
 
     @Inject(method = "travel", at = @At("HEAD"))

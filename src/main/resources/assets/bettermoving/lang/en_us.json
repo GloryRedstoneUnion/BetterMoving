@@ -23,6 +23,8 @@
   "bettermoving.config.comment.ignoreLevitationAndSlowness": "Ignore Levitation's vertical movement and Elytra restrictions and remove Slowness from the local player's movement speed. The real effects, particles, icons, and other non-movement behavior remain unchanged. Disabled and unbound by default.",
   "bettermoving.config.name.infiniteElytraFireworks": "Infinite Elytra fireworks",
   "bettermoving.config.comment.infiniteElytraFireworks": "While the local player is Elytra gliding, simulate firework-rocket boosts without sending the item-use packet or consuming rockets on the server. Disabled and unbound by default.",
+  "bettermoving.config.name.cancelElytraFireworkOnStop": "Cancel Elytra fireworks on glide stop",
+  "bettermoving.config.comment.cancelElytraFireworkOnStop": "When enabled together with Infinite Elytra fireworks, immediately remove client-simulated firework rockets when the local player stops gliding instead of keeping them until their lifetime ends. Disabled and unbound by default.",
   "bettermoving.config.name.elytraFireworkBlockUse": "Elytra firework block use",
   "bettermoving.config.comment.elytraFireworkBlockUse": "While the local player is Elytra gliding, use a firework rocket on a block or wall for Elytra acceleration instead of the block-use path. With Infinite Elytra fireworks enabled the rocket is simulated locally without consumption; otherwise vanilla item use and consumption are preserved. Disabled and unbound by default.",
   "bettermoving.config.name.blockNonElytraFireworkUse": "Block non-Elytra firework use",

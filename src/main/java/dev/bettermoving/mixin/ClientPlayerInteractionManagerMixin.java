@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import dev.bettermoving.config.BetterMovingConfigs;
 import dev.bettermoving.entity.ClientFireworkRocket;
+import dev.bettermoving.entity.ClientFireworkRocketManager;
 import dev.bettermoving.physics.ElytraFireworkPolicy;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -123,6 +124,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
                 clientPlayer.getStackInHand(hand).copy(),
                 clientPlayer);
         ((ClientFireworkRocket) rocket).bettermoving$markLocalSimulation();
+        ClientFireworkRocketManager.track(rocket);
         rocket.setId(BETTERMOVING_LOCAL_ENTITY_ID.getAndIncrement());
         clientWorld.addEntity(rocket.getId(), rocket);
         cir.setReturnValue(ActionResult.SUCCESS);

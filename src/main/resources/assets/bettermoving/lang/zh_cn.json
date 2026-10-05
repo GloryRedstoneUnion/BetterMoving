@@ -23,6 +23,8 @@
   "bettermoving.config.comment.ignoreLevitationAndSlowness": "在本地玩家移动计算中忽略漂浮的竖直移动和对鞘翅的限制，并移除缓慢对移速的影响。真实药水效果、粒子、图标和其他非移动行为保持不变。此开关默认关闭且未绑定快捷键。",
   "bettermoving.config.name.infiniteElytraFireworks": "无限鞘翅烟花加速",
   "bettermoving.config.comment.infiniteElytraFireworks": "本地玩家使用鞘翅滑翔时，模拟烟花火箭加速，不向服务器发送使用包，也不会消耗服务器中的烟花火箭。此开关默认关闭且未绑定快捷键。",
+  "bettermoving.config.name.cancelElytraFireworkOnStop": "结束滑翔时取消鞘翅烟花",
+  "bettermoving.config.comment.cancelElytraFireworkOnStop": "与“无限鞘翅烟花加速”同时开启时，本地玩家结束鞘翅滑翔会立即移除客户端模拟的烟花火箭，而不是等待其飞行时长结束。此开关默认关闭且未绑定快捷键。",
   "bettermoving.config.name.elytraFireworkBlockUse": "鞘翅烟花方块使用",
   "bettermoving.config.comment.elytraFireworkBlockUse": "本地玩家使用鞘翅滑翔时，对方块或墙壁使用烟花火箭将改为鞘翅加速，而不是走方块使用路径。开启“无限鞘翅烟花加速”时本地模拟且不消耗；关闭时保留原版物品使用和消耗逻辑。此开关默认关闭且未绑定快捷键。",
   "bettermoving.config.name.blockNonElytraFireworkUse": "阻止非鞘翅烟花使用",

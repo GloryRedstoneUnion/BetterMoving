@@ -32,6 +32,14 @@ final class ElytraFireworkPolicyTest {
     }
 
     @Test
+    void simulatedFireworkCancellationRequiresBothTogglesAndTheLocalPlayer() {
+        assertTrue(ElytraFireworkPolicy.shouldCancelSimulatedFireworkOnGlideStop(true, true, true));
+        assertFalse(ElytraFireworkPolicy.shouldCancelSimulatedFireworkOnGlideStop(false, true, true));
+        assertFalse(ElytraFireworkPolicy.shouldCancelSimulatedFireworkOnGlideStop(true, false, true));
+        assertFalse(ElytraFireworkPolicy.shouldCancelSimulatedFireworkOnGlideStop(true, true, false));
+    }
+
+    @Test
     void blockUseRedirectionRequiresTheToggleAndAllFireworkConditions() {
         assertTrue(ElytraFireworkPolicy.shouldRedirectBlockUse(true, true, true, true));
         assertFalse(ElytraFireworkPolicy.shouldRedirectBlockUse(false, true, true, true));

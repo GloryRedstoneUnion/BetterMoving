@@ -14,6 +14,13 @@ public final class ElytraFireworkPolicy {
         return enabled && localPlayer && fallFlying && holdingFirework;
     }
 
+    public static boolean shouldCancelSimulatedFireworkOnGlideStop(
+            boolean cancelOnStop,
+            boolean infiniteFireworks,
+            boolean localPlayer) {
+        return cancelOnStop && infiniteFireworks && localPlayer;
+    }
+
     public static int customLifetime(
             boolean enabled,
             int flight,

@@ -39,6 +39,14 @@ public abstract class FireworkRocketEntityMixin implements ClientFireworkRocket 
         this.bettermoving$localSimulation = true;
     }
 
+    @Override
+    @Unique
+    public void bettermoving$discardIfLocalSimulation() {
+        if (this.bettermoving$localSimulation) {
+            ((FireworkRocketEntity) (Object) this).discard();
+        }
+    }
+
     @Inject(method = "tick", at = @At("HEAD"))
     private void bettermoving$applyCustomLifetime(CallbackInfo ci) {
         if (this.bettermoving$customLifetimeApplied) {
