@@ -224,6 +224,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             CUSTOM_ELYTRA_FIREWORK_LIFETIME,
             OPEN_CONFIG_GUI);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
+            OPEN_CONFIG_GUI,
             IGNORE_FLUID_PHYSICS,
             MODEL,
             VIRTUAL_PLATFORM,
@@ -244,8 +245,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED,
             ELYTRA_FIREWORK_LIFETIME_FLIGHT_1,
             ELYTRA_FIREWORK_LIFETIME_FLIGHT_2,
-            ELYTRA_FIREWORK_LIFETIME_FLIGHT_3,
-            OPEN_CONFIG_GUI);
+            ELYTRA_FIREWORK_LIFETIME_FLIGHT_3);
 
     public static final BetterMovingConfigs INSTANCE = new BetterMovingConfigs();
 

@@ -184,6 +184,9 @@ public final class ElytraFireworkCompatProbe {
     }
 
     private static void verifyConfiguration() {
+        check(!BetterMovingConfigs.GUI_OPTIONS.isEmpty()
+                        && BetterMovingConfigs.GUI_OPTIONS.get(0) == BetterMovingConfigs.OPEN_CONFIG_GUI,
+                "Open configuration screen must be the first GUI option");
         check(!BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED.getDefaultBooleanValue(),
                 "Simulated Elytra firework target speed must default to disabled");
         check(!BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME.getDefaultBooleanValue(),
