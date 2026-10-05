@@ -215,6 +215,11 @@ public final class ElytraFireworkCompatProbe {
         check(BetterMovingConfigs.GUI_OPTIONS.contains(
                         BetterMovingConfigs.SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED),
                 "Missing simulated Elytra firework target speed value GUI option");
+        check(BetterMovingConfigs.GUI_OPTIONS.indexOf(
+                        BetterMovingConfigs.CUSTOM_ELYTRA_FIREWORK_LIFETIME)
+                        == BetterMovingConfigs.GUI_OPTIONS.indexOf(
+                                BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED) + 1,
+                "Custom Elytra firework lifetime toggle must appear immediately below its target speed toggle");
         check(BetterMovingConfigs.ALL_HOTKEYS.contains(BetterMovingConfigs.SIMULATE_ELYTRA_FIREWORK_SPEED),
                 "Simulated Elytra firework target speed must be registered as a hotkey");
         check(!BetterMovingConfigs.ALL_HOTKEYS.contains(
