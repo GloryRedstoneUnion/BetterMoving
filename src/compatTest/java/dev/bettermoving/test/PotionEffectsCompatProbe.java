@@ -235,6 +235,12 @@ public final class PotionEffectsCompatProbe {
                 "Simulated jump boost level must default to zero");
         check(BetterMovingConfigs.SIMULATED_DOLPHINS_GRACE_LEVEL.getDefaultIntegerValue() == 0,
                 "Simulated Dolphin's Grace level must default to zero");
+        check(BetterMovingConfigs.SIMULATED_SPEED_POTION_LEVEL.getMaxIntegerValue() == Integer.MAX_VALUE,
+                "Simulated speed potion level must accept the full non-negative Java int range");
+        check(BetterMovingConfigs.SIMULATED_JUMP_BOOST_LEVEL.getMaxIntegerValue() == Integer.MAX_VALUE,
+                "Simulated jump boost level must accept the full non-negative Java int range");
+        check(BetterMovingConfigs.SIMULATED_DOLPHINS_GRACE_LEVEL.getMaxIntegerValue() == Integer.MAX_VALUE,
+                "Simulated Dolphin's Grace level must accept the full non-negative Java int range");
         check(BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.SIMULATE_POTION_EFFECTS),
                 "Missing simulated potion effects GUI option");
         check(BetterMovingConfigs.GUI_OPTIONS.contains(BetterMovingConfigs.OVERRIDE_POTION_EFFECTS),

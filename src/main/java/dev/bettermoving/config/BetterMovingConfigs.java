@@ -137,7 +137,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     "simulatedSpeedPotionLevel",
                     0,
                     0,
-                    255,
+                    Integer.MAX_VALUE,
                     false,
                     comment("simulatedSpeedPotionLevel"));
 
@@ -146,7 +146,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     "simulatedJumpBoostLevel",
                     0,
                     0,
-                    255,
+                    Integer.MAX_VALUE,
                     false,
                     comment("simulatedJumpBoostLevel"));
 
@@ -155,7 +155,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     "simulatedDolphinsGraceLevel",
                     0,
                     0,
-                    255,
+                    Integer.MAX_VALUE,
                     false,
                     comment("simulatedDolphinsGraceLevel"));
 

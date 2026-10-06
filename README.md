@@ -42,7 +42,8 @@ Mod Menu. The `Open configuration screen` hotkey can be rebound in MaLiLib.
 All feature toggles are disabled and have no hotkey assigned by default.
 Each toggle supports a configurable hotkey. `Movement model` defaults to
 `Air rules`; all three simulated potion levels default to `0` and accept
-integers from `0` to `255`. The model and level settings do not have hotkeys.
+integers from `0` to `Integer.MAX_VALUE`. The model and level settings do not
+have hotkeys.
 
 Settings are saved in `config/bettermoving.json`. If that file does not exist,
 BetterMoving imports `config/fluidair.json`, when available, and saves the
