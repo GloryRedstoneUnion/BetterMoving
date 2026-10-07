@@ -171,8 +171,8 @@ public final class RiptideCompatProbe {
                         == BetterMovingConfigs.GUI_OPTIONS.indexOf(option) + 1,
                 "Custom charge toggle must appear below Riptide simulation");
         check(BetterMovingConfigs.GUI_OPTIONS.indexOf(duration)
-                        == BetterMovingConfigs.GUI_OPTIONS.indexOf(custom) + 1,
-                "Charge duration must appear below its toggle");
+                        == BetterMovingConfigs.GUI_OPTIONS.size() - 1,
+                "Charge duration must be the final GUI option");
         custom.setBooleanValue(true);
         duration.setIntegerValue(Integer.MAX_VALUE);
         check(duration.getIntegerValue() == Integer.MAX_VALUE, "Full int range must be accepted");

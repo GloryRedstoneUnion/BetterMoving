@@ -273,7 +273,6 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_RIPTIDE_ANYWHERE,
             CUSTOM_RIPTIDE_CHARGE_TIME,
-            RIPTIDE_CHARGE_TIME_TICKS,
             SIMULATE_POTION_EFFECTS,
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
@@ -289,7 +288,8 @@ public final class BetterMovingConfigs implements IConfigHandler {
             SIMULATED_ELYTRA_FIREWORK_TARGET_SPEED,
             ELYTRA_FIREWORK_LIFETIME_FLIGHT_1,
             ELYTRA_FIREWORK_LIFETIME_FLIGHT_2,
-            ELYTRA_FIREWORK_LIFETIME_FLIGHT_3);
+            ELYTRA_FIREWORK_LIFETIME_FLIGHT_3,
+            RIPTIDE_CHARGE_TIME_TICKS);
 
     public static final BetterMovingConfigs INSTANCE = new BetterMovingConfigs();
 
