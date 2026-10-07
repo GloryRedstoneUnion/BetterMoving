@@ -8,6 +8,7 @@ import dev.bettermoving.config.BetterMovingConfigs;
 import dev.bettermoving.entity.ClientFireworkRocket;
 import dev.bettermoving.entity.ClientFireworkRocketManager;
 import dev.bettermoving.physics.ElytraFireworkPolicy;
+import dev.bettermoving.physics.ClientRiptide;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -27,16 +28,34 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public abstract class ClientPlayerInteractionManagerMixin {
     private static final AtomicInteger BETTERMOVING_LOCAL_ENTITY_ID = new AtomicInteger(Integer.MIN_VALUE);
 
     @Unique
-    private boolean bettermoving$blockFireworkLaunchPacket;
+    private boolean bettermoving$skipItemFallbackBlockPacket;
 
     @Shadow
     public abstract ActionResult interactItem(PlayerEntity player, Hand hand);
+
+    @Inject(method = "interactItem", at = @At("HEAD"), cancellable = true)
+    private void bettermoving$simulateRiptide(
+            PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+        if (player instanceof ClientPlayerEntity clientPlayer
+                && ClientRiptide.shouldSimulate(player, player.getStackInHand(hand))) {
+            cir.setReturnValue(ClientRiptide.start(clientPlayer, hand));
+        }
+    }
+
+    @Inject(method = "stopUsingItem", at = @At("HEAD"), cancellable = true)
+    private void bettermoving$releaseLocalRiptide(PlayerEntity player, CallbackInfo ci) {
+        if (ClientRiptide.isCharging(player)) {
+            ClientRiptide.release(player);
+            ci.cancel();
+        }
+    }
 
     @Inject(method = "interactBlock", at = @At("HEAD"), cancellable = true)
     private void bettermoving$redirectElytraFireworkBlockUse(
@@ -44,7 +63,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
             Hand hand,
             BlockHitResult hitResult,
             CallbackInfoReturnable<ActionResult> cir) {
-        this.bettermoving$blockFireworkLaunchPacket = false;
+        this.bettermoving$skipItemFallbackBlockPacket = false;
         MinecraftClient client = MinecraftClient.getInstance();
         boolean holdingFirework = player.getStackInHand(hand).isOf(Items.FIREWORK_ROCKET);
         if (!ElytraFireworkPolicy.shouldRedirectBlockUse(
@@ -70,6 +89,10 @@ public abstract class ClientPlayerInteractionManagerMixin {
             BlockHitResult hitResult,
             CallbackInfoReturnable<ActionResult> cir) {
         MinecraftClient client = MinecraftClient.getInstance();
+        if (ClientRiptide.shouldSimulate(player, player.getStackInHand(hand))) {
+            // Preserve accepted block interactions; skip only the item fallback.
+            this.bettermoving$skipItemFallbackBlockPacket = true;
+        }
         boolean holdingFirework = player.getStackInHand(hand).isOf(Items.FIREWORK_ROCKET);
         if (ElytraFireworkPolicy.shouldBlockNonElytraBlockUse(
                 BetterMovingConfigs.BLOCK_NON_ELYTRA_FIREWORK_USE.getBooleanValue(),
@@ -77,7 +100,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
                 player.isFallFlying(),
                 BetterMovingConfigs.ELYTRA_FIREWORK_BLOCK_USE.getBooleanValue(),
                 holdingFirework)) {
-            this.bettermoving$blockFireworkLaunchPacket = true;
+            this.bettermoving$skipItemFallbackBlockPacket = true;
             cir.setReturnValue(ActionResult.FAIL);
         }
     }
@@ -87,10 +110,10 @@ public abstract class ClientPlayerInteractionManagerMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V"))
-    private void bettermoving$skipBlockedFireworkPacket(
+    private void bettermoving$skipLocalItemFallbackPacket(
             ClientPlayNetworkHandler networkHandler, Packet<?> packet, Operation<Void> original) {
-        boolean blocked = this.bettermoving$blockFireworkLaunchPacket;
-        this.bettermoving$blockFireworkLaunchPacket = false;
+        boolean blocked = this.bettermoving$skipItemFallbackBlockPacket;
+        this.bettermoving$skipItemFallbackBlockPacket = false;
         // Skip only this packet, preserving the pending-update manager's cleanup.
         if (!blocked || !(packet instanceof PlayerInteractBlockC2SPacket)) {
             original.call(networkHandler, packet);

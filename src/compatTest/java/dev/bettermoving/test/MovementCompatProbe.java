@@ -77,6 +77,9 @@ public final class MovementCompatProbe {
             if (Boolean.getBoolean("bettermoving.elytraFireworksCompatTest")) {
                 ElytraFireworkCompatProbe.verify(client);
             }
+            if (Boolean.getBoolean("bettermoving.riptideCompatTest")) {
+                RiptideCompatProbe.verify(client);
+            }
             if (Boolean.getBoolean("bettermoving.sprintCompatTest")) {
                 SprintHungerCompatProbe.verify(client);
             }

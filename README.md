@@ -2,10 +2,10 @@
 
 BetterMoving is a client-only Fabric mod for Minecraft 1.20.1. It provides
 configurable movement overrides through a MaLiLib configuration screen,
-including fluid movement, invisible platforms, simulated potion effects, and
-Elytra firework controls.
+including fluid movement, invisible platforms, simulated potion effects,
+client-side Riptide, and Elytra firework controls.
 
-Current release: [1.12.4](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.12.4).
+Current version: `1.13.0` (local build; not published yet).
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -27,12 +27,11 @@ hotkey works without Mod Menu.
 
 1. Install Fabric Loader for Minecraft 1.20.1.
 2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
-3. Download [bettermoving-1.12.4.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.4/bettermoving-1.12.4.jar)
-   and place it in the same `mods` folder.
+3. Download an installable JAR from [Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases),
+   or build this version using the instructions below, and place it in the same `mods` folder.
 4. Optionally install Mod Menu, then launch Minecraft.
 
-The release also includes [bettermoving-1.12.4-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.12.4/bettermoving-1.12.4-sources.jar)
-for source inspection. Do not install the sources JAR as a mod.
+The `-sources.jar` is for source inspection. Do not install it as a mod.
 
 ## Configuration
 
@@ -107,6 +106,27 @@ unchanged.
 `Ignore slippery blocks` treats ice and other blocks with above-normal
 slipperiness as ordinary blocks during local-player movement. It does not
 change block states, rendering, interactions, or other entities.
+
+### Riptide anywhere
+
+`Simulate Riptide anywhere` simulates Riptide-enchanted trident use for the
+local player in any environment, including dry air and water. Both hands
+use vanilla charging: releasing after at least 10 ticks applies the normal
+enchantment-dependent impulse, ground lift, sound, and 20-tick spin. Shorter
+charges do not launch the player. Vanilla cooldown and durability checks
+still apply.
+
+Simulated use sends neither an item-use packet nor a release-use packet and
+does not consume trident durability. Aiming at an ordinary block also skips
+the unused block-use fallback packet; accepted container and other block
+interactions retain their normal behavior. Disabling the option or changing
+the held item cancels an in-progress local charge. Incoming server status
+updates do not interrupt a valid local charge.
+
+The toggle is disabled and unbound by default and works independently of
+`Ignore fluid physics`, including both movement models. Tridents without
+Riptide retain vanilla throwing and packets. Other players and server-side
+combat remain unchanged; servers can still correct the simulated movement.
 
 ### Simulated potion effects
 
@@ -203,7 +223,7 @@ Build the mod, run unit tests, and compile the client compatibility suite:
 ```
 
 On Windows, use `gradlew.bat` instead of `./gradlew`. The installable JAR is
-`build/libs/bettermoving-1.12.4.jar`; the `-sources.jar` is for source
+`build/libs/bettermoving-1.13.0.jar`; the `-sources.jar` is for source
 inspection only.
 
 Run the disposable client compatibility suite:
@@ -216,19 +236,27 @@ Run the disposable client compatibility suite:
   -PbettermovingSprintCompatTest \
   -PbettermovingSlipperinessCompatTest \
   -PbettermovingPotionEffectsCompatTest \
-  -PbettermovingElytraFireworksCompatTest
+  -PbettermovingElytraFireworksCompatTest \
+  -PbettermovingRiptideCompatTest
 ```
 
 Add `-PbettermovingModMenuTest` to include optional Mod Menu integration.
 The suite covers configuration persistence, fluid models, both platforms,
 sprint restrictions, slippery-block friction, simulated potion formulas,
-Levitation and Slowness overrides, and Elytra firework behavior.
+Levitation and Slowness overrides, Elytra firework behavior, and local Riptide.
 
 Flight checks reproduce integrated-server Levitation rejection and verify
 local gliding, stopping conditions, remote-player isolation, fluid models,
 and firework acceleration. Firework checks cover both hands in Creative and
 Survival, block and entity interactions, sneaking fallbacks, outgoing packets,
 and block prediction cleanup.
+
+Riptide checks cover both hands, Creative and Survival, vanilla charge
+thresholds and impulse levels, ground lift, natural ticking and spin poses,
+spin expiration and collision, server status updates, cancellation, cooldown
+and durability restrictions, water and fluid-model compatibility, outgoing
+packets, accepted block and entity interactions, and vanilla behavior for
+unenchanted tridents and remote players.
 
 ## License
 

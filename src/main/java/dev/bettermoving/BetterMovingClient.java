@@ -2,6 +2,7 @@ package dev.bettermoving;
 
 import dev.bettermoving.config.BetterMovingInitializationHandler;
 import dev.bettermoving.physics.LevitationElytraFlight;
+import dev.bettermoving.physics.ClientRiptide;
 import dev.bettermoving.physics.VirtualPlatform;
 import dev.bettermoving.physics.VoidProtectionPlatform;
 import fi.dy.masa.malilib.event.InitializationHandler;
@@ -19,6 +20,7 @@ public final class BetterMovingClient implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register(VirtualPlatform::tick);
         ClientTickEvents.START_CLIENT_TICK.register(VoidProtectionPlatform::tick);
         ClientTickEvents.START_CLIENT_TICK.register(LevitationElytraFlight::tick);
+        ClientTickEvents.START_CLIENT_TICK.register(ClientRiptide::tick);
         InitializationHandler.getInstance()
                 .registerInitializationHandler(BetterMovingInitializationHandler.INSTANCE);
         LOGGER.info("BetterMoving initialized");

@@ -15,6 +15,8 @@
   "bettermoving.config.comment.ignoreSprintHunger": "Allow normal client-side sprinting at food level 6 or below by treating the food check inside canSprint as full hunger. Actual food, saturation, movement speed, and other sprint requirements stay unchanged. Only affects the local client player.",
   "bettermoving.config.name.ignoreSlipperyBlocks": "Ignore slippery blocks",
   "bettermoving.config.comment.ignoreSlipperyBlocks": "Treat ice and other blocks with above-normal slipperiness as ordinary blocks during local-player movement. Block states, rendering, interactions, and other entities remain unchanged.",
+  "bettermoving.config.name.simulateRiptideAnywhere": "Simulate Riptide anywhere",
+  "bettermoving.config.comment.simulateRiptideAnywhere": "Simulate Riptide-enchanted trident use locally in any environment, including air and water. Preserve vanilla charging, acceleration, and spinning without sending item-use or release-use packets or losing durability. Tridents without Riptide retain vanilla throwing. Disabled and unbound by default.",
   "bettermoving.config.name.simulatePotionEffects": "Simulate potion effects",
   "bettermoving.config.comment.simulatePotionEffects": "Simulate the configured Speed, Jump Boost, and Dolphin's Grace effect levels in local-player movement calculations. The toggle is disabled and unbound by default.",
   "bettermoving.config.name.overridePotionEffects": "Override existing potion effects",

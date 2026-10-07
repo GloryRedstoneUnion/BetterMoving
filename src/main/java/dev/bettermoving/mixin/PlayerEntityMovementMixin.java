@@ -7,6 +7,7 @@ import dev.bettermoving.physics.BetterMovingMovementPolicy;
 import dev.bettermoving.physics.FluidMovementContext;
 import dev.bettermoving.physics.LevitationElytraFlight;
 import dev.bettermoving.physics.PotionEffectPolicy;
+import dev.bettermoving.physics.ClientRiptide;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffect;
@@ -27,6 +28,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class PlayerEntityMovementMixin {
     @Unique
     private boolean bettermoving$wasFallFlyingBeforeStop;
+
+    @Inject(method = "useRiptide", at = @At("RETURN"))
+    private void bettermoving$startLocalRiptideSpin(int ticks, CallbackInfo ci) {
+        ClientRiptide.startSpin((PlayerEntity) (Object) this);
+    }
 
     @Inject(method = "stopFallFlying", at = @At("HEAD"))
     private void bettermoving$rememberFallFlyingState(CallbackInfo ci) {

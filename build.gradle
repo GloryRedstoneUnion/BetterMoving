@@ -72,6 +72,9 @@ if (project.hasProperty('bettermovingCompatTest')) {
         if (project.hasProperty('bettermovingElytraFireworksCompatTest')) {
             jvmArgs '-Dbettermoving.elytraFireworksCompatTest=true'
         }
+        if (project.hasProperty('bettermovingRiptideCompatTest')) {
+            jvmArgs '-Dbettermoving.riptideCompatTest=true'
+        }
     }
 }
 

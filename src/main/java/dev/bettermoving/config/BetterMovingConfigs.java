@@ -29,6 +29,14 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("ignoreFluidPhysics"),
                     prettyName("ignoreFluidPhysics"));
 
+    public static final ConfigBooleanHotkeyed SIMULATE_RIPTIDE_ANYWHERE =
+            new ConfigBooleanHotkeyed(
+                    "simulateRiptideAnywhere",
+                    false,
+                    "",
+                    comment("simulateRiptideAnywhere"),
+                    prettyName("simulateRiptideAnywhere"));
+
     public static final ConfigOptionList MODEL =
             new ConfigOptionList(
                     "model",
@@ -200,6 +208,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             VOID_PROTECTION_PLATFORM,
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
+            SIMULATE_RIPTIDE_ANYWHERE,
             SIMULATE_POTION_EFFECTS,
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
@@ -223,6 +232,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             VOID_PROTECTION_PLATFORM,
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
+            SIMULATE_RIPTIDE_ANYWHERE,
             SIMULATE_POTION_EFFECTS,
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
@@ -241,6 +251,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             VOID_PROTECTION_PLATFORM,
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
+            SIMULATE_RIPTIDE_ANYWHERE,
             SIMULATE_POTION_EFFECTS,
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,

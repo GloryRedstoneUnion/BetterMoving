@@ -3,7 +3,7 @@
   "id": "bettermoving",
   "version": "${version}",
   "name": "BetterMoving",
-  "description": "Configurable client-side fluid movement, virtual platforms including void protection, sprinting without the food-level restriction, normal friction on slippery blocks, simulated potion effects, optional Levitation and Slowness movement overrides, and configurable Elytra firework use and boosts.",
+  "description": "Configurable client-side fluid movement, virtual platforms including void protection, sprinting without the food-level restriction, normal friction on slippery blocks, simulated potion effects, optional Levitation and Slowness movement overrides, Riptide simulation in any environment, and configurable Elytra firework use and boosts.",
   "authors": [
     "BetterMoving contributors"
   ],

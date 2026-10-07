@@ -5,6 +5,8 @@
   "refmap": "bettermoving-refmap.json",
   "client": [
     "ClientPlayerInteractionManagerMixin",
+    "ClientPlayerRiptideMixin",
+    "LivingEntityRiptideMixin",
     "EntityFallFlyingMixin",
     "FireworkRocketEntityMixin",
     "ClientPlayerMovementMixin",

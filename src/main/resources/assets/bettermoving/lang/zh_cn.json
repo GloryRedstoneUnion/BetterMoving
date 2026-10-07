@@ -15,6 +15,8 @@
   "bettermoving.config.comment.ignoreSprintHunger": "仅在本地客户端玩家的 canSprint 饱食度判断中按满值处理，使饱食度为 6 或以下时仍可正常疾跑。实际饱食度、饱和度、移速和其他疾跑条件保持原样。",
   "bettermoving.config.name.ignoreSlipperyBlocks": "忽略方块滑溜度",
   "bettermoving.config.comment.ignoreSlipperyBlocks": "在本地玩家移动时，将冰和其他高于普通值的滑溜方块按普通方块处理。方块状态、渲染、交互和其他实体保持不变。",
+  "bettermoving.config.name.simulateRiptideAnywhere": "随处模拟激流",
+  "bettermoving.config.comment.simulateRiptideAnywhere": "在空气、水中等任何环境本地模拟激流附魔三叉戟的使用，保留原版蓄力、推进和旋转，不发送物品使用或释放使用包，也不消耗耐久。无激流三叉戟保留原版投掷逻辑。此开关默认关闭且未绑定快捷键。",
   "bettermoving.config.name.simulatePotionEffects": "模拟药水效果",
   "bettermoving.config.comment.simulatePotionEffects": "在本地玩家的移动计算中模拟配置的速度、跳跃提升和海豚的恩惠效果等级。此开关默认关闭且未绑定快捷键。",
   "bettermoving.config.name.overridePotionEffects": "覆盖原有药水效果",
