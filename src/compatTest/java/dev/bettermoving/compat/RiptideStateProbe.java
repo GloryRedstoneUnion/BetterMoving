@@ -12,6 +12,9 @@ public interface RiptideStateProbe {
     @Invoker("tickActiveItemStack")
     void bettermovingTest$tickActiveItemStack();
 
+    @Accessor("itemUseTimeLeft")
+    void bettermovingTest$setItemUseTimeLeft(int ticks);
+
     @Accessor("riptideTicks")
     void bettermovingTest$setRiptideTicks(int ticks);
 

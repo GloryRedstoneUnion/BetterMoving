@@ -37,6 +37,23 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("simulateRiptideAnywhere"),
                     prettyName("simulateRiptideAnywhere"));
 
+    public static final ConfigBooleanHotkeyed CUSTOM_RIPTIDE_CHARGE_TIME =
+            new ConfigBooleanHotkeyed(
+                    "customRiptideChargeTime",
+                    false,
+                    "",
+                    comment("customRiptideChargeTime"),
+                    prettyName("customRiptideChargeTime"));
+
+    public static final ConfigInteger RIPTIDE_CHARGE_TIME_TICKS =
+            new ConfigInteger(
+                    "riptideChargeTimeTicks",
+                    10,
+                    0,
+                    Integer.MAX_VALUE,
+                    false,
+                    comment("riptideChargeTimeTicks"));
+
     public static final ConfigOptionList MODEL =
             new ConfigOptionList(
                     "model",
@@ -209,6 +226,8 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_RIPTIDE_ANYWHERE,
+            CUSTOM_RIPTIDE_CHARGE_TIME,
+            RIPTIDE_CHARGE_TIME_TICKS,
             SIMULATE_POTION_EFFECTS,
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
@@ -233,6 +252,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_RIPTIDE_ANYWHERE,
+            CUSTOM_RIPTIDE_CHARGE_TIME,
             SIMULATE_POTION_EFFECTS,
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,
@@ -252,6 +272,8 @@ public final class BetterMovingConfigs implements IConfigHandler {
             IGNORE_SPRINT_HUNGER,
             IGNORE_SLIPPERY_BLOCKS,
             SIMULATE_RIPTIDE_ANYWHERE,
+            CUSTOM_RIPTIDE_CHARGE_TIME,
+            RIPTIDE_CHARGE_TIME_TICKS,
             SIMULATE_POTION_EFFECTS,
             OVERRIDE_POTION_EFFECTS,
             IGNORE_LEVITATION_AND_SLOWNESS,

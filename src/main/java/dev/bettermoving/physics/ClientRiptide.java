@@ -48,6 +48,12 @@ public final class ClientRiptide {
         return chargingPlayer == player;
     }
 
+    public static boolean usesCustomChargeTime(LivingEntity player) {
+        return isCharging(player)
+                && BetterMovingConfigs.SIMULATE_RIPTIDE_ANYWHERE.getBooleanValue()
+                && BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.getBooleanValue();
+    }
+
     public static void release(PlayerEntity player) {
         if (canContinueCharging()) {
             // Vanilla already computes the impulse, ground lift, and 20-tick spin.

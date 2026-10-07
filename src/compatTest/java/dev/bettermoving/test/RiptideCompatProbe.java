@@ -61,6 +61,8 @@ public final class RiptideCompatProbe {
         ItemStack previousOff = player.getOffHandStack();
         Vec3d previousPos = player.getPos();
         boolean previousToggle = BetterMovingConfigs.SIMULATE_RIPTIDE_ANYWHERE.getBooleanValue();
+        boolean previousCustomCharge = BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.getBooleanValue();
+        int previousChargeTime = BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.getIntegerValue();
         boolean previousFluidToggle = BetterMovingConfigs.ignoreFluidPhysics();
         FluidMovementModel previousModel = BetterMovingConfigs.movementModel();
         GameMode previousGameMode = client.interactionManager.getCurrentGameMode();
@@ -69,6 +71,7 @@ public final class RiptideCompatProbe {
             capturePackets = true;
             BetterMovingConfigs.IGNORE_FLUID_PHYSICS.setBooleanValue(false);
             BetterMovingConfigs.SIMULATE_RIPTIDE_ANYWHERE.setBooleanValue(true);
+            BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.setBooleanValue(false);
             // Keep the probe far from terrain and entities without changing server rules.
             player.setPosition(previousPos.x, 240.0, previousPos.z);
             player.setYaw(0.0F);
@@ -119,6 +122,7 @@ public final class RiptideCompatProbe {
 
             verifyShortChargeAndGroundLift(client);
             verifyNaturalTicksAndPose(client);
+            verifyCustomChargeTime(client);
             verifyCancellation(client);
             verifyWaterAndFluidModels(client);
             verifyBlockAndEntityInteractions(client);
@@ -135,6 +139,8 @@ public final class RiptideCompatProbe {
             player.horizontalCollision = false;
             player.getItemCooldownManager().remove(Items.TRIDENT);
             BetterMovingConfigs.SIMULATE_RIPTIDE_ANYWHERE.setBooleanValue(previousToggle);
+            BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.setBooleanValue(previousCustomCharge);
+            BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.setIntegerValue(previousChargeTime);
             BetterMovingConfigs.IGNORE_FLUID_PHYSICS.setBooleanValue(previousFluidToggle);
             BetterMovingConfigs.MODEL.setOptionListValue(previousModel);
             client.interactionManager.setGameMode(previousGameMode);
@@ -154,6 +160,136 @@ public final class RiptideCompatProbe {
         option.setBooleanValue(false);
         ConfigUtils.readConfigBase(json, "options", BetterMovingConfigs.OPTIONS);
         check(option.getBooleanValue(), "Riptide toggle did not survive config serialization");
+
+        var custom = BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME;
+        var duration = BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS;
+        check(!custom.getDefaultBooleanValue(), "Custom charge toggle must default off");
+        check(custom.getKeybind().getStringValue().isEmpty(), "Custom charge hotkey must default unbound");
+        check(duration.getDefaultIntegerValue() == 10, "Custom charge duration must default to ten ticks");
+        check(BetterMovingConfigs.ALL_HOTKEYS.contains(custom), "Missing custom charge hotkey");
+        check(BetterMovingConfigs.GUI_OPTIONS.indexOf(custom)
+                        == BetterMovingConfigs.GUI_OPTIONS.indexOf(option) + 1,
+                "Custom charge toggle must appear below Riptide simulation");
+        check(BetterMovingConfigs.GUI_OPTIONS.indexOf(duration)
+                        == BetterMovingConfigs.GUI_OPTIONS.indexOf(custom) + 1,
+                "Charge duration must appear below its toggle");
+        custom.setBooleanValue(true);
+        duration.setIntegerValue(Integer.MAX_VALUE);
+        check(duration.getIntegerValue() == Integer.MAX_VALUE, "Full int range must be accepted");
+        ConfigUtils.writeConfigBase(json, "options", BetterMovingConfigs.OPTIONS);
+        custom.setBooleanValue(false);
+        duration.setIntegerValue(10);
+        ConfigUtils.readConfigBase(json, "options", BetterMovingConfigs.OPTIONS);
+        check(custom.getBooleanValue() && duration.getIntegerValue() == Integer.MAX_VALUE,
+                "Custom charge settings must survive serialization at the int maximum");
+        duration.setIntegerValue(-1);
+        check(duration.getIntegerValue() == 0, "Negative charge duration must clamp to zero");
+        duration.setIntegerValue(10);
+        custom.setBooleanValue(false);
+    }
+
+    private static void verifyCustomChargeTime(MinecraftClient client) {
+        ClientPlayerEntity player = client.player;
+        BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.setBooleanValue(true);
+        for (GameMode mode : new GameMode[] {GameMode.SURVIVAL, GameMode.CREATIVE}) {
+            client.interactionManager.setGameMode(mode);
+            for (Hand hand : Hand.values()) {
+                for (int required : new int[] {0, 1, 5, 10, 20, 72001, Integer.MAX_VALUE}) {
+                    BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.setIntegerValue(required);
+                    if (required > 0) {
+                        verifyCustomRelease(client, hand, required - 1, false);
+                    }
+                    verifyCustomRelease(client, hand, required, true);
+                    if (required < Integer.MAX_VALUE) {
+                        verifyCustomRelease(client, hand, required + 1, true);
+                    }
+                }
+            }
+        }
+
+        // Reach the int boundary using the real vanilla countdown, then keep holding.
+        BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.setIntegerValue(Integer.MAX_VALUE);
+        equipTrident(player, Hand.MAIN_HAND, 3);
+        startCharge(client, Hand.MAIN_HAND);
+        setElapsedCharge(player, Integer.MAX_VALUE - 1);
+        for (int i = 0; i < 3; i++) {
+            ((RiptideStateProbe) player).bettermovingTest$tickActiveItemStack();
+            check(player.getItemUseTime() == Integer.MAX_VALUE,
+                    "Charge timer must reach and stay at the int maximum without overflow");
+        }
+        player.setOnGround(false);
+        player.setVelocity(Vec3d.ZERO);
+        client.interactionManager.stopUsingItem(player);
+        assertClose(3.0, player.getVelocity().z, "Maximum-duration charge must still launch");
+        assertPackets(0, 0, 0, "Maximum-duration charge");
+
+        BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.setIntegerValue(0);
+        BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.setBooleanValue(false);
+        verifyCustomRelease(client, Hand.MAIN_HAND, 9, false);
+        verifyCustomRelease(client, Hand.MAIN_HAND, 10, true);
+        BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.setBooleanValue(true);
+
+        // Settings are resolved when releasing an already active local charge.
+        BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.setIntegerValue(20);
+        equipTrident(player, Hand.MAIN_HAND, 3);
+        startCharge(client, Hand.MAIN_HAND);
+        charge(player, 5);
+        BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.setIntegerValue(5);
+        player.setVelocity(Vec3d.ZERO);
+        client.interactionManager.stopUsingItem(player);
+        assertClose(3.0, player.getVelocity().z, "Updated duration must apply to the active charge");
+        assertPackets(0, 0, 0, "Duration change during charge");
+
+        BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.setIntegerValue(0);
+        equipTrident(player, Hand.MAIN_HAND, 3);
+        startCharge(client, Hand.MAIN_HAND);
+        charge(player, 5);
+        BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.setBooleanValue(false);
+        player.setVelocity(Vec3d.ZERO);
+        client.interactionManager.stopUsingItem(player);
+        assertClose(0.0, player.getVelocity().length(), "Disabling custom charge restores ten ticks");
+        assertPackets(0, 0, 0, "Custom toggle disabled during charge");
+        BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.setBooleanValue(true);
+        equipTrident(player, Hand.MAIN_HAND, 3);
+        startCharge(client, Hand.MAIN_HAND);
+        player.setVelocity(Vec3d.ZERO);
+        BetterMovingConfigs.SIMULATE_RIPTIDE_ANYWHERE.setBooleanValue(false);
+        client.interactionManager.stopUsingItem(player);
+        assertClose(0.0, player.getVelocity().length(), "Disabled simulation must cancel even zero-charge use");
+        assertPackets(0, 0, 0, "Parent toggle disabled during custom charge");
+        BetterMovingConfigs.SIMULATE_RIPTIDE_ANYWHERE.setBooleanValue(true);
+        BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.setBooleanValue(false);
+        BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.setIntegerValue(10);
+    }
+
+    private static void verifyCustomRelease(MinecraftClient client, Hand hand, int elapsed, boolean launch) {
+        ClientPlayerEntity player = client.player;
+        ((RiptideStateProbe) player).bettermovingTest$setRiptideTicks(0);
+        ItemStack trident = equipTrident(player, hand, 3);
+        startCharge(client, hand);
+        if (elapsed <= 21) {
+            charge(player, elapsed);
+        } else {
+            // Set up long-duration boundaries without waiting days or years.
+            setElapsedCharge(player, elapsed);
+        }
+        player.setOnGround(false);
+        player.setVelocity(0.25, 0.0, 0.5);
+        client.interactionManager.stopUsingItem(player);
+        assertClose(0.25, player.getVelocity().x, "Custom charge preserves existing X motion");
+        assertClose(0.0, player.getVelocity().y, "Custom charge preserves vanilla Y impulse");
+        assertClose(launch ? 3.5 : 0.5, player.getVelocity().z,
+                "Custom threshold launch=" + launch + ", elapsed=" + elapsed);
+        check(player.isUsingRiptide() == launch, "Custom threshold must control the vanilla spin");
+        check(!player.isUsingItem() && !ClientRiptide.isCharging(player), "Custom release must clear its session");
+        check(trident.getDamage() == 0 && trident.getCount() == 1, "Custom release preserves durability");
+        assertPackets(0, 0, 0, "Custom charge threshold");
+    }
+
+    private static void setElapsedCharge(ClientPlayerEntity player, int ticks) {
+        ((RiptideStateProbe) player).bettermovingTest$setItemUseTimeLeft(
+                player.getActiveItem().getMaxUseTime() - ticks);
+        check(player.getItemUseTime() == ticks, "Long-duration test fixture must use the exact elapsed time");
     }
 
     private static void verifyShortChargeAndGroundLift(MinecraftClient client) {
@@ -300,6 +436,8 @@ public final class RiptideCompatProbe {
             assertClose(2.25, player.getVelocity().z, "Riptide works in water with either fluid model");
             assertPackets(0, 0, 0, "Water simulation");
         }
+        BetterMovingConfigs.IGNORE_FLUID_PHYSICS.setBooleanValue(false);
+        verifyVanillaChargeInWater(client);
         for (BlockPos pos : BlockPos.iterate(center.add(-2, -2, -2), center.add(2, 3, 2))) {
             client.world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
         }
@@ -325,8 +463,55 @@ public final class RiptideCompatProbe {
         BetterMovingConfigs.IGNORE_FLUID_PHYSICS.setBooleanValue(false);
     }
 
+    private static void verifyVanillaChargeInWater(MinecraftClient client) {
+        ClientPlayerEntity player = client.player;
+        BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.setBooleanValue(true);
+        BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.setIntegerValue(0);
+        BetterMovingConfigs.SIMULATE_RIPTIDE_ANYWHERE.setBooleanValue(false);
+        client.interactionManager.setGameMode(GameMode.SURVIVAL);
+        for (int elapsed : new int[] {9, 10}) {
+            equipTrident(player, Hand.MAIN_HAND, 3);
+            resetPackets();
+            check(client.interactionManager.interactItem(player, Hand.MAIN_HAND).isAccepted(),
+                    "Vanilla water Riptide must still start with only custom charge enabled");
+            check(!ClientRiptide.isCharging(player), "Disabled simulation must not own vanilla water use");
+            charge(player, elapsed);
+            player.setOnGround(false);
+            player.setVelocity(Vec3d.ZERO);
+            client.interactionManager.stopUsingItem(player);
+            assertClose(elapsed == 10 ? 3.0 : 0.0, player.getVelocity().z,
+                    "Parent-disabled water Riptide retains the vanilla threshold");
+            assertPackets(1, 1, 0, "Parent-disabled water Riptide");
+        }
+
+        BetterMovingConfigs.SIMULATE_RIPTIDE_ANYWHERE.setBooleanValue(true);
+        OtherClientPlayerEntity remote = new OtherClientPlayerEntity(client.world, player.getGameProfile());
+        remote.setPosition(player.getPos());
+        remote.baseTick();
+        check(remote.isTouchingWater(), "Remote threshold fixture must be in water");
+        remote.setYaw(0.0F);
+        remote.setPitch(0.0F);
+        ItemStack trident = new ItemStack(Items.TRIDENT);
+        trident.addEnchantment(Enchantments.RIPTIDE, 3);
+        remote.setStackInHand(Hand.MAIN_HAND, trident);
+        for (int elapsed : new int[] {9, 10}) {
+            check(trident.use(client.world, remote, Hand.MAIN_HAND).getResult().isAccepted(),
+                    "Remote water Riptide must start vanilla use");
+            ((RiptideStateProbe) remote).bettermovingTest$setItemUseTimeLeft(trident.getMaxUseTime() - elapsed);
+            remote.setOnGround(false);
+            remote.setVelocity(Vec3d.ZERO);
+            remote.stopUsingItem();
+            assertClose(elapsed == 10 ? 3.0 : 0.0, remote.getVelocity().z,
+                    "Remote Riptide retains the vanilla threshold with both toggles enabled");
+        }
+        BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.setBooleanValue(false);
+        BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.setIntegerValue(10);
+    }
+
     private static void verifyVanillaIsolation(MinecraftClient client) {
         ClientPlayerEntity player = client.player;
+        BetterMovingConfigs.CUSTOM_RIPTIDE_CHARGE_TIME.setBooleanValue(true);
+        BetterMovingConfigs.RIPTIDE_CHARGE_TIME_TICKS.setIntegerValue(0);
         OtherClientPlayerEntity remote = new OtherClientPlayerEntity(client.world, player.getGameProfile());
         ItemStack riptide = equipTrident(player, Hand.MAIN_HAND, 3);
         remote.setStackInHand(Hand.MAIN_HAND, riptide.copy());

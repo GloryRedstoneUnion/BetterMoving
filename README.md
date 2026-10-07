@@ -5,7 +5,8 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, invisible platforms, simulated potion effects,
 client-side Riptide, and Elytra firework controls.
 
-Current release: [1.13.0](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.13.0).
+Current source version: **1.13.1** (not yet published).
+Published downloads are available on the [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases).
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -27,12 +28,13 @@ hotkey works without Mod Menu.
 
 1. Install Fabric Loader for Minecraft 1.20.1.
 2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
-3. Download [bettermoving-1.13.0.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.13.0/bettermoving-1.13.0.jar)
-   and place it in the same `mods` folder.
+3. Download an installable `bettermoving-<version>.jar` from the
+   [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases),
+   or build this source version, and place it in the same `mods` folder.
 4. Optionally install Mod Menu, then launch Minecraft.
 
-The release also includes [bettermoving-1.13.0-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.13.0/bettermoving-1.13.0-sources.jar)
-for source inspection. Do not install the sources JAR as a mod.
+The `bettermoving-<version>-sources.jar` is for source inspection.
+Do not install the sources JAR as a mod.
 
 ## Configuration
 
@@ -116,6 +118,20 @@ use vanilla charging: releasing after at least 10 ticks applies the normal
 enchantment-dependent impulse, ground lift, sound, and 20-tick spin. Shorter
 charges do not launch the player. Vanilla cooldown and durability checks
 still apply.
+
+Enable `Custom Riptide charge time` together with `Simulate Riptide anywhere`
+to replace the minimum charge requirement with `Riptide charge time (ticks)`.
+The duration defaults to `10` and accepts any integer from `0` to
+`Integer.MAX_VALUE` (`2,147,483,647`) ticks. At `0`, starting use and releasing
+immediately launches the player. Longer values require holding the trident
+for at least that many ticks before release; there is no automatic launch.
+The elapsed charge timer saturates at `Integer.MAX_VALUE` to avoid overflow.
+
+The custom-charge toggle is disabled and unbound by default and supports a
+hotkey; its duration setting has no hotkey. With either toggle disabled,
+the vanilla 10-tick requirement applies. Only the simulated local Riptide
+charge is changed: impulse strength, ground lift, and spin duration remain
+vanilla, and ordinary tridents and other players retain their charge rules.
 
 Simulated use sends neither an item-use packet nor a release-use packet and
 does not consume trident durability. Aiming at an ordinary block also skips
@@ -224,7 +240,7 @@ Build the mod, run unit tests, and compile the client compatibility suite:
 ```
 
 On Windows, use `gradlew.bat` instead of `./gradlew`. The installable JAR is
-`build/libs/bettermoving-1.13.0.jar`; the `-sources.jar` is for source
+`build/libs/bettermoving-1.13.1.jar`; the `-sources.jar` is for source
 inspection only.
 
 Run the disposable client compatibility suite:
@@ -252,8 +268,9 @@ and firework acceleration. Firework checks cover both hands in Creative and
 Survival, block and entity interactions, sneaking fallbacks, outgoing packets,
 and block prediction cleanup.
 
-Riptide checks cover both hands, Creative and Survival, vanilla charge
-thresholds and impulse levels, ground lift, natural ticking and spin poses,
+Riptide checks cover both hands, Creative and Survival, vanilla and custom
+charge thresholds (including zero and the integer maximum), timer saturation,
+toggle isolation, impulse levels, ground lift, natural ticking and spin poses,
 spin expiration and collision, server status updates, cancellation, cooldown
 and durability restrictions, water and fluid-model compatibility, outgoing
 packets, accepted block and entity interactions, and vanilla behavior for
