@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.config.options.ConfigHotkey;
 import fi.dy.masa.malilib.config.options.ConfigInteger;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
+import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import java.io.File;
@@ -218,6 +219,14 @@ public final class BetterMovingConfigs implements IConfigHandler {
                     comment("openConfigGui"),
                     prettyName("openConfigGui"));
 
+    public static final ConfigHotkey RESET_MOMENTUM =
+            new ConfigHotkey(
+                    "resetMomentum",
+                    "",
+                    KeybindSettings.PRESS_ALLOWEXTRA_EMPTY,
+                    comment("resetMomentum"),
+                    prettyName("resetMomentum"));
+
     public static final List<IConfigBase> OPTIONS = List.of(
             IGNORE_FLUID_PHYSICS,
             MODEL,
@@ -244,7 +253,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             ELYTRA_FIREWORK_LIFETIME_FLIGHT_1,
             ELYTRA_FIREWORK_LIFETIME_FLIGHT_2,
             ELYTRA_FIREWORK_LIFETIME_FLIGHT_3);
-    public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI);
+    public static final List<ConfigHotkey> STANDALONE_HOTKEYS = List.of(OPEN_CONFIG_GUI, RESET_MOMENTUM);
     public static final List<IHotkey> ALL_HOTKEYS = List.of(
             IGNORE_FLUID_PHYSICS,
             VIRTUAL_PLATFORM,
@@ -262,9 +271,11 @@ public final class BetterMovingConfigs implements IConfigHandler {
             BLOCK_NON_ELYTRA_FIREWORK_USE,
             SIMULATE_ELYTRA_FIREWORK_SPEED,
             CUSTOM_ELYTRA_FIREWORK_LIFETIME,
-            OPEN_CONFIG_GUI);
+            OPEN_CONFIG_GUI,
+            RESET_MOMENTUM);
     public static final List<IConfigBase> GUI_OPTIONS = List.of(
             OPEN_CONFIG_GUI,
+            RESET_MOMENTUM,
             IGNORE_FLUID_PHYSICS,
             MODEL,
             VIRTUAL_PLATFORM,

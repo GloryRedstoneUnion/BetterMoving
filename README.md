@@ -2,10 +2,11 @@
 
 BetterMoving is a client-only Fabric mod for Minecraft 1.20.1. It provides
 configurable movement overrides through a MaLiLib configuration screen,
-including fluid movement, invisible platforms, simulated potion effects,
-client-side Riptide, and Elytra firework controls.
+including fluid movement, a momentum-reset hotkey, invisible platforms,
+simulated potion effects, client-side Riptide, and Elytra firework controls.
 
-Current release: [1.13.1](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.13.1).
+Current source version: **1.14.0** (not yet published).
+Published downloads are available on the [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases).
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -27,12 +28,13 @@ hotkey works without Mod Menu.
 
 1. Install Fabric Loader for Minecraft 1.20.1.
 2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
-3. Download [bettermoving-1.13.1.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.13.1/bettermoving-1.13.1.jar)
-   and place it in the same `mods` folder.
+3. Download an installable `bettermoving-<version>.jar` from the
+   [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases),
+   or build this source version, and place it in the same `mods` folder.
 4. Optionally install Mod Menu, then launch Minecraft.
 
-The release also includes [bettermoving-1.13.1-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.13.1/bettermoving-1.13.1-sources.jar)
-for source inspection. Do not install the sources JAR as a mod.
+The `bettermoving-<version>-sources.jar` is for source inspection.
+Do not install the sources JAR as a mod.
 
 ## Configuration
 
@@ -50,6 +52,23 @@ BetterMoving imports `config/fluidair.json`, when available, and saves the
 settings under the current name.
 
 ## Features
+
+### Reset momentum
+
+`Reset momentum` is an action hotkey with no on/off toggle. Press it to set
+the local player's X, Y, and Z velocity to zero once, whether walking,
+sprinting, falling, swimming, flying, using Riptide, or gliding with an Elytra.
+Holding the key does not repeat the action; release and press again for another
+reset. It does not change position, fall distance, or the current movement state.
+Normal gravity, movement input, and active firework boosts continue afterward.
+
+The option appears directly below `Open configuration screen` and is unbound
+by default. Its advanced defaults are: activation on `PRESS`, context `INGAME`,
+allow empty bindings `true`, allow extra keys `true`, order sensitive `true`,
+exclusive `false`, and cancel further processing `true`. Extra keys allow the
+action to work while movement keys are held; it does not trigger in a GUI or
+when no player is present. The action changes only local velocity and sends no
+dedicated packet; normal movement synchronization still applies.
 
 ### Fluid movement
 
@@ -240,7 +259,7 @@ Build the mod, run unit tests, and compile the client compatibility suite:
 ```
 
 On Windows, use `gradlew.bat` instead of `./gradlew`. The installable JAR is
-`build/libs/bettermoving-1.13.1.jar`; the `-sources.jar` is for source
+`build/libs/bettermoving-1.14.0.jar`; the `-sources.jar` is for source
 inspection only.
 
 Run the disposable client compatibility suite:
@@ -254,13 +273,20 @@ Run the disposable client compatibility suite:
   -PbettermovingSlipperinessCompatTest \
   -PbettermovingPotionEffectsCompatTest \
   -PbettermovingElytraFireworksCompatTest \
-  -PbettermovingRiptideCompatTest
+  -PbettermovingRiptideCompatTest \
+  -PbettermovingMomentumCompatTest
 ```
 
 Add `-PbettermovingModMenuTest` to include optional Mod Menu integration.
 The suite covers configuration persistence, fluid models, both platforms,
 sprint restrictions, slippery-block friction, simulated potion formulas,
-Levitation and Slowness overrides, Elytra firework behavior, and local Riptide.
+Levitation and Slowness overrides, Elytra firework behavior, local Riptide,
+and the momentum-reset hotkey.
+
+Momentum checks exercise real MaLiLib press, hold, repeat, and release handling,
+all three velocity axes, movement states, extra movement keys, GUI and unbound
+isolation, remote-player isolation, settings persistence, and resumed gravity
+and firework acceleration after the single reset.
 
 Flight checks reproduce integrated-server Levitation rejection and verify
 local gliding, stopping conditions, remote-player isolation, fluid models,

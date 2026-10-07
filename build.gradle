@@ -75,6 +75,9 @@ if (project.hasProperty('bettermovingCompatTest')) {
         if (project.hasProperty('bettermovingRiptideCompatTest')) {
             jvmArgs '-Dbettermoving.riptideCompatTest=true'
         }
+        if (project.hasProperty('bettermovingMomentumCompatTest')) {
+            jvmArgs '-Dbettermoving.momentumCompatTest=true'
+        }
     }
 }
 

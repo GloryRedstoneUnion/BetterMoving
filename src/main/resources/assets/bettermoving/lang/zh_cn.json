@@ -53,6 +53,8 @@
   "bettermoving.config.comment.elytraFireworkLifetimeFlight2": "飞行时间为 2 的烟花火箭自定义时长，单位 tick。仅在“自定义鞘翅烟花飞行时长”开启时生效，可填 0 至 Integer.MAX_VALUE tick。",
   "bettermoving.config.name.elytraFireworkLifetimeFlight3": "鞘翅烟花飞行时间 3 时长（tick）",
   "bettermoving.config.comment.elytraFireworkLifetimeFlight3": "飞行时间为 3 的烟花火箭自定义时长，单位 tick。仅在“自定义鞘翅烟花飞行时长”开启时生效，可填 0 至 Integer.MAX_VALUE tick。",
+  "bettermoving.config.name.resetMomentum": "清除动量",
+  "bettermoving.config.comment.resetMomentum": "按下时将本地玩家 X、Y、Z 三轴速度归零一次，适用于行走、下落、游泳、激流和鞘翅滑翔等任意移动状态。按住不会重复清零，之后重力、输入和正在生效的推进仍正常计算。此选项仅为动作热键，不带开关，默认未绑定。",
   "bettermoving.config.name.openConfigGui": "打开配置界面",
   "bettermoving.config.comment.openConfigGui": "打开 BetterMoving 的 malilib 配置界面。"
 }

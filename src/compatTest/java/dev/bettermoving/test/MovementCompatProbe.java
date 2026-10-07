@@ -71,6 +71,9 @@ public final class MovementCompatProbe {
             if (client.player.age < 5) {
                 return;
             }
+            if (Boolean.getBoolean("bettermoving.momentumCompatTest")) {
+                MomentumResetCompatProbe.verify(client);
+            }
             if (Boolean.getBoolean("bettermoving.potionEffectsCompatTest")) {
                 PotionEffectsCompatProbe.verify(client);
             }
