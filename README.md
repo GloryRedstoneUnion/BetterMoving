@@ -5,7 +5,7 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, invisible platforms, simulated potion effects,
 client-side Riptide, and Elytra firework controls.
 
-Current version: `1.13.0` (local build; not published yet).
+Current release: [1.13.0](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.13.0).
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -27,11 +27,12 @@ hotkey works without Mod Menu.
 
 1. Install Fabric Loader for Minecraft 1.20.1.
 2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
-3. Download an installable JAR from [Releases](https://github.com/GloryRedstoneUnion/BetterMoving/releases),
-   or build this version using the instructions below, and place it in the same `mods` folder.
+3. Download [bettermoving-1.13.0.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.13.0/bettermoving-1.13.0.jar)
+   and place it in the same `mods` folder.
 4. Optionally install Mod Menu, then launch Minecraft.
 
-The `-sources.jar` is for source inspection. Do not install it as a mod.
+The release also includes [bettermoving-1.13.0-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.13.0/bettermoving-1.13.0-sources.jar)
+for source inspection. Do not install the sources JAR as a mod.
 
 ## Configuration
 
@@ -209,10 +210,10 @@ vanilla behavior unchanged while disabled.
 fireworks with Flight 1, 2, or 3 using the corresponding tick value. Flight
 levels 0 and 4 or higher, non-Elytra launches, and rockets while the option is
 disabled retain their vanilla lifetime. The Flight 1, 2, and 3 values accept
-any non-negative `int` value up to `Integer.MAX_VALUE` ticks. It also applies to rockets created by
-`Infinite Elytra fireworks`; rocket consumption behavior is unchanged. The
-toggle is disabled and unbound by default, and all three values default to
-`0` ticks.
+any non-negative `int` value up to `Integer.MAX_VALUE` ticks. It also applies
+to rockets created by `Infinite Elytra fireworks`; rocket consumption behavior
+is unchanged. The toggle is disabled and unbound by default, and all three
+values default to `0` ticks.
 
 ## Building and testing
 
