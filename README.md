@@ -5,8 +5,7 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, invisible platforms, simulated potion effects,
 client-side Riptide, and Elytra firework controls.
 
-Current source version: **1.13.1** (not yet published).
-Published downloads are available on the [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases).
+Current release: [1.13.1](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.13.1).
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -28,13 +27,12 @@ hotkey works without Mod Menu.
 
 1. Install Fabric Loader for Minecraft 1.20.1.
 2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
-3. Download an installable `bettermoving-<version>.jar` from the
-   [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases),
-   or build this source version, and place it in the same `mods` folder.
+3. Download [bettermoving-1.13.1.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.13.1/bettermoving-1.13.1.jar)
+   and place it in the same `mods` folder.
 4. Optionally install Mod Menu, then launch Minecraft.
 
-The `bettermoving-<version>-sources.jar` is for source inspection.
-Do not install the sources JAR as a mod.
+The release also includes [bettermoving-1.13.1-sources.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.13.1/bettermoving-1.13.1-sources.jar)
+for source inspection. Do not install the sources JAR as a mod.
 
 ## Configuration
 
@@ -113,11 +111,11 @@ change block states, rendering, interactions, or other entities.
 ### Riptide anywhere
 
 `Simulate Riptide anywhere` simulates Riptide-enchanted trident use for the
-local player in any environment, including dry air and water. Both hands
-use vanilla charging: releasing after at least 10 ticks applies the normal
-enchantment-dependent impulse, ground lift, sound, and 20-tick spin. Shorter
-charges do not launch the player. Vanilla cooldown and durability checks
-still apply.
+local player in any environment, including dry air and water. By default,
+both hands use vanilla charging: releasing after at least 10 ticks applies
+the normal enchantment-dependent impulse, ground lift, sound, and 20-tick
+spin. Shorter charges do not launch the player. Vanilla cooldown and
+durability checks still apply.
 
 Enable `Custom Riptide charge time` together with `Simulate Riptide anywhere`
 to replace the minimum charge requirement with `Riptide charge time (ticks)`.
@@ -128,10 +126,12 @@ for at least that many ticks before release; there is no automatic launch.
 The elapsed charge timer saturates at `Integer.MAX_VALUE` to avoid overflow.
 
 The custom-charge toggle is disabled and unbound by default and supports a
-hotkey; its duration setting has no hotkey. With either toggle disabled,
-the vanilla 10-tick requirement applies. Only the simulated local Riptide
-charge is changed: impulse strength, ground lift, and spin duration remain
-vanilla, and ordinary tridents and other players retain their charge rules.
+hotkey. It appears directly below `Simulate Riptide anywhere`, while
+`Riptide charge time (ticks)` appears at the bottom of the configuration
+screen and has no hotkey. With either toggle disabled, the vanilla 10-tick
+requirement applies. Only the simulated local Riptide charge is changed:
+impulse strength, ground lift, and spin duration remain vanilla, and ordinary
+tridents and other players retain their charge rules.
 
 Simulated use sends neither an item-use packet nor a release-use packet and
 does not consume trident durability. Aiming at an ordinary block also skips
