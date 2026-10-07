@@ -5,8 +5,12 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, a momentum-reset hotkey, invisible platforms,
 simulated potion effects, client-side Riptide, and Elytra firework controls.
 
-Current source version: **1.14.0** (not yet published).
-Published downloads are available on the [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases).
+Current release: **[1.14.0](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.14.0)** for Minecraft 1.20.1.
+
+- [Installable JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.0/bettermoving-1.14.0.jar)
+- [Source JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.0/bettermoving-1.14.0-sources.jar)
+
+Previous versions are available on the [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases).
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -63,8 +67,10 @@ reset. If an Elytra glide is active, the same press also ends that glide,
 including local gliding while `Ignore levitation and slowness` is enabled.
 It does not change position, fall distance, or other movement states. Normal
 gravity and movement input continue afterward. Elytra fireworks cannot boost
-while gliding is stopped; simulated rockets are also removed if `Infinite
-Elytra fireworks` and `Cancel Elytra fireworks on glide stop` are enabled.
+while gliding is stopped. Simulated rockets are also removed if both
+`Infinite Elytra fireworks` and `Cancel Elytra fireworks on glide stop` are
+enabled. Otherwise, a rocket that has not expired can boost again if a new
+glide starts before its lifetime ends.
 
 The option appears directly below `Open configuration screen` and is unbound
 by default. Its advanced defaults are: activation on `PRESS`, context `INGAME`,
@@ -73,8 +79,8 @@ exclusive `false`, and cancel further processing `true`. By default, only the
 bound keys may be held when the action is pressed. Enable `Allow extra keys`
 in the advanced settings to also use it while other movement keys are held.
 It does not trigger in a GUI or when no player is present. The action changes
-only local velocity and glide state and sends no dedicated packet; normal movement
-synchronization still applies.
+only local velocity and glide state and sends no dedicated packet; normal
+movement synchronization still applies.
 
 ### Fluid movement
 
