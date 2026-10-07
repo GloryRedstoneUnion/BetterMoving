@@ -54,7 +54,7 @@
   "bettermoving.config.name.elytraFireworkLifetimeFlight3": "Elytra firework Flight 3 lifetime (ticks)",
   "bettermoving.config.comment.elytraFireworkLifetimeFlight3": "Custom lifetime in ticks for Flight 3 firework rockets. Applied only while Custom Elytra firework lifetime is enabled. Values range from 0 to Integer.MAX_VALUE ticks.",
   "bettermoving.config.name.resetMomentum": "Reset momentum",
-  "bettermoving.config.comment.resetMomentum": "Press to set the local player's X, Y, and Z velocity to zero once, in any movement state including walking, falling, swimming, Riptide, and Elytra gliding. Holding the key does not repeat the reset. Gravity, input, and active boosts continue normally afterward. This is an action hotkey with no toggle, unbound by default.",
+  "bettermoving.config.comment.resetMomentum": "Press to set the local player's X, Y, and Z velocity to zero once, in any movement state including walking, falling, swimming, Riptide, and Elytra gliding. Also ends an active Elytra glide. Holding the key does not repeat the action; gravity and movement input continue normally afterward. Simulated fireworks follow Cancel Elytra fireworks on glide stop. This is an action hotkey with no toggle, unbound by default.",
   "bettermoving.config.name.openConfigGui": "Open configuration screen",
   "bettermoving.config.comment.openConfigGui": "Opens the BetterMoving configuration screen."
 }

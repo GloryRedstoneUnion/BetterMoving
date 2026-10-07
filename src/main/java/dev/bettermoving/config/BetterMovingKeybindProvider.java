@@ -31,6 +31,9 @@ public final class BetterMovingKeybindProvider implements IKeybindProvider {
             if (action != KeyAction.PRESS || player == null) {
                 return false;
             }
+            if (player.isFallFlying()) {
+                player.stopFallFlying();
+            }
             player.setVelocity(Vec3d.ZERO);
             return true;
         });

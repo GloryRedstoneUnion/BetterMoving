@@ -59,8 +59,12 @@ settings under the current name.
 the local player's X, Y, and Z velocity to zero once, whether walking,
 sprinting, falling, swimming, flying, using Riptide, or gliding with an Elytra.
 Holding the key does not repeat the action; release and press again for another
-reset. It does not change position, fall distance, or the current movement state.
-Normal gravity, movement input, and active firework boosts continue afterward.
+reset. If an Elytra glide is active, the same press also ends that glide,
+including local gliding while `Ignore levitation and slowness` is enabled.
+It does not change position, fall distance, or other movement states. Normal
+gravity and movement input continue afterward. Elytra fireworks cannot boost
+while gliding is stopped; simulated rockets are also removed if `Infinite
+Elytra fireworks` and `Cancel Elytra fireworks on glide stop` are enabled.
 
 The option appears directly below `Open configuration screen` and is unbound
 by default. Its advanced defaults are: activation on `PRESS`, context `INGAME`,
@@ -69,7 +73,7 @@ exclusive `false`, and cancel further processing `true`. By default, only the
 bound keys may be held when the action is pressed. Enable `Allow extra keys`
 in the advanced settings to also use it while other movement keys are held.
 It does not trigger in a GUI or when no player is present. The action changes
-only local velocity and sends no dedicated packet; normal movement
+only local velocity and glide state and sends no dedicated packet; normal movement
 synchronization still applies.
 
 ### Fluid movement
@@ -288,7 +292,9 @@ and the momentum-reset hotkey.
 Momentum checks exercise real MaLiLib press, hold, repeat, and release handling,
 all three velocity axes, movement states, default and customized key sharing,
 GUI and unbound isolation, remote-player isolation, settings persistence, and
-resumed gravity and firework acceleration after the single reset.
+resumed gravity after the single reset. They also verify Elytra glide stopping,
+including retained local flight during Levitation, and simulated-firework
+cancellation with default and custom lifetimes.
 
 Flight checks reproduce integrated-server Levitation rejection and verify
 local gliding, stopping conditions, remote-player isolation, fluid models,
