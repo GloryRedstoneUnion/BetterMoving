@@ -147,7 +147,7 @@ public final class MomentumResetCompatProbe {
         KeybindSettings settings = keybind.getSettings();
         check(settings.getActivateOn() == KeyAction.PRESS, "Default action must be PRESS");
         check(settings.getContext() == KeybindSettings.Context.INGAME, "Default context must be INGAME");
-        check(settings.getAllowEmpty() && settings.getAllowExtraKeys() && settings.isOrderSensitive()
+        check(!settings.getAllowEmpty() && !settings.getAllowExtraKeys() && settings.isOrderSensitive()
                         && !settings.isExclusive() && settings.shouldCancel(),
                 "Advanced defaults must match the requested settings");
         check(BetterMovingConfigs.STANDALONE_HOTKEYS.contains(option)
@@ -180,10 +180,22 @@ public final class MomentumResetCompatProbe {
         ClientPlayerEntity player = client.player;
         player.setVelocity(MOMENTUM);
         input(GLFW.GLFW_KEY_W, true);
-        check(input(TEST_KEY, true), "Reset must work while a movement key is held");
-        check(player.getVelocity().equals(Vec3d.ZERO), "Extra movement keys must not block reset");
+        check(!input(TEST_KEY, true), "Default settings must reject extra movement keys");
+        check(player.getVelocity().equals(MOMENTUM), "Rejected shared input must preserve momentum");
         input(TEST_KEY, false);
         input(GLFW.GLFW_KEY_W, false);
+        check(input(TEST_KEY, true), "Reset must still work after shared input is released");
+        check(player.getVelocity().equals(Vec3d.ZERO), "An exact binding must reset momentum");
+        input(TEST_KEY, false);
+
+        keybind.setSettings(KeybindSettings.PRESS_ALLOWEXTRA_EMPTY);
+        player.setVelocity(MOMENTUM);
+        input(GLFW.GLFW_KEY_W, true);
+        check(input(TEST_KEY, true), "User-enabled sharing must allow extra movement keys");
+        check(player.getVelocity().equals(Vec3d.ZERO), "Customized shared input must reset momentum");
+        input(TEST_KEY, false);
+        input(GLFW.GLFW_KEY_W, false);
+        keybind.resetSettingsToDefaults();
         client.setScreen(new InventoryScreen(player));
         player.setVelocity(MOMENTUM);
         check(!input(TEST_KEY, true), "In-game hotkey must not activate inside a GUI");

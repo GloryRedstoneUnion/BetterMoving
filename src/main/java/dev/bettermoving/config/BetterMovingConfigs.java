@@ -223,7 +223,7 @@ public final class BetterMovingConfigs implements IConfigHandler {
             new ConfigHotkey(
                     "resetMomentum",
                     "",
-                    KeybindSettings.PRESS_ALLOWEXTRA_EMPTY,
+                    KeybindSettings.DEFAULT,
                     comment("resetMomentum"),
                     prettyName("resetMomentum"));
 

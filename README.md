@@ -64,11 +64,13 @@ Normal gravity, movement input, and active firework boosts continue afterward.
 
 The option appears directly below `Open configuration screen` and is unbound
 by default. Its advanced defaults are: activation on `PRESS`, context `INGAME`,
-allow empty bindings `true`, allow extra keys `true`, order sensitive `true`,
-exclusive `false`, and cancel further processing `true`. Extra keys allow the
-action to work while movement keys are held; it does not trigger in a GUI or
-when no player is present. The action changes only local velocity and sends no
-dedicated packet; normal movement synchronization still applies.
+allow empty bindings `false`, allow extra keys `false`, order sensitive `true`,
+exclusive `false`, and cancel further processing `true`. By default, only the
+bound keys may be held when the action is pressed. Enable `Allow extra keys`
+in the advanced settings to also use it while other movement keys are held.
+It does not trigger in a GUI or when no player is present. The action changes
+only local velocity and sends no dedicated packet; normal movement
+synchronization still applies.
 
 ### Fluid movement
 
@@ -284,9 +286,9 @@ Levitation and Slowness overrides, Elytra firework behavior, local Riptide,
 and the momentum-reset hotkey.
 
 Momentum checks exercise real MaLiLib press, hold, repeat, and release handling,
-all three velocity axes, movement states, extra movement keys, GUI and unbound
-isolation, remote-player isolation, settings persistence, and resumed gravity
-and firework acceleration after the single reset.
+all three velocity axes, movement states, default and customized key sharing,
+GUI and unbound isolation, remote-player isolation, settings persistence, and
+resumed gravity and firework acceleration after the single reset.
 
 Flight checks reproduce integrated-server Levitation rejection and verify
 local gliding, stopping conditions, remote-player isolation, fluid models,
