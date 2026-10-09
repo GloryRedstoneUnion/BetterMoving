@@ -298,7 +298,7 @@ Add `-PbettermovingModMenuTest` to include optional Mod Menu integration.
 The suite covers configuration persistence, fluid models, both platforms,
 sprint restrictions, slippery-block friction, simulated potion formulas,
 Levitation and Slowness overrides, Elytra firework behavior, local Riptide,
-and the momentum-reset hotkey.
+the momentum-reset hotkey, and virtual-platform mining-speed isolation.
 
 Momentum checks exercise real MaLiLib press, hold, repeat, and release handling,
 all three velocity axes, movement states, default and customized key sharing,
