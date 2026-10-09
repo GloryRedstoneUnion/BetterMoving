@@ -24,4 +24,14 @@ public abstract class PlayerEntityVirtualPlatformMixin {
                 && !VirtualPlatform.intersectsMovementSupport(entity, box)
                 && !VoidProtectionPlatform.intersectsMovementSupport(entity, box);
     }
+
+    @WrapOperation(
+            method = "getBlockBreakingSpeed",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/player/PlayerEntity;isOnGround()Z"))
+    private boolean bettermoving$ignoreVirtualPlatformForMining(
+            PlayerEntity player, Operation<Boolean> original) {
+        return original.call(player) && !VirtualPlatform.isVirtualOnlyMiningSupport(player);
+    }
 }

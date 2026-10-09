@@ -5,10 +5,10 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, a momentum-reset hotkey, invisible platforms,
 simulated potion effects, client-side Riptide, and Elytra firework controls.
 
-Current release: **[1.14.0](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.14.0)** for Minecraft 1.20.1.
+Current release: **[1.14.1](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.14.1)** for Minecraft 1.20.1.
 
-- [Installable JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.0/bettermoving-1.14.0.jar)
-- [Source JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.0/bettermoving-1.14.0-sources.jar)
+- [Installable JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.1/bettermoving-1.14.1.jar)
+- [Source JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.1/bettermoving-1.14.1-sources.jar)
 
 Previous versions are available on the [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases).
 
@@ -125,6 +125,11 @@ not create world blocks, render a platform, change raycasts or interaction
 targets, or affect other entities. `Void protection platform` and
 `Virtual platform` are independent and can be enabled together. Void
 protection does not cancel damage or change the server's position checks.
+
+Virtual platform collision is excluded from local block-breaking speed checks.
+When the player is supported only by the virtual platform, mining keeps
+vanilla's in-air penalty; a real block below the player still provides the
+normal ground mining speed.
 
 ### Sprint hunger override
 
@@ -271,7 +276,7 @@ Build the mod, run unit tests, and compile the client compatibility suite:
 ```
 
 On Windows, use `gradlew.bat` instead of `./gradlew`. The installable JAR is
-`build/libs/bettermoving-1.14.0.jar`; the `-sources.jar` is for source
+`build/libs/bettermoving-1.14.1.jar`; the `-sources.jar` is for source
 inspection only.
 
 Run the disposable client compatibility suite:

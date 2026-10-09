@@ -39,6 +39,7 @@ public final class VirtualPlatformCompatProbe {
             verifyConfiguration();
             clearArea(client, floor);
             verifyFixedHeightAndIsolation(client, floor);
+            verifyMiningIgnoresVirtualPlatform(client, floor);
             verifyVoidProtectionPlatform(client, floor);
             for (Motion motion : Motion.values()) {
                 List<Sample> ground = measure(client, floor, false, motion);
@@ -317,6 +318,35 @@ public final class VirtualPlatformCompatProbe {
         VirtualPlatform.tick(client);
         player.move(MovementType.SELF, new Vec3d(0.0, -1.0, 0.0));
         close("New player session captures a fresh height", floor.getY() + 2.25, player.getY());
+    }
+
+    private static void verifyMiningIgnoresVirtualPlatform(MinecraftClient client, BlockPos floor) {
+        ClientPlayerEntity player = client.player;
+
+        setFloor(client, floor, false);
+        BetterMovingConfigs.VIRTUAL_PLATFORM.setBooleanValue(false);
+        resetPlayer(client, floor);
+        player.setOnGround(false);
+        float airborneSpeed = player.getBlockBreakingSpeed(Blocks.STONE.getDefaultState());
+
+        resetPlayer(client, floor);
+        BetterMovingConfigs.VIRTUAL_PLATFORM.setBooleanValue(true);
+        player.move(MovementType.SELF, new Vec3d(0.0, -0.1, 0.0));
+        check(player.isOnGround(), "Virtual platform did not establish ground contact for mining check");
+        float virtualPlatformSpeed = player.getBlockBreakingSpeed(Blocks.STONE.getDefaultState());
+        close("Virtual platform changed air mining speed", airborneSpeed, virtualPlatformSpeed);
+
+        setFloor(client, floor, true);
+        BetterMovingConfigs.VIRTUAL_PLATFORM.setBooleanValue(false);
+        resetPlayer(client, floor);
+        BetterMovingConfigs.VIRTUAL_PLATFORM.setBooleanValue(true);
+        player.move(MovementType.SELF, new Vec3d(0.0, -0.1, 0.0));
+        check(player.isOnGround(), "Real floor did not establish ground contact for mining check");
+        float realFloorSpeed = player.getBlockBreakingSpeed(Blocks.STONE.getDefaultState());
+        check(realFloorSpeed > virtualPlatformSpeed,
+                "Real floor mining speed was reduced to virtual-platform air speed");
+
+        BetterMovingConfigs.VIRTUAL_PLATFORM.setBooleanValue(false);
     }
 
     private static void resetPlayer(MinecraftClient client, BlockPos floor) {

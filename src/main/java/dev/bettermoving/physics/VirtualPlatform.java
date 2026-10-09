@@ -59,6 +59,25 @@ public final class VirtualPlatform {
         return isActiveFor(entity) && box.minY < height && box.maxY > height - 1.0;
     }
 
+    /**
+     * Returns whether the entity is standing on this platform without a real block below it.
+     * Movement still uses the virtual collision, but mining must retain vanilla air penalties.
+     */
+    public static boolean isVirtualOnlyMiningSupport(Entity entity) {
+        if (!isActiveFor(entity) || !entity.isOnGround()) {
+            return false;
+        }
+        Box feet = entity.getBoundingBox();
+        Box supportProbe = new Box(
+                feet.minX,
+                feet.minY - 1.0E-3,
+                feet.minZ,
+                feet.maxX,
+                feet.minY + 1.0E-3,
+                feet.maxZ);
+        return !entity.getWorld().getBlockCollisions(entity, supportProbe).iterator().hasNext();
+    }
+
     private static boolean isActiveFor(Entity entity) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (entity != client.player || entity.hasVehicle()) {
