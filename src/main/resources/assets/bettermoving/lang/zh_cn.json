@@ -30,7 +30,7 @@
   "bettermoving.config.name.infiniteElytraFireworks": "无限烟花",
   "bettermoving.config.comment.infiniteElytraFireworks": "不消耗烟花进行加速",
   "bettermoving.config.name.hoverWhenElytraUnpowered": "鞘翅无推进时悬停",
-  "bettermoving.config.comment.hoverWhenElytraUnpowered": "鞘翅滑翔时，若没有仍在推进的附着烟花或激流冲刺，立即清零 XYZ 速度并原地悬停。保留滑翔状态，在推进期间恢复移动。兼容无限鞘翅烟花加速和自定义激流蓄力时长；仅蓄力不算推进。",
+  "bettermoving.config.comment.hoverWhenElytraUnpowered": "鞘翅滑翔时，若没有仍在推进的附着烟花或激流冲刺，立即清零 XYZ 速度并原地悬停。保留滑翔状态，在推进期间恢复移动。",
   "bettermoving.config.name.cancelElytraFireworkOnStop": "结束滑翔时取消鞘翅烟花",
   "bettermoving.config.comment.cancelElytraFireworkOnStop": "与“无限鞘翅烟花加速”同时开启时，本地玩家结束鞘翅滑翔会立即移除客户端模拟的烟花火箭，而不是等待其飞行时长结束。",
   "bettermoving.config.name.elytraFireworkBlockUse": "鞘翅烟花方块使用",

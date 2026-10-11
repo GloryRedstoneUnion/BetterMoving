@@ -30,7 +30,7 @@
   "bettermoving.config.name.infiniteElytraFireworks": "Infinite fireworks",
   "bettermoving.config.comment.infiniteElytraFireworks": "Boost without consuming fireworks.",
   "bettermoving.config.name.hoverWhenElytraUnpowered": "Hover when Elytra unpowered",
-  "bettermoving.config.comment.hoverWhenElytraUnpowered": "While Elytra gliding without an active attached firework or Riptide spin, immediately clear XYZ velocity and hover in place. Keep the glide active and resume movement during propulsion. Supports Infinite fireworks and Custom Riptide charge time; charging alone is not propulsion.",
+  "bettermoving.config.comment.hoverWhenElytraUnpowered": "While Elytra gliding without an active attached firework or Riptide spin, immediately clear XYZ velocity and hover in place. Keep the glide active and resume movement during propulsion.",
   "bettermoving.config.name.cancelElytraFireworkOnStop": "Cancel Elytra fireworks on glide stop",
   "bettermoving.config.comment.cancelElytraFireworkOnStop": "When enabled together with Infinite fireworks, immediately remove client-simulated firework rockets when the local player stops gliding instead of keeping them until their lifetime ends.",
   "bettermoving.config.name.elytraFireworkBlockUse": "Elytra firework block use",
