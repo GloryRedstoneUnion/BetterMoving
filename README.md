@@ -5,10 +5,12 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, a momentum-reset hotkey, invisible platforms,
 simulated potion effects, client-side Riptide, and Elytra firework controls.
 
-Current source version: **1.14.2** for Minecraft 1.20.1.
+Current release: **1.14.2** for Minecraft 1.20.1.
 
-Build this version using the instructions below. Published downloads are
-available on the [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases).
+Download the [installable JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.2/bettermoving-1.14.2.jar)
+from the [1.14.2 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.14.2),
+or build it using the instructions below. This version adds optional Elytra
+hovering when firework and Riptide propulsion have ended.
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -30,9 +32,8 @@ hotkey works without Mod Menu.
 
 1. Install Fabric Loader for Minecraft 1.20.1.
 2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
-3. Download an installable `bettermoving-<version>.jar` from the
-   [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases),
-   or build this source version, and place it in the same `mods` folder.
+3. Download [bettermoving-1.14.2.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.2/bettermoving-1.14.2.jar),
+   or build this version, and place it in the same `mods` folder.
 4. Optionally install Mod Menu, then launch Minecraft.
 
 The `bettermoving-<version>-sources.jar` is for source inspection.
@@ -217,7 +218,7 @@ death, water movement, missing or unusable Elytra, an explicit flight stop,
 disconnecting, disabling the option, or removal of Levitation. Air-rule fluid
 movement and local firework boosts remain compatible.
 
-### Elytra fireworks
+### Elytra hovering
 
 `Hover when Elytra unpowered` stops the local player in midair whenever an
 Elytra glide has no active propulsion. It immediately clears X, Y, and Z
@@ -236,6 +237,8 @@ with `Custom Riptide charge time`; charging alone or releasing too early
 does not interrupt hovering. Walking, jumping, ordinary falling, creative
 flight, and other players are unaffected. The option is disabled and unbound
 by default and supports a hotkey.
+
+### Elytra fireworks
 
 `Infinite Elytra fireworks` simulates a firework rocket while the local player
 is gliding, applying vanilla acceleration without sending the item-use packet
@@ -322,9 +325,9 @@ Hover checks cover sustained XYZ stops at different pitch angles, propulsion
 restart, ordinary and simulated rocket removal, default and custom lifetimes,
 overlapping propulsion, target-speed equilibrium, glide-stop cancellation,
 entity ID changes, network spawn/metadata/removal, local firework packet
-suppression, both Riptide hands,
-custom charge boundaries through the integer maximum, spin expiration and
-collision, stale spin metadata, hotkey persistence, and player/toggle isolation.
+suppression, both Riptide hands, custom charge boundaries through the integer
+maximum, spin expiration and collision, stale spin metadata, hotkey persistence,
+and player/toggle isolation.
 
 Momentum checks exercise real MaLiLib press, hold, repeat, and release handling,
 all three velocity axes, movement states, default and customized key sharing,
