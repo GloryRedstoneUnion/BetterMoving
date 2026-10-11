@@ -5,12 +5,12 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, a momentum-reset hotkey, invisible platforms,
 simulated potion effects, client-side Riptide, and Elytra firework controls.
 
-Current release: **1.14.2** for Minecraft 1.20.1.
+Current source version: **1.14.3** for Minecraft 1.20.1.
 
-Download the [installable JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.2/bettermoving-1.14.2.jar)
-from the [1.14.2 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.14.2),
-or build it using the instructions below. This version adds optional Elytra
-hovering when firework and Riptide propulsion have ended.
+Build this version using the instructions below. Published downloads are
+available on the [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases).
+This version aligns English option names and descriptions with the revised
+Chinese translations.
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -32,8 +32,9 @@ hotkey works without Mod Menu.
 
 1. Install Fabric Loader for Minecraft 1.20.1.
 2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
-3. Download [bettermoving-1.14.2.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.2/bettermoving-1.14.2.jar),
-   or build this version, and place it in the same `mods` folder.
+3. Download an installable `bettermoving-<version>.jar` from the
+   [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases),
+   or build this source version, and place it in the same `mods` folder.
 4. Optionally install Mod Menu, then launch Minecraft.
 
 The `bettermoving-<version>-sources.jar` is for source inspection.
@@ -67,7 +68,7 @@ including local gliding while `Ignore levitation and slowness` is enabled.
 It does not change position, fall distance, or other movement states. Normal
 gravity and movement input continue afterward. Elytra fireworks cannot boost
 while gliding is stopped. Simulated rockets are also removed if both
-`Infinite Elytra fireworks` and `Cancel Elytra fireworks on glide stop` are
+`Infinite fireworks` and `Cancel Elytra fireworks on glide stop` are
 enabled. Otherwise, a rocket that has not expired can boost again if a new
 glide starts before its lifetime ends.
 
@@ -228,7 +229,7 @@ cause drift. A new firework boost or Riptide launch resumes ordinary movement;
 when all attached rockets and Riptide propulsion have ended, the player
 stops again. Turning the option off restores normal gliding.
 
-Both ordinary attached rockets and `Infinite Elytra fireworks` are supported,
+Both ordinary attached rockets and `Infinite fireworks` are supported,
 including custom simulated firework lifetimes and overlapping rockets. An
 active boost permits movement even when its speed has reached equilibrium.
 Free-flying fireworks and rockets attached to other players do not count.
@@ -240,14 +241,14 @@ by default and supports a hotkey.
 
 ### Elytra fireworks
 
-`Infinite Elytra fireworks` simulates a firework rocket while the local player
+`Infinite fireworks` simulates a firework rocket while the local player
 is gliding, applying vanilla acceleration without sending the item-use packet
 or consuming a rocket on the server. The client-side rocket expires after its
 normal lifetime. This option does not create rockets outside Elytra flight.
 
 `Elytra firework block use` routes firework use on a block or wall to an Elytra
 boost while gliding, instead of launching a rocket from the block. With
-`Infinite Elytra fireworks` enabled, the boost is simulated without rocket
+`Infinite fireworks` enabled, the boost is simulated without rocket
 consumption. Otherwise, vanilla item-use packets and rocket consumption are
 preserved.
 
@@ -258,7 +259,7 @@ interactions still work, and entity interactions are unaffected. Sneaking
 past a block's normal interaction is blocked if it would launch a rocket.
 
 `Cancel Elytra fireworks on glide stop` removes client-only simulated rockets
-when the local player stops gliding, but only while `Infinite Elytra fireworks`
+when the local player stops gliding, but only while `Infinite fireworks`
 is enabled. It also handles glide state changes received through tracked entity
 data, so a canceled glide cannot leave an old simulated rocket to accelerate a
 later glide. The setting is disabled and unbound by default.
@@ -282,7 +283,7 @@ fireworks with Flight 1, 2, or 3 using the corresponding tick value. Flight
 levels 0 and 4 or higher, non-Elytra launches, and rockets while the option is
 disabled retain their vanilla lifetime. The Flight 1, 2, and 3 values accept
 any non-negative `int` value up to `Integer.MAX_VALUE` ticks. It also applies
-to rockets created by `Infinite Elytra fireworks`; rocket consumption behavior
+to rockets created by `Infinite fireworks`; rocket consumption behavior
 is unchanged. The toggle is disabled and unbound by default, and all three
 values default to `0` ticks.
 
@@ -295,7 +296,7 @@ Build the mod, run unit tests, and compile the client compatibility suite:
 ```
 
 On Windows, use `gradlew.bat` instead of `./gradlew`. The installable JAR is
-`build/libs/bettermoving-1.14.2.jar`; the `-sources.jar` is for source
+`build/libs/bettermoving-1.14.3.jar`; the `-sources.jar` is for source
 inspection only.
 
 Run the disposable client compatibility suite:
