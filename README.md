@@ -5,12 +5,10 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, a momentum-reset hotkey, invisible platforms,
 simulated potion effects, client-side Riptide, and Elytra firework controls.
 
-Current release: **[1.14.1](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.14.1)** for Minecraft 1.20.1.
+Current source version: **1.14.2** for Minecraft 1.20.1.
 
-- [Installable JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.1/bettermoving-1.14.1.jar)
-- [Source JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.1/bettermoving-1.14.1-sources.jar)
-
-Previous versions are available on the [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases).
+Build this version using the instructions below. Published downloads are
+available on the [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases).
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -221,6 +219,24 @@ movement and local firework boosts remain compatible.
 
 ### Elytra fireworks
 
+`Hover when Elytra unpowered` stops the local player in midair whenever an
+Elytra glide has no active propulsion. It immediately clears X, Y, and Z
+velocity and suppresses inertial gliding, level flight, and falling while
+keeping the glide active. Looking around or holding movement keys does not
+cause drift. A new firework boost or Riptide launch resumes ordinary movement;
+when all attached rockets and Riptide propulsion have ended, the player
+stops again. Turning the option off restores normal gliding.
+
+Both ordinary attached rockets and `Infinite Elytra fireworks` are supported,
+including custom simulated firework lifetimes and overlapping rockets. An
+active boost permits movement even when its speed has reached equilibrium.
+Free-flying fireworks and rockets attached to other players do not count.
+Riptide propulsion follows the actual spin timer, including simulated Riptide
+with `Custom Riptide charge time`; charging alone or releasing too early
+does not interrupt hovering. Walking, jumping, ordinary falling, creative
+flight, and other players are unaffected. The option is disabled and unbound
+by default and supports a hotkey.
+
 `Infinite Elytra fireworks` simulates a firework rocket while the local player
 is gliding, applying vanilla acceleration without sending the item-use packet
 or consuming a rocket on the server. The client-side rocket expires after its
@@ -276,7 +292,7 @@ Build the mod, run unit tests, and compile the client compatibility suite:
 ```
 
 On Windows, use `gradlew.bat` instead of `./gradlew`. The installable JAR is
-`build/libs/bettermoving-1.14.1.jar`; the `-sources.jar` is for source
+`build/libs/bettermoving-1.14.2.jar`; the `-sources.jar` is for source
 inspection only.
 
 Run the disposable client compatibility suite:
@@ -291,14 +307,24 @@ Run the disposable client compatibility suite:
   -PbettermovingPotionEffectsCompatTest \
   -PbettermovingElytraFireworksCompatTest \
   -PbettermovingRiptideCompatTest \
-  -PbettermovingMomentumCompatTest
+  -PbettermovingMomentumCompatTest \
+  -PbettermovingElytraHoverCompatTest
 ```
 
 Add `-PbettermovingModMenuTest` to include optional Mod Menu integration.
 The suite covers configuration persistence, fluid models, both platforms,
 sprint restrictions, slippery-block friction, simulated potion formulas,
 Levitation and Slowness overrides, Elytra firework behavior, local Riptide,
-the momentum-reset hotkey, and virtual-platform mining-speed isolation.
+the momentum-reset hotkey, virtual-platform mining-speed isolation, and
+unpowered Elytra hovering.
+
+Hover checks cover sustained XYZ stops at different pitch angles, propulsion
+restart, ordinary and simulated rocket removal, default and custom lifetimes,
+overlapping propulsion, target-speed equilibrium, glide-stop cancellation,
+entity ID changes, network spawn/metadata/removal, local firework packet
+suppression, both Riptide hands,
+custom charge boundaries through the integer maximum, spin expiration and
+collision, stale spin metadata, hotkey persistence, and player/toggle isolation.
 
 Momentum checks exercise real MaLiLib press, hold, repeat, and release handling,
 all three velocity axes, movement states, default and customized key sharing,

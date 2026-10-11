@@ -78,6 +78,9 @@ if (project.hasProperty('bettermovingCompatTest')) {
         if (project.hasProperty('bettermovingMomentumCompatTest')) {
             jvmArgs '-Dbettermoving.momentumCompatTest=true'
         }
+        if (project.hasProperty('bettermovingElytraHoverCompatTest')) {
+            jvmArgs '-Dbettermoving.elytraHoverCompatTest=true'
+        }
     }
 }
 

@@ -1,9 +1,11 @@
 package dev.bettermoving.mixin;
 
 import dev.bettermoving.entity.ClientFireworkRocketManager;
+import dev.bettermoving.physics.ElytraHover;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.projectile.FireworkRocketEntity;
 import net.minecraft.entity.data.TrackedData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -13,12 +15,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * Cancels client-only simulated Elytra fireworks when the local glide flag is
- * cleared, including state changes received through the entity data tracker.
+ * cleared and stops unpowered hovering flight when a rocket is removed.
  */
 @Mixin(Entity.class)
 public abstract class EntityFallFlyingMixin {
     @Unique
     private boolean bettermoving$wasFallFlying;
+
+    @Inject(method = "setRemoved", at = @At("RETURN"))
+    private void bettermoving$hoverAfterRocketRemoval(Entity.RemovalReason reason, CallbackInfo ci) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if ((Object) this instanceof FireworkRocketEntity rocket
+                && rocket.getWorld().isClient
+                && client.player != null
+                && rocket.getWorld() == client.world) {
+            ElytraHover.stopIfUnpowered(client.player);
+        }
+    }
 
     @Inject(method = "setFlag", at = @At("HEAD"))
     private void bettermoving$cancelFireworkBeforeGlideFlagClears(
