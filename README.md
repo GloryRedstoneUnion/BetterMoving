@@ -5,12 +5,14 @@ configurable movement overrides through a MaLiLib configuration screen,
 including fluid movement, a momentum-reset hotkey, invisible platforms,
 simulated potion effects, client-side Riptide, and Elytra firework controls.
 
-Current source version: **1.14.3** for Minecraft 1.20.1.
+Current release: **1.14.3** for Minecraft 1.20.1.
 
-Build this version using the instructions below. Published downloads are
-available on the [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases).
+Download the [installable JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.3/bettermoving-1.14.3.jar)
+from the [1.14.3 release](https://github.com/GloryRedstoneUnion/BetterMoving/releases/tag/v1.14.3),
+or build it using the instructions below.
 This version aligns English option names and descriptions with the revised
-Chinese translations.
+Chinese translations, including the name `Infinite fireworks` and shorter
+feature tooltips.
 
 Install BetterMoving only on the client. It changes local movement prediction,
 not server rules. Servers can reject or correct movement, and server-side
@@ -32,12 +34,12 @@ hotkey works without Mod Menu.
 
 1. Install Fabric Loader for Minecraft 1.20.1.
 2. Place compatible Fabric API and MaLiLib JARs in the instance's `mods` folder.
-3. Download an installable `bettermoving-<version>.jar` from the
-   [Releases page](https://github.com/GloryRedstoneUnion/BetterMoving/releases),
-   or build this source version, and place it in the same `mods` folder.
+3. Download [bettermoving-1.14.3.jar](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.3/bettermoving-1.14.3.jar),
+   or build this version, and place it in the same `mods` folder.
 4. Optionally install Mod Menu, then launch Minecraft.
 
-The `bettermoving-<version>-sources.jar` is for source inspection.
+The [sources JAR](https://github.com/GloryRedstoneUnion/BetterMoving/releases/download/v1.14.3/bettermoving-1.14.3-sources.jar)
+is for source inspection.
 Do not install the sources JAR as a mod.
 
 ## Configuration
